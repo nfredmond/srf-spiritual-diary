@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Sparkles, Download, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useImageGeneration } from '../../hooks/useImageGeneration';
@@ -108,7 +107,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
                 Download
               </button>
               
-              {navigator.share && (
+              {'share' in navigator && (
                 <button
                   onClick={handleShare}
                   className="flex items-center gap-2 px-6 py-3 bg-srf-gold text-white rounded-full hover:bg-srf-gold/90 transition-colors font-medium"
