@@ -1,4 +1,4 @@
-export type ImageProvider = 'openai' | 'google';
+export type ImageProvider = 'openai';
 
 export interface GeneratedImage {
   url: string;
@@ -11,8 +11,6 @@ export interface UserSettings {
   preferredProvider: ImageProvider;
   apiKeys?: {
     openai?: string;
-    google?: string;
   };
   fontSize: 'small' | 'medium' | 'large';
 }
-
