@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "functions": {
+    "api/generate-image.ts": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}
+

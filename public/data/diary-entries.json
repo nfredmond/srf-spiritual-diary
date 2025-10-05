@@ -1,0 +1,142 @@
+{
+  "entries": {
+    "01-01": {
+      "month": 1,
+      "day": 1,
+      "topic": "New Beginnings",
+      "weeklyTheme": "Divine Renewal",
+      "specialDay": null,
+      "quote": "With the opening of the New Year, all the closed portals of limitations will be thrown open to reveal to the gaze of all sincere persons the unobstructed vista of endless spiritual possibilities.",
+      "source": "Paramahansa Yogananda",
+      "book": "Self-Realization Magazine"
+    },
+    "01-02": {
+      "month": 1,
+      "day": 2,
+      "topic": "Divine Potential",
+      "weeklyTheme": "Divine Renewal",
+      "specialDay": null,
+      "quote": "You are the master of your destiny. No one can stop you from becoming as great as you want to be or ought to be. Use your will and create your own life.",
+      "source": "Paramahansa Yogananda",
+      "book": "Man's Eternal Quest"
+    },
+    "01-03": {
+      "month": 1,
+      "day": 3,
+      "topic": "Inner Peace",
+      "weeklyTheme": "Divine Renewal",
+      "specialDay": null,
+      "quote": "The season of failure is the best time for sowing the seeds of success. Let peace flow through your mind. Peace is the spring of all happiness.",
+      "source": "Paramahansa Yogananda",
+      "book": "Metaphysical Meditations"
+    },
+    "01-04": {
+      "month": 1,
+      "day": 4,
+      "topic": "Meditation",
+      "weeklyTheme": "Divine Renewal",
+      "specialDay": null,
+      "quote": "The more you depend on conditions outside yourself for happiness, the less happiness you will experience. When you rely on meditation as the source of your happiness, the more happiness you will experience.",
+      "source": "Paramahansa Yogananda",
+      "book": "Journey to Self-Realization"
+    },
+    "01-05": {
+      "month": 1,
+      "day": 5,
+      "topic": "God's Love",
+      "weeklyTheme": "Divine Renewal",
+      "specialDay": null,
+      "quote": "The love that rouses your interest in God is the only love that can wholly satisfy you. Nothing else can give you the joy that divine love gives.",
+      "source": "Paramahansa Yogananda",
+      "book": "The Divine Romance"
+    },
+    "10-05": {
+      "month": 10,
+      "day": 5,
+      "topic": "Perseverance",
+      "weeklyTheme": "Spiritual Strength",
+      "specialDay": null,
+      "quote": "The power of unfulfilled desires is the root of all human slavery. When you have satisfied the desire for sense pleasures, they are no longer alluring. Desire for God alone brings everlasting happiness.",
+      "source": "Paramahansa Yogananda",
+      "book": "The Yoga of the Bhagavad Gita"
+    },
+    "07-04": {
+      "month": 7,
+      "day": 4,
+      "topic": "True Freedom",
+      "weeklyTheme": "Liberation",
+      "specialDay": "Birthday of Sri Gyanamata",
+      "quote": "Freedom is not the privilege of being free to do whatever you like; it is the power and the will to do only that which is right and good.",
+      "source": "Paramahansa Yogananda",
+      "book": "The Law of Success"
+    },
+    "12-25": {
+      "month": 12,
+      "day": 25,
+      "topic": "Christ Consciousness",
+      "weeklyTheme": "Divine Birth",
+      "specialDay": "Christmas",
+      "quote": "The Christ-love is not a weak, passive sentiment. It is the invincible might of Spirit, of Truth. When you have that love, you can create or dissolve worlds.",
+      "source": "Paramahansa Yogananda",
+      "book": "The Second Coming of Christ"
+    },
+    "03-07": {
+      "month": 3,
+      "day": 7,
+      "topic": "Self-Realization",
+      "weeklyTheme": "Awakening",
+      "specialDay": "Yogananda's Mahasamadhi",
+      "quote": "Self-realization is the knowing—in body, mind, and soul—that we are one with the omnipresence of God; that we do not have to pray that it come to us, that we are not merely near it at all times, but that God's omnipresence is our omnipresence.",
+      "source": "Paramahansa Yogananda",
+      "book": "Autobiography of a Yogi"
+    },
+    "02-14": {
+      "month": 2,
+      "day": 14,
+      "topic": "Divine Love",
+      "weeklyTheme": "Love Supreme",
+      "specialDay": null,
+      "quote": "In shallow men the fish of little thoughts cause much commotion. In oceanic minds the whales of inspiration make hardly a ruffle.",
+      "source": "Paramahansa Yogananda",
+      "book": "Sayings of Paramahansa Yogananda"
+    },
+    "06-15": {
+      "month": 6,
+      "day": 15,
+      "topic": "Wisdom",
+      "weeklyTheme": "Divine Knowledge",
+      "specialDay": null,
+      "quote": "Knowledge is power, but wisdom is victory. Knowledge gained from books alone is not true knowledge; it must be lived and experienced.",
+      "source": "Paramahansa Yogananda",
+      "book": "Man's Eternal Quest"
+    },
+    "09-20": {
+      "month": 9,
+      "day": 20,
+      "topic": "Joy",
+      "weeklyTheme": "Divine Bliss",
+      "specialDay": null,
+      "quote": "Joy is the continuous awareness of one's presence within the soul. It is born of gratitude and untiring enthusiasm.",
+      "source": "Paramahansa Yogananda",
+      "book": "The Divine Romance"
+    }
+  },
+  "weeklyThemes": {
+    "week1": {
+      "startDate": "01-01",
+      "endDate": "01-07",
+      "theme": "Divine Renewal"
+    },
+    "week27": {
+      "startDate": "07-01",
+      "endDate": "07-07",
+      "theme": "Liberation"
+    },
+    "week52": {
+      "startDate": "12-22",
+      "endDate": "12-31",
+      "theme": "Divine Birth"
+    }
+  }
+}
+
