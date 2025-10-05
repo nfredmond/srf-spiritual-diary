@@ -43,8 +43,13 @@ export function useImageGeneration(dateKey: string) {
         return;
       }
 
+      // Determine which API endpoint to use based on provider
+      const apiEndpoint = provider === 'gemini' 
+        ? '/api/generate-image-gemini' 
+        : '/api/generate-image';
+
       // Call serverless function
-      const response = await fetch('/api/generate-image', {
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, provider, apiKey }),
