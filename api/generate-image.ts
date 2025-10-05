@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const { prompt, provider, apiKey } = req.body;
-  const ip = req.headers['x-forwarded-for'] as string || 'unknown';
+  const ip = (req.headers['x-forwarded-for'] as string) || 'unknown';
 
   // Check rate limit if user doesn't provide their own API key
   if (!apiKey && !checkRateLimit(ip)) {
@@ -48,9 +48,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         n: 1,
         size: '1024x1024',
         quality: 'standard',
-        // Note: The prompt already includes strong instructions to avoid text
-        // DALL-E 3 tends to add text unless explicitly told not to
       });
+
+      // Check if response data exists
+      if (!response.data || !response.data[0] || !response.data[0].url) {
+        throw new Error('No image URL received from OpenAI');
+      }
 
       return res.status(200).json({ imageUrl: response.data[0].url });
     } 
@@ -70,4 +73,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 }
-
