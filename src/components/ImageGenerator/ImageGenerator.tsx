@@ -107,7 +107,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
                 Download
               </button>
               
-              {'share' in navigator && (
+              {typeof navigator.share !== 'undefined' && (
                 <button
                   onClick={handleShare}
                   className="flex items-center gap-2 px-6 py-3 bg-srf-gold text-white rounded-full hover:bg-srf-gold/90 transition-colors font-medium"
