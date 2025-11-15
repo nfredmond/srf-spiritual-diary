@@ -1,14 +1,34 @@
 import { motion } from 'framer-motion';
-import { Star, Share2, Copy, Check } from 'lucide-react';
+import { Star, Share2, Copy, Check, Heart, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 
 interface QuoteDisplayProps {
   entry: DiaryEntry;
+  dateKey: string;
+  fontSize?: 'small' | 'medium' | 'large' | 'xlarge';
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
+  hasNote?: boolean;
+  onOpenNotes?: () => void;
 }
 
-export function QuoteDisplay({ entry }: QuoteDisplayProps) {
+export function QuoteDisplay({
+  entry,
+  fontSize = 'medium',
+  isFavorite = false,
+  onToggleFavorite,
+  hasNote = false,
+  onOpenNotes,
+}: QuoteDisplayProps) {
   const [copied, setCopied] = useState(false);
+
+  const fontSizeClasses = {
+    small: 'text-lg',
+    medium: 'text-xl',
+    large: 'text-2xl',
+    xlarge: 'text-3xl',
+  };
 
   const handleShare = async () => {
     const text = `"${entry.quote}"\n\n— ${entry.source}\n\nSRF Spiritual Diary`;
@@ -46,8 +66,34 @@ export function QuoteDisplay({ entry }: QuoteDisplayProps) {
       transition={{ duration: 0.6 }}
       className="card max-w-4xl mx-auto relative"
     >
-      {/* Share Button */}
+      {/* Action Buttons */}
       <div className="absolute top-4 right-4 flex gap-2">
+        {onToggleFavorite && (
+          <button
+            onClick={onToggleFavorite}
+            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Heart className={`w-5 h-5 transition-all ${isFavorite ? 'text-red-500 fill-red-500' : 'text-srf-blue'}`} />
+            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {isFavorite ? 'Unfavorite' : 'Favorite'}
+            </span>
+          </button>
+        )}
+
+        {onOpenNotes && (
+          <button
+            onClick={onOpenNotes}
+            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+            aria-label="Personal notes"
+          >
+            <BookOpen className={`w-5 h-5 ${hasNote ? 'text-srf-gold fill-srf-gold/20' : 'text-srf-blue'}`} />
+            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {hasNote ? 'Edit note' : 'Add note'}
+            </span>
+          </button>
+        )}
+
         <button
           onClick={handleCopy}
           className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
@@ -58,18 +104,18 @@ export function QuoteDisplay({ entry }: QuoteDisplayProps) {
           ) : (
             <Copy className="w-5 h-5 text-srf-blue" />
           )}
-          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
             {copied ? 'Copied!' : 'Copy quote'}
           </span>
         </button>
-        
+
         <button
           onClick={handleShare}
           className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
           aria-label="Share quote"
         >
           <Share2 className="w-5 h-5 text-srf-blue" />
-          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
             Share quote
           </span>
         </button>
@@ -112,7 +158,7 @@ export function QuoteDisplay({ entry }: QuoteDisplayProps) {
       </div>
 
       {/* Quote */}
-      <blockquote className="quote-text text-center mb-8 px-4">
+      <blockquote className={`quote-text text-center mb-8 px-4 transition-all ${fontSizeClasses[fontSize]}`}>
         "{entry.quote}"
       </blockquote>
 

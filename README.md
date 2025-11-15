@@ -1,31 +1,65 @@
-# 🪷 SRF Spiritual Diary
+# 🪷 SRF Spiritual Diary **v2.0** ✨
 
-A beautiful, **installable web application** that displays daily wisdom from Paramahansa Yogananda's Spiritual Diary, featuring AI-generated sacred imagery to visualize each quote's spiritual essence.
+A **comprehensive spiritual companion app** featuring daily wisdom from Paramahansa Yogananda, with advanced search, personal notes, meditation timer, and AI-generated sacred imagery.
 
-🌐 **[Live App](https://srf-spiritual-diary.vercel.app)** | 📚 **[Features](./FEATURES.md)** | 🚀 **[Deployment Guide](./VERCEL_DEPLOY.md)**
+🌐 **[Live App](https://srf-spiritual-diary.vercel.app)** | 📚 **[What's New](./MAJOR_UPDATE.md)** | 🚀 **[Deployment Guide](./VERCEL_DEPLOY.md)**
 
 ---
 
-## ✨ Features
+## 🎉 NEW in v2.0 - MASSIVE UPDATE!
 
-### 💯 Core Experience
+### 🔍 **Advanced Search & Discovery**
+- **Full-Text Search** - Find quotes instantly across all 346 entries (Press `/`)
+- **Theme Search** - Browse by spiritual topics
+- **Random Quote** - Discover serendipitous wisdom (Press `R`)
+- **Popular Themes** - Quick access to common spiritual themes
+
+### ❤️ **Personal Journey Tools**
+- **Favorites System** - Bookmark meaningful quotes (Press `F`)
+- **Personal Notes** - Write reflections for each day's wisdom
+- **Reading Streak** - Track your daily spiritual practice with flame badges
+- **Journey Stats** - See your current streak, longest streak, and total days
+
+### 🎨 **Enhanced Reading Experience**
+- **3 Beautiful Themes** - Light, Dark, and Sepia modes
+- **Font Size Controls** - Choose from 4 sizes (S/M/L/XL)
+- **Quote Card Generator** - Create beautiful shareable images
+- **Skeleton Loaders** - Professional loading states
+
+### 🧘 **Meditation & Practice**
+- **Meditation Timer** - Customizable 5-30 minute sessions (Press `M`)
+- **Visual Progress** - Animated circular timer
+- **Completion Chime** - Peaceful audio notification
+- **Inspirational Quotes** - Guidance during meditation
+
+### 📱 **Mobile Excellence**
+- **Swipe Gestures** - Natural navigation (swipe left/right)
+- **Touch Optimized** - Large, accessible buttons
+- **PWA Support** - Install as native app
+- **Offline First** - All features work without internet
+
+### ⌨️ **Power User Features**
+- 8 keyboard shortcuts for instant access
+- Lightning-fast navigation
+- Zero friction browsing
+- Professional tooltips throughout
+
+---
+
+## ✨ Core Features
+
+### 💯 Spiritual Content
 - **346 Daily Entries** - Authentic quotes from Paramahansa Yogananda
 - **79 Weekly Themes** - Organized spiritual guidance
-- **AI-Generated Art** - DALL-E 3 creates sacred imagery
-- **Special Days** - Highlighted commemorations and birthdays
-- **Full Year Coverage** - January through December
+- **AI-Generated Art** - DALL-E 3 + Google Gemini create sacred imagery
+- **Special Days** - Commemorations and birthdays highlighted
+- **Full Year Coverage** - Complete annual cycle
 
-### 📱 Modern Features
-- **🚀 PWA Support** - Install on your phone like a native app
-- **⌨️ Keyboard Shortcuts** - Navigate with arrow keys, press `?` for help
-- **📤 Share Quotes** - Copy or share via native share API
-- **💾 Offline Ready** - Cached images work without internet
-- **🎨 Beautiful Design** - SRF-inspired colors and typography
-
-### ⚡ Performance
+### ⚡ Technical Excellence
 - **Lightning Fast** - <2 second load times
 - **Mobile Optimized** - Responsive design for all devices
-- **SEO Enhanced** - Rich previews on social media
+- **Type Safe** - Full TypeScript coverage
+- **Accessible** - WCAG compliant, keyboard navigation
 - **Zero Cost** - 100% free to use, forever
 
 ---
@@ -53,19 +87,28 @@ A beautiful, **installable web application** that displays daily wisdom from Par
 | `←` or `H` | Previous day |
 | `→` or `L` | Next day |
 | `T` | Go to today |
+| `R` | Random quote |
+| `/` | Search quotes |
+| `F` | View favorites |
+| `M` | Meditation timer |
 | `?` | Show shortcuts help |
+
+**Plus:** Swipe left/right on mobile to navigate!
 
 ---
 
 ## 🚀 Technologies
 
 - **React 18** with TypeScript for type safety
-- **Vite** for lightning-fast builds
-- **Tailwind CSS** for beautiful styling
-- **Framer Motion** for smooth animations
-- **OpenAI DALL-E 3** for AI image generation
-- **IndexedDB** for local caching
-- **Vercel** for edge deployment
+- **Vite 7** for lightning-fast builds
+- **Tailwind CSS 3** for beautiful styling
+- **Framer Motion 12** for smooth animations
+- **OpenAI DALL-E 3** + **Google Gemini** for AI image generation
+- **IndexedDB** for local caching and storage
+- **localStorage** for favorites, notes, and preferences
+- **Web Audio API** for meditation timer
+- **Canvas API** for quote card generation
+- **Vercel Edge** for global deployment
 
 ---
 
