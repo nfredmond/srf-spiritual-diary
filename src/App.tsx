@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon } from 'lucide-react';
+import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
 import { QuoteDisplay } from './components/QuoteDisplay/QuoteDisplay';
@@ -10,10 +10,13 @@ import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { ReadingControls } from './components/ReadingControls/ReadingControls';
 import { StreakBadge } from './components/StreakBadge/StreakBadge';
 import { FavoritesPanel } from './components/FavoritesPanel/FavoritesPanel';
-import { MeditationTimer } from './components/MeditationTimer/MeditationTimer';
-import { QuoteCard } from './components/QuoteCard/QuoteCard';
+import { EnhancedMeditationTimer } from './components/EnhancedMeditationTimer/EnhancedMeditationTimer';
+import { EnhancedQuoteCard } from './components/EnhancedQuoteCard/EnhancedQuoteCard';
 import { NotesPanel } from './components/NotesPanel/NotesPanel';
 import { SkeletonLoader } from './components/SkeletonLoader/SkeletonLoader';
+import { StatsDashboard } from './components/StatsDashboard/StatsDashboard';
+import { CalendarView } from './components/CalendarView/CalendarView';
+import { ExportImport } from './components/ExportImport/ExportImport';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -21,6 +24,7 @@ import { useReadingStreak } from './hooks/useReadingStreak';
 import { useTheme } from './hooks/useTheme';
 import { useSwipeGesture } from './hooks/useSwipeGesture';
 import { useRandomQuote } from './hooks/useRandomQuote';
+import { useQuoteHistory } from './hooks/useQuoteHistory';
 import { format, addDays, subDays } from 'date-fns';
 import type { DiaryEntry } from './types/DiaryEntry';
 
@@ -33,6 +37,9 @@ function App() {
   const [showMeditationTimer, setShowMeditationTimer] = useState(false);
   const [showQuoteCard, setShowQuoteCard] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showExportImport, setShowExportImport] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
@@ -42,11 +49,29 @@ function App() {
   const { currentStreak, longestStreak, totalDays, recordVisit } = useReadingStreak();
   const { theme, setTheme } = useTheme();
   const { getRandomDateKey } = useRandomQuote();
+  const { addToHistory } = useQuoteHistory();
 
-  // Record visit on mount
+  // Get notes count map for calendar
+  const getNotesMap = () => {
+    const stored = localStorage.getItem('srf-notes');
+    if (!stored) return {};
+    try {
+      const notes = JSON.parse(stored);
+      const map: Record<string, boolean> = {};
+      Object.keys(notes).forEach(key => {
+        map[key] = true;
+      });
+      return map;
+    } catch {
+      return {};
+    }
+  };
+
+  // Record visit on mount and track quote history
   useEffect(() => {
     recordVisit();
-  }, [recordVisit]);
+    addToHistory(dateKey);
+  }, [recordVisit, addToHistory, dateKey]);
 
   // Swipe gestures
   useSwipeGesture({
@@ -173,12 +198,39 @@ function App() {
             </button>
 
             <button
+              onClick={() => setShowStats(!showStats)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Statistics"
+              title="View your journey statistics"
+            >
+              <TrendingUp className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <button
+              onClick={() => setShowCalendar(!showCalendar)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Calendar"
+              title="Calendar view"
+            >
+              <CalendarIcon className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <button
               onClick={() => setShowMeditationTimer(!showMeditationTimer)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Meditation Timer"
               title="Meditation timer (Press M)"
             >
               <Timer className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <button
+              onClick={() => setShowExportImport(!showExportImport)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Backup & Restore"
+              title="Export/Import your data"
+            >
+              <Database className="w-5 h-5 text-gray-600" />
             </button>
 
             <button
@@ -338,16 +390,43 @@ function App() {
           />
         )}
 
+        {showStats && (
+          <StatsDashboard
+            favorites={favorites}
+            currentStreak={currentStreak}
+            longestStreak={longestStreak}
+            totalDays={totalDays}
+            onClose={() => setShowStats(false)}
+          />
+        )}
+
+        {showCalendar && (
+          <CalendarView
+            selectedDate={selectedDate}
+            favorites={favorites}
+            notesCount={getNotesMap()}
+            onSelectDate={(date) => {
+              setSelectedDate(date);
+              setShowCalendar(false);
+            }}
+            onClose={() => setShowCalendar(false)}
+          />
+        )}
+
         {showMeditationTimer && (
-          <MeditationTimer onClose={() => setShowMeditationTimer(false)} />
+          <EnhancedMeditationTimer onClose={() => setShowMeditationTimer(false)} />
         )}
 
         {showQuoteCard && entry && (
-          <QuoteCard
+          <EnhancedQuoteCard
             entry={entry}
             dateKey={dateKey}
             onClose={() => setShowQuoteCard(false)}
           />
+        )}
+
+        {showExportImport && (
+          <ExportImport onClose={() => setShowExportImport(false)} />
         )}
 
         {showNotes && (
