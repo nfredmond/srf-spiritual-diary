@@ -1,4 +1,111 @@
-# 🌟 SRF Spiritual Diary - Complete Features
+# 🌟 SRF Spiritual Diary - Complete Features (v2.2)
+
+## 🚀 v2.2 NEW Features
+
+### 🏆 **Achievement System**
+- **18 Unique Badges** across 5 categories
+  - Streak Achievements: 3-day, 7-day, 30-day, 100-day, 365-day
+  - Favorites Achievements: 10, 50, 100 favorite quotes
+  - Notes Achievements: 5, 25, 100 personal notes
+  - Days Achievements: 30, 100, 365 different days visited
+  - Special Achievements: First visit, first favorite, first note, meditation master
+- **Progress Tracking** - Visual progress bars for each achievement
+- **Unlock Dates** - Track when you unlocked each badge
+- **Category Organization** - Achievements grouped by type
+
+### 📊 **Advanced Filtering & Search**
+- **Filter by Book Source** - Select from all Yogananda's works
+- **Filter by Weekly Theme** - Browse all 79 spiritual themes
+- **Special Days Filter** - Find commemorations and special dates
+- **Date Range Filtering** - Select specific time periods
+- **Combined Filters** - Use multiple filters simultaneously
+
+### 📚 **Quote Collections**
+- **Custom Collections** - Create your own quote groups
+- **Tag System** - Organize quotes with custom tags
+- **Color Coding** - Visual differentiation between collections
+- **Collection Management** - Add, edit, delete collections
+- **Multi-Quote Selection** - Add quotes to multiple collections
+
+### 🔄 **Quote Comparison**
+- **Side-by-Side View** - Compare two quotes directly
+- **Common Themes Detector** - Automatically find shared themes
+- **Shared Concepts Analysis** - Identify similar words and ideas
+- **Book Source Comparison** - See if quotes are from same source
+- **Date Selection** - Easy dropdown to select any two dates
+
+### 📤 **Enhanced Sharing**
+- **Twitter Integration** - Direct tweet with formatted quote
+- **Facebook Sharing** - Share to Facebook with custom message
+- **WhatsApp Sharing** - Send quotes via WhatsApp
+- **Email Sharing** - Email quotes with beautiful formatting
+- **Copy Link** - Share direct link to specific date
+- **Quote Preview** - See how share will look before posting
+
+### 🖨️ **Print Mode**
+- **Single Day Print** - Print current day's quote
+- **Week Layout** - Print full week with space for notes
+- **Month Layout** - Print entire month of quotes
+- **Print-Friendly CSS** - Optimized for paper printing
+- **Personal Notes Space** - Room for handwritten reflections
+
+### 🔔 **Daily Reminders**
+- **PWA Notifications** - Browser push notifications
+- **Custom Time Selection** - Choose your preferred reminder time
+- **Permission Management** - Easy enable/disable notifications
+- **Test Notification** - Preview how reminders will look
+- **Persistent Settings** - Reminder preferences saved
+
+### 🌐 **Widget/Embed**
+- **3 Widget Styles** - Minimal, Card, or Full layouts
+- **Easy Embed Code** - Copy-paste HTML snippet
+- **Live Preview** - See widget before embedding
+- **Responsive Design** - Works on any website size
+- **Auto-Updates** - Widget shows current day's quote
+
+---
+
+## ✨ v2.1 Features
+
+### 📈 **Analytics Dashboard**
+- **Comprehensive Stats** - Total days, current streak, favorites, notes
+- **Top 5 Themes** - Most favorited spiritual topics with progress bars
+- **Recent Activity** - 7-day reading visualization
+- **Journey Overview** - Complete spiritual practice summary
+
+### 📅 **Calendar View**
+- **Full Month Display** - Visual calendar of all entries
+- **Favorites Indicators** - Heart icons show favorited days
+- **Notes Indicators** - Book icons show days with notes
+- **Quick Navigation** - Click any day to jump to that entry
+- **Current Day Highlight** - Easy to see today's date
+
+### 🎨 **Enhanced Quote Cards**
+- **5 Premium Templates** - Gradient, Lotus, Minimal, Elegant, Sunset
+- **1200x1200 Resolution** - Perfect for social media
+- **Template Selector** - Live preview before download
+- **High Quality Export** - Beautiful shareable images
+
+### 💾 **Export/Import System**
+- **Export Favorites** - Download your favorite quotes
+- **Export Notes** - Backup all personal reflections
+- **Complete Backup** - Export everything (favorites, notes, history, theme)
+- **Import/Restore** - Restore from backup files
+- **Version Tracking** - Backups include version info
+
+### 🧘 **Enhanced Meditation Timer**
+- **Breathing Exercise** - 4-4-4 breathing pattern (inhale-hold-exhale)
+- **Animated Breathing Circle** - Visual breathing guide
+- **Toggle Breathing Mode** - Turn breathing exercise on/off
+- **Duration Presets** - 5, 10, 15, 20, 30 minute options
+- **Completion Sound** - Peaceful 528Hz chime
+
+### 📖 **Quote History**
+- **Last 50 Quotes** - Track recently viewed entries
+- **History Persistence** - Saved across sessions
+- **No Duplicates** - Each entry appears once
+
+---
 
 ## ✨ Core Features
 
@@ -186,25 +293,20 @@ All features are 100% free:
 
 ## 🚀 **Future Enhancements**
 
-### Coming Soon:
-- [ ] Search functionality
-- [ ] Favorites/bookmarks
-- [ ] Daily notifications (PWA)
-- [ ] Multiple language support
+### Coming in v2.3:
+- [ ] Multiple language support (Hindi, Spanish, French)
 - [ ] Audio narration of quotes
-- [ ] Meditation timer
-- [ ] Journal notes feature
-- [ ] Print-friendly layouts
-- [ ] Google Imagen support
-- [ ] More AI providers
+- [ ] Google Imagen AI integration
+- [ ] Voice search
+- [ ] Cloud sync (optional)
 
 ### Under Consideration:
 - [ ] User accounts (optional)
 - [ ] Community reflections
-- [ ] Quote collections
 - [ ] Study guides
 - [ ] Discussion threads
-- [ ] Calendar export
+- [ ] Calendar export (iCal/Google Calendar)
+- [ ] Mobile apps (React Native)
 
 ---
 
@@ -221,6 +323,8 @@ This app is created with devotion to:
 
 ---
 
-**Version:** 1.1.0  
-**Last Updated:** October 5, 2025  
+**Version:** 2.2.0
+**Last Updated:** November 15, 2025
 **Status:** Live & Production Ready 🚀
+**Bundle Size:** 501KB (149KB gzipped)
+**Total Features:** 50+ features across 25+ components

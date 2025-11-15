@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
+import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database, Award, Printer, Filter, Share2, ArrowLeftRight, Bell, Code } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
 import { QuoteDisplay } from './components/QuoteDisplay/QuoteDisplay';
@@ -17,6 +17,13 @@ import { SkeletonLoader } from './components/SkeletonLoader/SkeletonLoader';
 import { StatsDashboard } from './components/StatsDashboard/StatsDashboard';
 import { CalendarView } from './components/CalendarView/CalendarView';
 import { ExportImport } from './components/ExportImport/ExportImport';
+import { AchievementsPanel } from './components/AchievementsPanel/AchievementsPanel';
+import { PrintMode } from './components/PrintMode/PrintMode';
+import { AdvancedFilter } from './components/AdvancedFilter/AdvancedFilter';
+import { ShareOptions } from './components/ShareOptions/ShareOptions';
+import { QuoteComparison } from './components/QuoteComparison/QuoteComparison';
+import { DailyReminders } from './components/DailyReminders/DailyReminders';
+import { WidgetEmbed } from './components/WidgetEmbed/WidgetEmbed';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -25,6 +32,7 @@ import { useTheme } from './hooks/useTheme';
 import { useSwipeGesture } from './hooks/useSwipeGesture';
 import { useRandomQuote } from './hooks/useRandomQuote';
 import { useQuoteHistory } from './hooks/useQuoteHistory';
+import { useAchievements } from './hooks/useAchievements';
 import { format, addDays, subDays } from 'date-fns';
 import type { DiaryEntry } from './types/DiaryEntry';
 
@@ -40,6 +48,14 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showExportImport, setShowExportImport] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [showPrintMode, setShowPrintMode] = useState(false);
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const [showQuoteComparison, setShowQuoteComparison] = useState(false);
+  const [showDailyReminders, setShowDailyReminders] = useState(false);
+  const [showWidgetEmbed, setShowWidgetEmbed] = useState(false);
+  const [filterResults, setFilterResults] = useState<Array<{ dateKey: string; entry: DiaryEntry }>>([]);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
@@ -50,6 +66,7 @@ function App() {
   const { theme, setTheme } = useTheme();
   const { getRandomDateKey } = useRandomQuote();
   const { addToHistory } = useQuoteHistory();
+  const { achievements, unlockedCount, totalCount, progress } = useAchievements();
 
   // Get notes count map for calendar
   const getNotesMap = () => {
@@ -234,6 +251,20 @@ function App() {
             </button>
 
             <button
+              onClick={() => setShowAchievements(!showAchievements)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors relative"
+              aria-label="Achievements"
+              title="View your achievements"
+            >
+              <Award className="w-5 h-5 text-gray-600" />
+              {unlockedCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-srf-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {unlockedCount}
+                </span>
+              )}
+            </button>
+
+            <button
               onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Keyboard shortcuts"
@@ -298,7 +329,7 @@ function App() {
             <ReadingControls fontSize={fontSize} onFontSizeChange={setFontSize} />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={handleRandomQuote}
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:shadow-lg transition-all"
@@ -308,16 +339,54 @@ function App() {
               <span className="text-sm font-medium">Random</span>
             </button>
 
+            <button
+              onClick={() => setShowAdvancedFilter(!showAdvancedFilter)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full hover:shadow-lg transition-all"
+              title="Advanced filters"
+            >
+              <Filter className="w-4 h-4" />
+              <span className="text-sm font-medium">Filter</span>
+            </button>
+
             {entry && (
-              <button
-                onClick={() => setShowQuoteCard(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full hover:shadow-lg transition-all"
-                title="Create quote card"
-              >
-                <ImageIcon className="w-4 h-4" />
-                <span className="text-sm font-medium">Quote Card</span>
-              </button>
+              <>
+                <button
+                  onClick={() => setShowQuoteCard(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full hover:shadow-lg transition-all"
+                  title="Create quote card"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  <span className="text-sm font-medium">Card</span>
+                </button>
+
+                <button
+                  onClick={() => setShowShareOptions(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full hover:shadow-lg transition-all"
+                  title="Share this quote"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span className="text-sm font-medium">Share</span>
+                </button>
+
+                <button
+                  onClick={() => setShowQuoteComparison(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full hover:shadow-lg transition-all"
+                  title="Compare quotes"
+                >
+                  <ArrowLeftRight className="w-4 h-4" />
+                  <span className="text-sm font-medium">Compare</span>
+                </button>
+              </>
             )}
+
+            <button
+              onClick={() => setShowPrintMode(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white rounded-full hover:shadow-lg transition-all"
+              title="Print mode"
+            >
+              <Printer className="w-4 h-4" />
+              <span className="text-sm font-medium">Print</span>
+            </button>
           </div>
         </div>
 
@@ -340,6 +409,30 @@ function App() {
             results={searchResults}
             onSelectDate={handleSearchResultSelect}
           />
+        )}
+
+        {/* Filter Results */}
+        {filterResults.length > 0 && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-heading text-lg text-srf-blue">
+                Filter Results ({filterResults.length} quotes)
+              </h3>
+              <button
+                onClick={() => setFilterResults([])}
+                className="text-sm text-gray-600 hover:text-srf-blue"
+              >
+                Clear filters
+              </button>
+            </div>
+            <SearchResults
+              results={filterResults}
+              onSelectDate={(dateKey) => {
+                handleSearchResultSelect(dateKey);
+                setFilterResults([]);
+              }}
+            />
+          </div>
         )}
 
         <DateNavigator
@@ -437,6 +530,56 @@ function App() {
             onClose={() => setShowNotes(false)}
           />
         )}
+
+        {showAchievements && (
+          <AchievementsPanel
+            achievements={achievements}
+            unlockedCount={unlockedCount}
+            totalCount={totalCount}
+            progress={progress}
+            onClose={() => setShowAchievements(false)}
+          />
+        )}
+
+        {showPrintMode && (
+          <PrintMode
+            currentDate={selectedDate}
+            onClose={() => setShowPrintMode(false)}
+          />
+        )}
+
+        {showAdvancedFilter && (
+          <AdvancedFilter
+            onFilterResults={(results) => {
+              setFilterResults(results);
+              setShowAdvancedFilter(false);
+            }}
+            onClose={() => setShowAdvancedFilter(false)}
+          />
+        )}
+
+        {showShareOptions && entry && (
+          <ShareOptions
+            entry={entry}
+            dateKey={dateKey}
+            onClose={() => setShowShareOptions(false)}
+          />
+        )}
+
+        {showQuoteComparison && (
+          <QuoteComparison
+            initialDateKey={dateKey}
+            onClose={() => setShowQuoteComparison(false)}
+          />
+        )}
+
+        {showDailyReminders && (
+          <DailyReminders onClose={() => setShowDailyReminders(false)} />
+        )}
+
+        {showWidgetEmbed && (
+          <WidgetEmbed onClose={() => setShowWidgetEmbed(false)} />
+        )}
       </AnimatePresence>
 
       {/* Footer */}
@@ -448,6 +591,22 @@ function App() {
           <p className="text-sm mt-2 text-srf-sky">
             Made with devotion to share the teachings of Paramahansa Yogananda
           </p>
+          <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
+            <button
+              onClick={() => setShowDailyReminders(true)}
+              className="flex items-center gap-2 text-xs text-srf-sky hover:text-white transition-colors"
+            >
+              <Bell className="w-3 h-3" />
+              Daily Reminders
+            </button>
+            <button
+              onClick={() => setShowWidgetEmbed(true)}
+              className="flex items-center gap-2 text-xs text-srf-sky hover:text-white transition-colors"
+            >
+              <Code className="w-3 h-3" />
+              Embed Widget
+            </button>
+          </div>
           <p className="text-xs mt-3 text-srf-sky/70">
             Press <kbd className="px-1 py-0.5 bg-white/10 rounded text-xs">?</kbd> for keyboard shortcuts
           </p>
