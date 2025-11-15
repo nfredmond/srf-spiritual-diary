@@ -5,12 +5,86 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply font-body bg-srf-white text-gray-800;
+  :root {
+    --bg-primary: #F8F6F1;
+    --bg-secondary: #FFFFFF;
+    --bg-gradient-start: #F8F6F1;
+    --bg-gradient-end: rgba(232, 213, 196, 0.2);
+    --text-primary: rgb(31, 41, 55);
+    --text-secondary: rgb(75, 85, 99);
+    --border-color: rgba(229, 231, 235, 1);
   }
-  
+
+  .theme-dark {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-gradient-start: #0f1419;
+    --bg-gradient-end: rgba(30, 75, 135, 0.2);
+    --text-primary: rgb(229, 231, 235);
+    --text-secondary: rgb(156, 163, 175);
+    --border-color: rgba(55, 65, 81, 1);
+  }
+
+  .theme-sepia {
+    --bg-primary: #f4ecd8;
+    --bg-secondary: #f9f4e8;
+    --bg-gradient-start: #f4ecd8;
+    --bg-gradient-end: rgba(212, 175, 55, 0.15);
+    --text-primary: #5c4a3a;
+    --text-secondary: #7a6a5a;
+    --border-color: rgba(212, 175, 55, 0.2);
+  }
+
+  body {
+    @apply font-body;
+    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
   h1, h2, h3 {
     @apply font-heading;
+    color: var(--text-primary);
+  }
+
+  .theme-dark .card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .theme-dark .quote-text,
+  .theme-dark h1,
+  .theme-dark h2,
+  .theme-dark h3,
+  .theme-dark p {
+    color: var(--text-primary);
+  }
+
+  .theme-dark header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .theme-dark footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+  }
+
+  .theme-sepia .card {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 4px 6px rgba(92, 74, 58, 0.1);
+  }
+
+  .theme-sepia .quote-text,
+  .theme-sepia h1,
+  .theme-sepia h2,
+  .theme-sepia h3,
+  .theme-sepia p {
+    color: var(--text-primary);
+  }
+
+  .theme-sepia header {
+    background-color: var(--bg-secondary);
   }
 }
 
