@@ -28,6 +28,17 @@ import { useQuoteHistory } from './hooks/useQuoteHistory';
 import { format, addDays, subDays } from 'date-fns';
 import type { DiaryEntry } from './types/DiaryEntry';
 
+interface OperationsStatus {
+  ok: boolean;
+  runDate: string;
+  imageExists: boolean;
+  image?: {
+    provider?: string;
+    status?: string;
+    created_at?: string;
+  } | null;
+}
+
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
@@ -41,6 +52,9 @@ function App() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showExportImport, setShowExportImport] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
+  const [opsStatus, setOpsStatus] = useState<OperationsStatus | null>(null);
+  const [opsLoading, setOpsLoading] = useState(true);
+  const [opsError, setOpsError] = useState<string | null>(null);
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
@@ -72,6 +86,27 @@ function App() {
     recordVisit();
     addToHistory(dateKey);
   }, [recordVisit, addToHistory, dateKey]);
+
+  useEffect(() => {
+    const loadOperationsStatus = async () => {
+      try {
+        setOpsLoading(true);
+        setOpsError(null);
+        const response = await fetch('/api/today');
+        if (!response.ok) {
+          throw new Error(`Status API failed (${response.status})`);
+        }
+        const data: OperationsStatus = await response.json();
+        setOpsStatus(data);
+      } catch (err) {
+        setOpsError(err instanceof Error ? err.message : 'Failed to load operation status');
+      } finally {
+        setOpsLoading(false);
+      }
+    };
+
+    loadOperationsStatus();
+  }, []);
 
   // Swipe gestures
   useSwipeGesture({
@@ -346,6 +381,34 @@ function App() {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
         />
+
+        <div className="card max-w-4xl mx-auto mb-6">
+          <h2 className="font-heading text-xl text-srf-blue mb-2">Today's Operations Status</h2>
+          {opsLoading && <p className="text-gray-600 text-sm">Checking API + render status...</p>}
+          {!opsLoading && opsError && (
+            <p className="text-red-600 text-sm">Status unavailable: {opsError}</p>
+          )}
+          {!opsLoading && !opsError && opsStatus && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div className="p-3 rounded-lg bg-srf-lotus/20">
+                <p className="font-semibold text-srf-blue">Quote-of-Day API</p>
+                <p className={opsStatus.ok ? 'text-green-700' : 'text-red-700'}>
+                  {opsStatus.ok ? 'Healthy' : 'Degraded'}
+                </p>
+                <p className="text-gray-600">Run date: {opsStatus.runDate}</p>
+              </div>
+              <div className="p-3 rounded-lg bg-srf-lotus/20">
+                <p className="font-semibold text-srf-blue">Image Artifact</p>
+                <p className={opsStatus.imageExists ? 'text-green-700' : 'text-amber-700'}>
+                  {opsStatus.imageExists ? 'Available' : 'Not generated yet'}
+                </p>
+                <p className="text-gray-600">
+                  {opsStatus.image?.provider ? `Provider: ${opsStatus.image.provider}` : 'Provider: n/a'}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
         {loading && <SkeletonLoader />}
 

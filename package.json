@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pipeline:daily": "node scripts/daily-pipeline.mjs",
+    "seed:supabase": "node scripts/seed-diary-entries.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
@@ -21,6 +23,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^2.2.9",
+    "@supabase/supabase-js": "^2.58.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "date-fns": "^4.1.0",
