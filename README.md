@@ -16,6 +16,7 @@ Version 3 adds production integration for Nat Ford operations:
 - Frontend “Today’s Operations Status” panel
 - Safer Backup & Restore UX: in-modal status feedback (no blocking alerts), screen-reader live announcements, and JSON schema checks before local restore
 - Notes workflow safety: unsaved-change guard before closing reflections plus Ctrl/Cmd+S quick-save support
+- Operations status trust pass: timestamped last-check indicator, stale-data warning after 15 minutes, manual refresh control, and screen-reader status announcements
 
 ## Prompt safety constraints
 

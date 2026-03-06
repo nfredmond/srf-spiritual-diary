@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -27,39 +27,15 @@ import { useRandomQuote } from './hooks/useRandomQuote';
 import { useQuoteHistory } from './hooks/useQuoteHistory';
 import { format, addDays, subDays } from 'date-fns';
 import type { DiaryEntry } from './types/DiaryEntry';
-
-interface OperationsStatus {
-  ok: boolean;
-  runDate: string;
-  imageExists: boolean;
-  image?: {
-    provider?: string;
-    status?: string;
-    created_at?: string;
-  } | null;
-}
-
-function mapOpsErrorToFriendlyMessage(error: unknown): string {
-  if (!(error instanceof Error)) {
-    return 'Daily operations status is temporarily unavailable. You can continue reading while we reconnect.';
-  }
-
-  const lower = error.message.toLowerCase();
-
-  if (lower.includes('status api failed')) {
-    return 'Daily operations status is temporarily unavailable. You can continue reading while we reconnect.';
-  }
-
-  if (lower.includes('json') || lower.includes('unexpected token')) {
-    return 'The status service returned an unexpected response. Please try again in a moment.';
-  }
-
-  if (lower.includes('network') || lower.includes('failed to fetch')) {
-    return 'Network connection issue while checking today’s status. Please try again.';
-  }
-
-  return 'Unable to load operations status right now. You can continue using the diary normally.';
-}
+import {
+  STATUS_STALE_THRESHOLD_MINUTES,
+  formatStatusRelativeAge,
+  formatStatusTimestamp,
+  getOperationsStatusAnnouncement,
+  getStatusFreshness,
+  mapOpsErrorToFriendlyMessage,
+} from './lib/operationsStatus';
+import type { OperationsStatus } from './lib/operationsStatus';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -77,6 +53,8 @@ function App() {
   const [opsStatus, setOpsStatus] = useState<OperationsStatus | null>(null);
   const [opsLoading, setOpsLoading] = useState(true);
   const [opsError, setOpsError] = useState<string | null>(null);
+  const [lastOpsCheckAt, setLastOpsCheckAt] = useState<Date | null>(null);
+  const [statusClock, setStatusClock] = useState(() => new Date());
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
@@ -109,7 +87,7 @@ function App() {
     addToHistory(dateKey);
   }, [recordVisit, addToHistory, dateKey]);
 
-  const loadOperationsStatus = async () => {
+  const loadOperationsStatus = useCallback(async () => {
     try {
       setOpsLoading(true);
       setOpsError(null);
@@ -135,12 +113,29 @@ function App() {
       console.error('Operations status check failed', err);
       setOpsError(mapOpsErrorToFriendlyMessage(err));
     } finally {
+      setLastOpsCheckAt(new Date());
       setOpsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadOperationsStatus();
+    void loadOperationsStatus();
+  }, [loadOperationsStatus]);
+
+  useEffect(() => {
+    const refreshInterval = window.setInterval(() => {
+      void loadOperationsStatus();
+    }, 5 * 60 * 1000);
+
+    return () => window.clearInterval(refreshInterval);
+  }, [loadOperationsStatus]);
+
+  useEffect(() => {
+    const clockInterval = window.setInterval(() => {
+      setStatusClock(new Date());
+    }, 60_000);
+
+    return () => window.clearInterval(clockInterval);
   }, []);
 
   // Swipe gestures
@@ -217,6 +212,14 @@ function App() {
     setShowSearch(false);
     setSearchResults([]);
   };
+
+  const opsFreshness = getStatusFreshness(lastOpsCheckAt, statusClock);
+  const opsAnnouncement = getOperationsStatusAnnouncement({
+    loading: opsLoading,
+    error: opsError,
+    status: opsStatus,
+    lastCheckedAt: lastOpsCheckAt,
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-srf-white to-srf-lotus/20">
@@ -420,23 +423,38 @@ function App() {
           onDateChange={setSelectedDate}
         />
 
-        <div className="card max-w-4xl mx-auto mb-6">
+        <div className="card max-w-4xl mx-auto mb-6" aria-live="polite">
           <h2 className="font-heading text-xl text-srf-blue mb-2">Today's Operations Status</h2>
+          <p className="sr-only" role="status">{opsAnnouncement}</p>
+
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-gray-700">
+            <span>
+              Last checked:{' '}
+              {lastOpsCheckAt
+                ? `${formatStatusTimestamp(lastOpsCheckAt)} (${formatStatusRelativeAge(opsFreshness.minutesSinceCheck)})`
+                : 'Not checked yet'}
+            </span>
+            {opsFreshness.isStale && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-900">
+                Older than {STATUS_STALE_THRESHOLD_MINUTES} minutes — refresh recommended
+              </span>
+            )}
+            <button
+              onClick={() => void loadOperationsStatus()}
+              disabled={opsLoading}
+              className="px-3 py-1 rounded-full border border-srf-blue/30 text-srf-blue hover:bg-srf-lotus/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {opsLoading ? 'Refreshing…' : 'Refresh now'}
+            </button>
+          </div>
+
           {opsLoading && <p className="text-gray-700 text-sm">Checking API + render status...</p>}
           {!opsLoading && opsError && (
             <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
               <p className="text-amber-900 text-sm font-medium">{opsError}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  onClick={loadOperationsStatus}
-                  className="px-3 py-1.5 text-sm bg-srf-blue text-white rounded-full hover:bg-srf-blue/90 transition-colors"
-                >
-                  Retry status check
-                </button>
-                <span className="text-xs text-amber-800 self-center">
-                  Reading and journaling features are still available.
-                </span>
-              </div>
+              <p className="text-xs text-amber-800 mt-2">
+                Reading and journaling features are still available while status reconnects.
+              </p>
             </div>
           )}
           {!opsLoading && !opsError && opsStatus && (
