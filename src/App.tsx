@@ -39,6 +39,28 @@ interface OperationsStatus {
   } | null;
 }
 
+function mapOpsErrorToFriendlyMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return 'Daily operations status is temporarily unavailable. You can continue reading while we reconnect.';
+  }
+
+  const lower = error.message.toLowerCase();
+
+  if (lower.includes('status api failed')) {
+    return 'Daily operations status is temporarily unavailable. You can continue reading while we reconnect.';
+  }
+
+  if (lower.includes('json') || lower.includes('unexpected token')) {
+    return 'The status service returned an unexpected response. Please try again in a moment.';
+  }
+
+  if (lower.includes('network') || lower.includes('failed to fetch')) {
+    return 'Network connection issue while checking today’s status. Please try again.';
+  }
+
+  return 'Unable to load operations status right now. You can continue using the diary normally.';
+}
+
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
@@ -87,24 +109,37 @@ function App() {
     addToHistory(dateKey);
   }, [recordVisit, addToHistory, dateKey]);
 
-  useEffect(() => {
-    const loadOperationsStatus = async () => {
-      try {
-        setOpsLoading(true);
-        setOpsError(null);
-        const response = await fetch('/api/today');
-        if (!response.ok) {
-          throw new Error(`Status API failed (${response.status})`);
-        }
-        const data: OperationsStatus = await response.json();
-        setOpsStatus(data);
-      } catch (err) {
-        setOpsError(err instanceof Error ? err.message : 'Failed to load operation status');
-      } finally {
-        setOpsLoading(false);
-      }
-    };
+  const loadOperationsStatus = async () => {
+    try {
+      setOpsLoading(true);
+      setOpsError(null);
 
+      const response = await fetch('/api/today', {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Status API failed (${response.status})`);
+      }
+
+      const contentType = response.headers.get('content-type') ?? '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Status API returned non-JSON response');
+      }
+
+      const data: OperationsStatus = await response.json();
+      setOpsStatus(data);
+    } catch (err) {
+      console.error('Operations status check failed', err);
+      setOpsError(mapOpsErrorToFriendlyMessage(err));
+    } finally {
+      setOpsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadOperationsStatus();
   }, []);
 
@@ -194,7 +229,7 @@ function App() {
               SRF Spiritual Diary
             </h1>
           </div>
-          <p className="text-center text-gray-600 mt-2">
+          <p className="text-center text-gray-700 mt-2">
             Daily Wisdom from Paramahansa Yogananda
           </p>
 
@@ -206,6 +241,9 @@ function App() {
               totalDays={totalDays}
             />
           </div>
+          <p className="text-center text-xs text-gray-700 mt-2">
+            Quick actions: Search (/), Favorites (F), Calendar, Meditation (M), and backup/restore.
+          </p>
 
           {/* Top Right Controls */}
           <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -215,7 +253,7 @@ function App() {
               aria-label="Search"
               title="Search quotes (Press /)"
             >
-              <SearchIcon className="w-5 h-5 text-gray-600" />
+              <SearchIcon className="w-5 h-5 text-gray-700" />
             </button>
 
             <button
@@ -224,7 +262,7 @@ function App() {
               aria-label="Favorites"
               title="View favorites (Press F)"
             >
-              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'text-gray-600'}`} />
+              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'text-gray-700'}`} />
               {favorites.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {favorites.length}
@@ -238,7 +276,7 @@ function App() {
               aria-label="Statistics"
               title="View your journey statistics"
             >
-              <TrendingUp className="w-5 h-5 text-gray-600" />
+              <TrendingUp className="w-5 h-5 text-gray-700" />
             </button>
 
             <button
@@ -247,7 +285,7 @@ function App() {
               aria-label="Calendar"
               title="Calendar view"
             >
-              <CalendarIcon className="w-5 h-5 text-gray-600" />
+              <CalendarIcon className="w-5 h-5 text-gray-700" />
             </button>
 
             <button
@@ -256,7 +294,7 @@ function App() {
               aria-label="Meditation Timer"
               title="Meditation timer (Press M)"
             >
-              <Timer className="w-5 h-5 text-gray-600" />
+              <Timer className="w-5 h-5 text-gray-700" />
             </button>
 
             <button
@@ -265,7 +303,7 @@ function App() {
               aria-label="Backup & Restore"
               title="Export/Import your data"
             >
-              <Database className="w-5 h-5 text-gray-600" />
+              <Database className="w-5 h-5 text-gray-700" />
             </button>
 
             <button
@@ -274,7 +312,7 @@ function App() {
               aria-label="Keyboard shortcuts"
               title="Keyboard shortcuts (Press ?)"
             >
-              <Keyboard className="w-5 h-5 text-gray-600" />
+              <Keyboard className="w-5 h-5 text-gray-700" />
             </button>
           </div>
         </div>
@@ -317,7 +355,7 @@ function App() {
                 <span>This help</span>
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-3 pt-3 border-t">
+            <p className="text-xs text-gray-600 mt-3 pt-3 border-t">
               Swipe left/right on mobile to navigate
             </p>
           </div>
@@ -336,7 +374,7 @@ function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleRandomQuote}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-white text-srf-blue border border-srf-blue/30 rounded-full hover:bg-srf-lotus/20 transition-all"
               title="Random quote (Press R)"
             >
               <Shuffle className="w-4 h-4" />
@@ -384,9 +422,22 @@ function App() {
 
         <div className="card max-w-4xl mx-auto mb-6">
           <h2 className="font-heading text-xl text-srf-blue mb-2">Today's Operations Status</h2>
-          {opsLoading && <p className="text-gray-600 text-sm">Checking API + render status...</p>}
+          {opsLoading && <p className="text-gray-700 text-sm">Checking API + render status...</p>}
           {!opsLoading && opsError && (
-            <p className="text-red-600 text-sm">Status unavailable: {opsError}</p>
+            <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
+              <p className="text-amber-900 text-sm font-medium">{opsError}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={loadOperationsStatus}
+                  className="px-3 py-1.5 text-sm bg-srf-blue text-white rounded-full hover:bg-srf-blue/90 transition-colors"
+                >
+                  Retry status check
+                </button>
+                <span className="text-xs text-amber-800 self-center">
+                  Reading and journaling features are still available.
+                </span>
+              </div>
+            </div>
           )}
           {!opsLoading && !opsError && opsStatus && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -395,14 +446,14 @@ function App() {
                 <p className={opsStatus.ok ? 'text-green-700' : 'text-red-700'}>
                   {opsStatus.ok ? 'Healthy' : 'Degraded'}
                 </p>
-                <p className="text-gray-600">Run date: {opsStatus.runDate}</p>
+                <p className="text-gray-700">Run date: {opsStatus.runDate}</p>
               </div>
               <div className="p-3 rounded-lg bg-srf-lotus/20">
                 <p className="font-semibold text-srf-blue">Image Artifact</p>
                 <p className={opsStatus.imageExists ? 'text-green-700' : 'text-amber-700'}>
                   {opsStatus.imageExists ? 'Available' : 'Not generated yet'}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-gray-700">
                   {opsStatus.image?.provider ? `Provider: ${opsStatus.image.provider}` : 'Provider: n/a'}
                 </p>
               </div>
@@ -415,7 +466,7 @@ function App() {
         {error && (
           <div className="card max-w-2xl mx-auto text-center">
             <p className="text-red-600 mb-4">{error}</p>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-700 text-sm">
               Try selecting a different date or return to today.
             </p>
             <button

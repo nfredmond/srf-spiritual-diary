@@ -35,7 +35,10 @@ export function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwitcherProp
               transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
             />
           )}
-          <Icon className="w-4 h-4 relative z-10" />
+          <span className="relative z-10 flex items-center gap-1.5">
+            <Icon className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs font-medium">{label}</span>
+          </span>
         </button>
       ))}
     </div>

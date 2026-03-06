@@ -39,6 +39,7 @@
     @apply font-body;
     background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
     color: var(--text-primary);
+    line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
@@ -86,15 +87,26 @@
   .theme-sepia header {
     background-color: var(--bg-secondary);
   }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #1E4B87;
+    outline-offset: 2px;
+  }
 }
 
 @layer components {
   .quote-text {
-    @apply font-quote text-2xl md:text-3xl leading-relaxed text-gray-800;
+    @apply font-quote text-2xl md:text-3xl leading-relaxed;
+    color: var(--text-primary);
   }
   
   .card {
     @apply bg-white rounded-2xl shadow-lg p-8;
+    border: 1px solid rgba(30, 75, 135, 0.08);
   }
 }
 

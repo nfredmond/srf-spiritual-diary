@@ -71,7 +71,7 @@ export function QuoteDisplay({
         {onToggleFavorite && (
           <button
             onClick={onToggleFavorite}
-            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <Heart className={`w-5 h-5 transition-all ${isFavorite ? 'text-red-500 fill-red-500' : 'text-srf-blue'}`} />
@@ -84,7 +84,7 @@ export function QuoteDisplay({
         {onOpenNotes && (
           <button
             onClick={onOpenNotes}
-            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
             aria-label="Personal notes"
           >
             <BookOpen className={`w-5 h-5 ${hasNote ? 'text-srf-gold fill-srf-gold/20' : 'text-srf-blue'}`} />
@@ -96,7 +96,7 @@ export function QuoteDisplay({
 
         <button
           onClick={handleCopy}
-          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
           aria-label="Copy quote"
         >
           {copied ? (
@@ -111,7 +111,7 @@ export function QuoteDisplay({
 
         <button
           onClick={handleShare}
-          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative"
+          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
           aria-label="Share quote"
         >
           <Share2 className="w-5 h-5 text-srf-blue" />
@@ -164,11 +164,11 @@ export function QuoteDisplay({
 
       {/* Attribution */}
       <div className="text-center">
-        <p className="text-gray-600 italic">
+        <p className="text-gray-700 italic">
           — {entry.source}
         </p>
         {entry.book && (
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-gray-600 mt-2">
             {entry.book}
           </p>
         )}
