@@ -15,6 +15,7 @@ Version 3 adds production integration for Nat Ford operations:
   - `POST /api/run-daily` for token-protected serverless run (generation + DB write only)
 - Frontend “Today’s Operations Status” panel
 - Safer Backup & Restore UX: in-modal status feedback (no blocking alerts), screen-reader live announcements, and JSON schema checks before local restore
+- Notes workflow safety: unsaved-change guard before closing reflections plus Ctrl/Cmd+S quick-save support
 
 ## Prompt safety constraints
 
