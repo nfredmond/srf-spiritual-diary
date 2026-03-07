@@ -31,6 +31,7 @@ import {
   STATUS_STALE_THRESHOLD_MINUTES,
   formatStatusRelativeAge,
   formatStatusTimestamp,
+  getOperationsRefreshButtonAriaLabel,
   getOperationsStatusAnnouncement,
   getStatusFreshness,
   mapOpsErrorToFriendlyMessage,
@@ -219,6 +220,12 @@ function App() {
     error: opsError,
     status: opsStatus,
     lastCheckedAt: lastOpsCheckAt,
+  });
+  const opsRefreshButtonAriaLabel = getOperationsRefreshButtonAriaLabel({
+    loading: opsLoading,
+    lastCheckedAt: lastOpsCheckAt,
+    minutesSinceCheck: opsFreshness.minutesSinceCheck,
+    isStale: opsFreshness.isStale,
   });
 
   return (
@@ -423,8 +430,17 @@ function App() {
           onDateChange={setSelectedDate}
         />
 
-        <div className="card max-w-4xl mx-auto mb-6" aria-live="polite">
+        <div
+          className="card max-w-4xl mx-auto mb-6"
+          role="region"
+          aria-live="polite"
+          aria-busy={opsLoading}
+          aria-describedby="ops-status-trust-note"
+        >
           <h2 className="font-heading text-xl text-srf-blue mb-2">Today's Operations Status</h2>
+          <p id="ops-status-trust-note" className="text-xs text-gray-700 mb-2">
+            Status checks are read-only and never modify your journal entries.
+          </p>
           <p className="sr-only" role="status">{opsAnnouncement}</p>
 
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-gray-700">
@@ -442,6 +458,8 @@ function App() {
             <button
               onClick={() => void loadOperationsStatus()}
               disabled={opsLoading}
+              aria-label={opsRefreshButtonAriaLabel}
+              aria-describedby="ops-status-trust-note"
               className="px-3 py-1 rounded-full border border-srf-blue/30 text-srf-blue hover:bg-srf-lotus/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {opsLoading ? 'Refreshing…' : 'Refresh now'}
@@ -450,7 +468,7 @@ function App() {
 
           {opsLoading && <p className="text-gray-700 text-sm">Checking API + render status...</p>}
           {!opsLoading && opsError && (
-            <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
+            <div className="rounded-lg border border-amber-300 bg-amber-50 p-4" role="alert">
               <p className="text-amber-900 text-sm font-medium">{opsError}</p>
               <p className="text-xs text-amber-800 mt-2">
                 Reading and journaling features are still available while status reconnects.

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   STATUS_STALE_THRESHOLD_MINUTES,
   formatStatusRelativeAge,
+  getOperationsRefreshButtonAriaLabel,
   getOperationsStatusAnnouncement,
   getStatusFreshness,
   mapOpsErrorToFriendlyMessage,
@@ -50,6 +51,34 @@ test('formatStatusRelativeAge returns human-readable labels', () => {
   assert.equal(formatStatusRelativeAge(0), 'just now');
   assert.equal(formatStatusRelativeAge(1), '1 minute ago');
   assert.equal(formatStatusRelativeAge(7), '7 minutes ago');
+});
+
+test('getOperationsRefreshButtonAriaLabel adds trust + freshness context', () => {
+  const loadingLabel = getOperationsRefreshButtonAriaLabel({
+    loading: true,
+    lastCheckedAt: null,
+    minutesSinceCheck: null,
+    isStale: false,
+  });
+  assert.match(loadingLabel, /Refreshing operations status/);
+
+  const firstCheckLabel = getOperationsRefreshButtonAriaLabel({
+    loading: false,
+    lastCheckedAt: null,
+    minutesSinceCheck: null,
+    isStale: false,
+  });
+  assert.match(firstCheckLabel, /read-only/);
+  assert.match(firstCheckLabel, /do not change your diary entries/);
+
+  const staleLabel = getOperationsRefreshButtonAriaLabel({
+    loading: false,
+    lastCheckedAt: new Date('2026-03-06T20:00:00.000Z'),
+    minutesSinceCheck: 21,
+    isStale: true,
+  });
+  assert.match(staleLabel, /Last checked 21 minutes ago/);
+  assert.match(staleLabel, /may be outdated/);
 });
 
 test('getOperationsStatusAnnouncement narrates loading, error, and success states', () => {

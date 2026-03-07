@@ -74,6 +74,26 @@ export function formatStatusTimestamp(timestamp: Date): string {
   }).format(timestamp);
 }
 
+export function getOperationsRefreshButtonAriaLabel(input: {
+  loading: boolean;
+  lastCheckedAt: Date | null;
+  minutesSinceCheck: number | null;
+  isStale: boolean;
+}): string {
+  if (input.loading) {
+    return 'Refreshing operations status. Please wait.';
+  }
+
+  if (!input.lastCheckedAt) {
+    return 'Refresh operations status now. Status checks are read-only and do not change your diary entries.';
+  }
+
+  const freshness = formatStatusRelativeAge(input.minutesSinceCheck);
+  const staleSentence = input.isStale ? ' The current status may be outdated.' : '';
+
+  return `Refresh operations status now. Last checked ${freshness}.${staleSentence} Status checks are read-only and do not change your diary entries.`;
+}
+
 export function getOperationsStatusAnnouncement(input: {
   loading: boolean;
   error: string | null;
