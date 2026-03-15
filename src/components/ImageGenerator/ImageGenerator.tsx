@@ -59,7 +59,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
       {loading && (
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-srf-blue border-t-transparent mb-4"></div>
-          <p className="text-srf-blue font-heading text-lg">Creating sacred imagery with Google Banana...</p>
+          <p className="text-srf-blue font-heading text-lg">Creating image inspired by the selected quote...</p>
           <p className="text-gray-600 text-sm mt-2">This may take 10-20 seconds</p>
         </div>
       )}
@@ -122,7 +122,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
               disabled={loading}
               className="w-full mt-4 py-3 bg-srf-lotus/30 text-srf-blue rounded-lg hover:bg-srf-lotus/50 transition-colors font-medium"
             >
-              Generate Another with Google Banana
+              Generate Another Image Inspired by Selected Quote
             </button>
           </motion.div>
         )}

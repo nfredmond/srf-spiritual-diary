@@ -49,6 +49,14 @@ const DEFAULT_NEGATIVE_PROMPT = [
   'no typographic marks',
   'no subtitles',
   'no captions',
+  'no commercial design',
+  'no flashy advertising aesthetic',
+  'no neon colors',
+  'no harsh contrast',
+  'no sci-fi spectacle',
+  'no exaggerated fantasy effects',
+  'no people posing for camera',
+  'no crowded scene',
 ].join(', ');
 
 function getDateKeyStyleIndex(dateKey: string): number {
@@ -92,13 +100,14 @@ export function buildSpiritualImagePrompt(
     : 'Do not include Om or any symbol.';
 
   const prompt = [
-    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings and contemplative devotion.',
+    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings, quiet devotion, humility, stillness, and inward communion with the Divine.',
     `Theme: ${entry.weeklyTheme ?? entry.topic}. Topic focus: ${entry.topic}.`,
     `Quote essence: ${entry.quote}`,
     `Style palette: ${style.name} (${style.visual}).`,
     `Key visual cues: ${keywords.join('; ')}.`,
     entry.specialDay ? `Honor context: ${entry.specialDay}.` : '',
-    'Composition: cinematic, meditative, balanced, high-detail, no people posing for camera, no textual elements.',
+    'Visual tone: calm, welcoming, sacred, contemplative, non-commercial, warm earth tones with soft gold, cream, rose dawn, mountain light, temple garden stillness, lotus symbolism, ocean or sky serenity when fitting.',
+    'Composition: balanced, elegant, spacious, natural light, painterly realism or refined devotional illustration, no people posing for camera, no dramatic spectacle, no textual elements.',
     omClause,
   ]
     .filter(Boolean)

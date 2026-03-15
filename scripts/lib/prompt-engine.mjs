@@ -40,6 +40,14 @@ const NEGATIVE = [
   'no typographic marks',
   'no subtitles',
   'no captions',
+  'no commercial design',
+  'no flashy advertising aesthetic',
+  'no neon colors',
+  'no harsh contrast',
+  'no sci-fi spectacle',
+  'no exaggerated fantasy effects',
+  'no people posing for camera',
+  'no crowded scene',
 ].join(', ');
 
 function styleIndex(dateKey) {
@@ -70,13 +78,14 @@ export function buildSpiritualImagePrompt(entry, options = {}) {
   const allowOm = options.allowOmSymbol !== false;
 
   const prompt = [
-    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings and contemplative devotion.',
+    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings, quiet devotion, humility, stillness, and inward communion with the Divine.',
     `Theme: ${entry.weekly_theme || entry.weeklyTheme || entry.topic}. Topic focus: ${entry.topic}.`,
     `Quote essence: ${entry.quote}`,
     `Style palette: ${style.name} (${style.visual}).`,
     `Key visual cues: ${keywords.join('; ')}.`,
     entry.special_day || entry.specialDay ? `Honor context: ${entry.special_day || entry.specialDay}.` : '',
-    'Composition: cinematic, meditative, balanced, high-detail, no people posing for camera, no textual elements.',
+    'Visual tone: calm, welcoming, sacred, contemplative, non-commercial, warm earth tones with soft gold, cream, rose dawn, mountain light, temple garden stillness, lotus symbolism, ocean or sky serenity when fitting.',
+    'Composition: balanced, elegant, spacious, natural light, painterly realism or refined devotional illustration, no people posing for camera, no dramatic spectacle, no textual elements.',
     allowOm
       ? 'Optionally include one very subtle Om (ॐ) symbol blended into natural texture; if used, only one and not dominant.'
       : 'Do not include Om or any symbol.',
