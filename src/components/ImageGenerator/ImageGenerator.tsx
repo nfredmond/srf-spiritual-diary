@@ -46,22 +46,13 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
   return (
     <div className="card max-w-4xl mx-auto mt-8">
       {!image && !loading && (
-        <div className="generator-intro mb-5 rounded-2xl border border-srf-gold/20 bg-gradient-to-r from-srf-blue/5 to-srf-gold/10 p-4 text-center">
-          <p className="font-heading text-base text-srf-blue">Google Gemini 🍌 Sacred Imagery</p>
-          <p className="generator-intro-copy mt-1 text-sm text-gray-600">
-            Generate a contemplative image inspired by today&apos;s reading using Google Banana.
-          </p>
-        </div>
-      )}
-
-      {!image && !loading && (
         <button
           onClick={handleGenerate}
           disabled={loading}
           className="w-full py-4 bg-gradient-to-r from-srf-blue via-[#4769b5] to-srf-gold text-white rounded-xl font-heading text-lg hover:shadow-lg transition-shadow disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
-          Generate Sacred Imagery with Google Banana
+          Generate Image Inspired by Selected Quote
         </button>
       )}
 
