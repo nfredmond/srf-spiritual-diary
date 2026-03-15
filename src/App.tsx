@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -8,7 +8,6 @@ import { SearchBar } from './components/SearchBar/SearchBar';
 import { SearchResults } from './components/SearchResults/SearchResults';
 import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { ReadingControls } from './components/ReadingControls/ReadingControls';
-import { StreakBadge } from './components/StreakBadge/StreakBadge';
 import { FavoritesPanel } from './components/FavoritesPanel/FavoritesPanel';
 import { EnhancedMeditationTimer } from './components/EnhancedMeditationTimer/EnhancedMeditationTimer';
 import { EnhancedQuoteCard } from './components/EnhancedQuoteCard/EnhancedQuoteCard';
@@ -27,16 +26,6 @@ import { useRandomQuote } from './hooks/useRandomQuote';
 import { useQuoteHistory } from './hooks/useQuoteHistory';
 import { format, addDays, subDays } from 'date-fns';
 import type { DiaryEntry } from './types/DiaryEntry';
-import {
-  STATUS_STALE_THRESHOLD_MINUTES,
-  formatStatusRelativeAge,
-  formatStatusTimestamp,
-  getOperationsRefreshButtonAriaLabel,
-  getOperationsStatusAnnouncement,
-  getStatusFreshness,
-  mapOpsErrorToFriendlyMessage,
-} from './lib/operationsStatus';
-import type { OperationsStatus } from './lib/operationsStatus';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -51,11 +40,6 @@ function App() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showExportImport, setShowExportImport] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
-  const [opsStatus, setOpsStatus] = useState<OperationsStatus | null>(null);
-  const [opsLoading, setOpsLoading] = useState(true);
-  const [opsError, setOpsError] = useState<string | null>(null);
-  const [lastOpsCheckAt, setLastOpsCheckAt] = useState<Date | null>(null);
-  const [statusClock, setStatusClock] = useState(() => new Date());
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
@@ -87,57 +71,6 @@ function App() {
     recordVisit();
     addToHistory(dateKey);
   }, [recordVisit, addToHistory, dateKey]);
-
-  const loadOperationsStatus = useCallback(async () => {
-    try {
-      setOpsLoading(true);
-      setOpsError(null);
-
-      const response = await fetch('/api/today', {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Status API failed (${response.status})`);
-      }
-
-      const contentType = response.headers.get('content-type') ?? '';
-      if (!contentType.includes('application/json')) {
-        throw new Error('Status API returned non-JSON response');
-      }
-
-      const data: OperationsStatus = await response.json();
-      setOpsStatus(data);
-    } catch (err) {
-      console.error('Operations status check failed', err);
-      setOpsError(mapOpsErrorToFriendlyMessage(err));
-    } finally {
-      setLastOpsCheckAt(new Date());
-      setOpsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadOperationsStatus();
-  }, [loadOperationsStatus]);
-
-  useEffect(() => {
-    const refreshInterval = window.setInterval(() => {
-      void loadOperationsStatus();
-    }, 5 * 60 * 1000);
-
-    return () => window.clearInterval(refreshInterval);
-  }, [loadOperationsStatus]);
-
-  useEffect(() => {
-    const clockInterval = window.setInterval(() => {
-      setStatusClock(new Date());
-    }, 60_000);
-
-    return () => window.clearInterval(clockInterval);
-  }, []);
 
   // Swipe gestures
   useSwipeGesture({
@@ -214,20 +147,6 @@ function App() {
     setSearchResults([]);
   };
 
-  const opsFreshness = getStatusFreshness(lastOpsCheckAt, statusClock);
-  const opsAnnouncement = getOperationsStatusAnnouncement({
-    loading: opsLoading,
-    error: opsError,
-    status: opsStatus,
-    lastCheckedAt: lastOpsCheckAt,
-  });
-  const opsRefreshButtonAriaLabel = getOperationsRefreshButtonAriaLabel({
-    loading: opsLoading,
-    lastCheckedAt: lastOpsCheckAt,
-    minutesSinceCheck: opsFreshness.minutesSinceCheck,
-    isStale: opsFreshness.isStale,
-  });
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-srf-white to-srf-lotus/20">
       {/* Header */}
@@ -243,16 +162,8 @@ function App() {
             Daily Wisdom from Paramahansa Yogananda
           </p>
 
-          {/* Controls Row */}
-          <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-            <StreakBadge
-              currentStreak={currentStreak}
-              longestStreak={longestStreak}
-              totalDays={totalDays}
-            />
-          </div>
-          <p className="text-center text-xs text-gray-700 mt-2">
-            Quick actions: Search (/), Favorites (F), Calendar, Meditation (M), and backup/restore.
+          <p className="text-center text-sm text-gray-700 mt-4 max-w-2xl mx-auto leading-relaxed">
+            A quiet space for daily reading, reflection, favorites, notes, and meditation.
           </p>
 
           {/* Top Right Controls */}
@@ -346,7 +257,7 @@ function App() {
               </div>
               <div className="flex justify-between">
                 <kbd className="px-2 py-1 bg-gray-100 rounded">R</kbd>
-                <span>Random quote</span>
+                <span>Random reading</span>
               </div>
               <div className="flex justify-between">
                 <kbd className="px-2 py-1 bg-gray-100 rounded">/</kbd>
@@ -385,10 +296,10 @@ function App() {
             <button
               onClick={handleRandomQuote}
               className="flex items-center gap-2 px-4 py-2 bg-white text-srf-blue border border-srf-blue/30 rounded-full hover:bg-srf-lotus/20 transition-all"
-              title="Random quote (Press R)"
+              title="Random reading (Press R)"
             >
               <Shuffle className="w-4 h-4" />
-              <span className="text-sm font-medium">Random</span>
+              <span className="text-sm font-medium">Random Reading</span>
             </button>
 
             {entry && (
@@ -429,73 +340,6 @@ function App() {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
         />
-
-        <div
-          className="card max-w-4xl mx-auto mb-6"
-          role="region"
-          aria-live="polite"
-          aria-busy={opsLoading}
-          aria-describedby="ops-status-trust-note"
-        >
-          <h2 className="font-heading text-xl text-srf-blue mb-2">Today's Operations Status</h2>
-          <p id="ops-status-trust-note" className="text-xs text-gray-700 mb-2">
-            Status checks are read-only and never modify your journal entries.
-          </p>
-          <p className="sr-only" role="status">{opsAnnouncement}</p>
-
-          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-gray-700">
-            <span>
-              Last checked:{' '}
-              {lastOpsCheckAt
-                ? `${formatStatusTimestamp(lastOpsCheckAt)} (${formatStatusRelativeAge(opsFreshness.minutesSinceCheck)})`
-                : 'Not checked yet'}
-            </span>
-            {opsFreshness.isStale && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-900">
-                Older than {STATUS_STALE_THRESHOLD_MINUTES} minutes — refresh recommended
-              </span>
-            )}
-            <button
-              onClick={() => void loadOperationsStatus()}
-              disabled={opsLoading}
-              aria-label={opsRefreshButtonAriaLabel}
-              aria-describedby="ops-status-trust-note"
-              className="px-3 py-1 rounded-full border border-srf-blue/30 text-srf-blue hover:bg-srf-lotus/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {opsLoading ? 'Refreshing…' : 'Refresh now'}
-            </button>
-          </div>
-
-          {opsLoading && <p className="text-gray-700 text-sm">Checking API + render status...</p>}
-          {!opsLoading && opsError && (
-            <div className="rounded-lg border border-amber-300 bg-amber-50 p-4" role="alert">
-              <p className="text-amber-900 text-sm font-medium">{opsError}</p>
-              <p className="text-xs text-amber-800 mt-2">
-                Reading and journaling features are still available while status reconnects.
-              </p>
-            </div>
-          )}
-          {!opsLoading && !opsError && opsStatus && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div className="p-3 rounded-lg bg-srf-lotus/20">
-                <p className="font-semibold text-srf-blue">Quote-of-Day API</p>
-                <p className={opsStatus.ok ? 'text-green-700' : 'text-red-700'}>
-                  {opsStatus.ok ? 'Healthy' : 'Degraded'}
-                </p>
-                <p className="text-gray-700">Run date: {opsStatus.runDate}</p>
-              </div>
-              <div className="p-3 rounded-lg bg-srf-lotus/20">
-                <p className="font-semibold text-srf-blue">Image Artifact</p>
-                <p className={opsStatus.imageExists ? 'text-green-700' : 'text-amber-700'}>
-                  {opsStatus.imageExists ? 'Available' : 'Not generated yet'}
-                </p>
-                <p className="text-gray-700">
-                  {opsStatus.image?.provider ? `Provider: ${opsStatus.image.provider}` : 'Provider: n/a'}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
 
         {loading && <SkeletonLoader />}
 
