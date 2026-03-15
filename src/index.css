@@ -16,13 +16,13 @@
   }
 
   .theme-dark {
-    --bg-primary: #1a1a2e;
-    --bg-secondary: #16213e;
-    --bg-gradient-start: #0f1419;
-    --bg-gradient-end: rgba(30, 75, 135, 0.2);
-    --text-primary: rgb(229, 231, 235);
-    --text-secondary: rgb(156, 163, 175);
-    --border-color: rgba(55, 65, 81, 1);
+    --bg-primary: #09111d;
+    --bg-secondary: #111a2c;
+    --bg-gradient-start: #08101b;
+    --bg-gradient-end: rgba(45, 105, 179, 0.22);
+    --text-primary: rgb(233, 239, 248);
+    --text-secondary: rgb(174, 186, 204);
+    --border-color: rgba(148, 163, 184, 0.18);
   }
 
   .theme-sepia {
@@ -48,9 +48,17 @@
     color: var(--text-primary);
   }
 
+  .theme-dark body {
+    background:
+      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 24%),
+      radial-gradient(circle at 20% 20%, rgba(45, 105, 179, 0.16), transparent 30%),
+      linear-gradient(135deg, #08101b 0%, #0c1524 46%, #111d33 100%);
+  }
+
   .theme-dark .card {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(180deg, rgba(18, 27, 46, 0.96), rgba(14, 22, 38, 0.98));
     border: 1px solid var(--border-color);
+    box-shadow: 0 18px 40px rgba(3, 8, 20, 0.45);
   }
 
   .theme-dark .quote-text,
@@ -62,12 +70,13 @@
   }
 
   .theme-dark header {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(180deg, rgba(13, 22, 36, 0.94), rgba(14, 24, 40, 0.9));
     border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 12px 30px rgba(2, 7, 18, 0.28);
   }
 
   .theme-dark footer {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(180deg, rgba(11, 18, 30, 0.96), rgba(8, 13, 22, 0.98));
     border-top: 1px solid var(--border-color);
   }
 
@@ -172,6 +181,95 @@
 
   .theme-sepia .theme-pill-icon {
     color: #6b5a49;
+  }
+
+  .utility-toolbar {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .utility-popover {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .secondary-action-btn,
+  .nav-surface-btn,
+  .nav-date-btn,
+  .nav-today-btn {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
+
+  .theme-dark .utility-toolbar {
+    background: rgba(14, 24, 40, 0.86) !important;
+    border-color: rgba(212, 175, 55, 0.18) !important;
+    box-shadow: 0 14px 28px rgba(3, 8, 20, 0.34);
+  }
+
+  .theme-dark .utility-toolbar button:hover {
+    background: rgba(212, 175, 55, 0.1) !important;
+  }
+
+  .theme-dark .utility-toolbar .utility-toolbar-icon {
+    color: rgb(215, 226, 242) !important;
+  }
+
+  .theme-dark .utility-popover {
+    background: linear-gradient(180deg, rgba(18, 28, 47, 0.98), rgba(13, 21, 36, 0.98));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 20px 36px rgba(3, 8, 20, 0.48);
+  }
+
+  .theme-dark .utility-popover h3,
+  .theme-dark .utility-popover span,
+  .theme-dark .utility-popover p {
+    color: rgb(225, 232, 243);
+  }
+
+  .theme-dark .utility-popover kbd {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgb(243, 246, 251);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+  }
+
+  .theme-dark .secondary-action-btn {
+    background: rgba(17, 30, 50, 0.88) !important;
+    color: rgb(230, 237, 246) !important;
+    border-color: rgba(212, 175, 55, 0.22) !important;
+    box-shadow: 0 10px 24px rgba(3, 8, 20, 0.28);
+  }
+
+  .theme-dark .secondary-action-btn:hover {
+    background: rgba(24, 39, 63, 0.95) !important;
+    box-shadow: 0 14px 28px rgba(3, 8, 20, 0.38);
+  }
+
+  .theme-dark .nav-surface-btn,
+  .theme-dark .nav-date-btn {
+    background: linear-gradient(180deg, rgba(18, 28, 47, 0.95), rgba(14, 22, 38, 0.95)) !important;
+    border-color: rgba(148, 163, 184, 0.18) !important;
+    box-shadow: 0 12px 26px rgba(3, 8, 20, 0.32);
+  }
+
+  .theme-dark .nav-surface-btn:hover,
+  .theme-dark .nav-date-btn:hover {
+    background: linear-gradient(180deg, rgba(23, 35, 58, 0.98), rgba(16, 26, 44, 0.98)) !important;
+  }
+
+  .theme-dark .nav-surface-btn svg,
+  .theme-dark .nav-date-btn span {
+    color: rgb(230, 237, 246) !important;
+  }
+
+  .theme-dark .nav-date-btn svg {
+    color: #e0c46f !important;
+  }
+
+  .theme-dark .nav-today-btn {
+    background: linear-gradient(135deg, #2d69b3, #1e4b87) !important;
+    box-shadow: 0 14px 28px rgba(7, 18, 38, 0.34);
+  }
+
+  .theme-dark .nav-today-btn:hover {
+    background: linear-gradient(135deg, #3a79c7, #24589e) !important;
   }
 }
 

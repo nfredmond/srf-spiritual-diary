@@ -148,9 +148,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-srf-white to-srf-lotus/20">
+    <div className="app-shell min-h-screen bg-gradient-to-br from-srf-white to-srf-lotus/20">
       {/* Header */}
-      <header className="bg-white shadow-sm py-6 relative">
+      <header className="app-header bg-white shadow-sm py-6 relative">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center gap-3">
             <Flower2 className="w-8 h-8 text-srf-gold" />
@@ -167,14 +167,14 @@ function App() {
           </p>
 
           {/* Top Right Controls */}
-          <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full border border-srf-blue/10 bg-white/90 px-2 py-1 shadow-sm backdrop-blur-sm">
+          <div className="utility-toolbar absolute top-4 right-4 flex items-center gap-1.5 rounded-full border border-srf-blue/10 bg-white/90 px-2 py-1 shadow-sm backdrop-blur-sm">
             <button
               onClick={() => setShowSearch(!showSearch)}
               className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
               aria-label="Search readings"
               title="Search readings (Press /)"
             >
-              <SearchIcon className="w-5 h-5 text-srf-blue/80" />
+              <SearchIcon className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
@@ -183,7 +183,7 @@ function App() {
               aria-label="Saved readings"
               title="View saved readings (Press F)"
             >
-              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'text-srf-blue/80'}`} />
+              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'utility-toolbar-icon text-srf-blue/80'}`} />
               {favorites.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {favorites.length}
@@ -197,7 +197,7 @@ function App() {
               aria-label="Reflection overview"
               title="View your reflection overview"
             >
-              <TrendingUp className="w-5 h-5 text-srf-blue/80" />
+              <TrendingUp className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
@@ -206,7 +206,7 @@ function App() {
               aria-label="Reading calendar"
               title="Reading calendar"
             >
-              <CalendarIcon className="w-5 h-5 text-srf-blue/80" />
+              <CalendarIcon className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
@@ -215,7 +215,7 @@ function App() {
               aria-label="Meditation timer"
               title="Meditation timer (Press M)"
             >
-              <Timer className="w-5 h-5 text-srf-blue/80" />
+              <Timer className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
@@ -224,7 +224,7 @@ function App() {
               aria-label="Preserve your journal"
               title="Preserve your journal"
             >
-              <Database className="w-5 h-5 text-srf-blue/80" />
+              <Database className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
@@ -233,14 +233,14 @@ function App() {
               aria-label="Reading shortcuts"
               title="Reading shortcuts (Press ?)"
             >
-              <Keyboard className="w-5 h-5 text-srf-blue/80" />
+              <Keyboard className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
           </div>
         </div>
 
         {/* Enhanced Keyboard help modal */}
         {showKeyboardHelp && (
-          <div className="absolute top-full right-4 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-72">
+          <div className="utility-popover absolute top-full right-4 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-72">
             <h3 className="font-heading text-lg mb-3 text-srf-blue">Reading Shortcuts</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -295,7 +295,7 @@ function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleRandomQuote}
-              className="flex items-center gap-2 px-4 py-2 bg-white/90 text-srf-blue border border-srf-gold/30 rounded-full hover:bg-srf-lotus/30 transition-all shadow-sm"
+              className="secondary-action-btn flex items-center gap-2 px-4 py-2 bg-white/90 text-srf-blue border border-srf-gold/30 rounded-full hover:bg-srf-lotus/30 transition-all shadow-sm"
               title="Random reading (Press R)"
             >
               <Shuffle className="w-4 h-4" />
@@ -432,7 +432,7 @@ function App() {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="bg-srf-blue text-white py-8 mt-20">
+      <footer className="app-footer bg-srf-blue text-white py-8 mt-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm">
             © 2025 Self-Realization Fellowship. All rights reserved.
