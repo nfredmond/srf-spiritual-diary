@@ -15,15 +15,13 @@ export function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwitcherProp
   ];
 
   return (
-    <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-full p-1 shadow-sm">
+    <div className="theme-pill-group flex items-center gap-2 rounded-full p-1 shadow-sm backdrop-blur-sm">
       {themes.map(({ value, icon: Icon, label }) => (
         <button
           key={value}
           onClick={() => onThemeChange(value)}
-          className={`relative px-4 py-2 rounded-full transition-all ${
-            currentTheme === value
-              ? 'text-white'
-              : 'text-gray-600 hover:text-gray-900'
+          className={`theme-pill-button relative px-4 py-2 rounded-full transition-all ${
+            currentTheme === value ? 'text-white' : ''
           }`}
           aria-label={`Switch to ${label} theme`}
           title={`${label} theme`}
@@ -31,7 +29,7 @@ export function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwitcherProp
           {currentTheme === value && (
             <motion.div
               layoutId="theme-indicator"
-              className="absolute inset-0 bg-gradient-to-r from-srf-blue to-srf-gold rounded-full"
+              className="theme-pill-indicator absolute inset-0 rounded-full"
               transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
             />
           )}

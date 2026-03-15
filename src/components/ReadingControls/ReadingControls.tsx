@@ -15,23 +15,21 @@ export function ReadingControls({ fontSize, onFontSizeChange }: ReadingControlsP
   ];
 
   return (
-    <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-full p-1 shadow-sm">
-      <Type className="w-4 h-4 text-gray-600 ml-2" />
+    <div className="theme-pill-group flex items-center gap-2 rounded-full p-1 shadow-sm backdrop-blur-sm">
+      <Type className="theme-pill-icon w-4 h-4 ml-2" />
       {sizes.map(({ value, label }) => (
         <button
           key={value}
           onClick={() => onFontSizeChange(value)}
-          className={`relative px-3 py-1.5 rounded-full transition-all text-sm font-medium ${
-            fontSize === value
-              ? 'text-white'
-              : 'text-gray-600 hover:text-gray-900'
+          className={`theme-pill-button relative px-3 py-1.5 rounded-full transition-all text-sm font-medium ${
+            fontSize === value ? 'text-white' : ''
           }`}
           aria-label={`${label} font size`}
         >
           {fontSize === value && (
             <motion.div
               layoutId="font-size-indicator"
-              className="absolute inset-0 bg-gradient-to-r from-srf-blue to-srf-gold rounded-full"
+              className="theme-pill-indicator absolute inset-0 rounded-full"
               transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
             />
           )}

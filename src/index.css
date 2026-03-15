@@ -108,5 +108,70 @@
     @apply bg-white rounded-2xl shadow-lg p-8;
     border: 1px solid rgba(30, 75, 135, 0.08);
   }
+
+  .theme-pill-group {
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(30, 75, 135, 0.12);
+  }
+
+  .theme-pill-button {
+    color: rgb(75, 85, 99);
+  }
+
+  .theme-pill-button:hover {
+    color: rgb(17, 24, 39);
+    background: rgba(232, 213, 196, 0.28);
+  }
+
+  .theme-pill-icon {
+    color: rgb(75, 85, 99);
+  }
+
+  .theme-pill-indicator {
+    background: linear-gradient(to right, #1E4B87, #D4AF37);
+    box-shadow: 0 6px 14px rgba(30, 75, 135, 0.22);
+  }
+
+  .theme-dark .theme-pill-group {
+    background: rgba(22, 33, 62, 0.88);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    box-shadow: 0 10px 24px rgba(5, 10, 24, 0.32);
+  }
+
+  .theme-dark .theme-pill-button {
+    color: rgb(226, 232, 240);
+  }
+
+  .theme-dark .theme-pill-button:hover {
+    color: rgb(255, 255, 255);
+    background: rgba(212, 175, 55, 0.12);
+  }
+
+  .theme-dark .theme-pill-icon {
+    color: rgb(226, 232, 240);
+  }
+
+  .theme-dark .theme-pill-indicator {
+    background: linear-gradient(to right, #2D69B3, #D4AF37);
+    box-shadow: 0 8px 18px rgba(5, 10, 24, 0.42);
+  }
+
+  .theme-sepia .theme-pill-group {
+    background: rgba(249, 244, 232, 0.88);
+    border: 1px solid rgba(122, 106, 90, 0.18);
+  }
+
+  .theme-sepia .theme-pill-button {
+    color: #6b5a49;
+  }
+
+  .theme-sepia .theme-pill-button:hover {
+    color: #4f4031;
+    background: rgba(212, 175, 55, 0.12);
+  }
+
+  .theme-sepia .theme-pill-icon {
+    color: #6b5a49;
+  }
 }
 
