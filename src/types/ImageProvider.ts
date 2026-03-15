@@ -1,4 +1,4 @@
-export type ImageProvider = 'openai';
+export type ImageProvider = 'gemini';
 
 export interface GeneratedImage {
   url: string;
@@ -10,7 +10,7 @@ export interface GeneratedImage {
 export interface UserSettings {
   preferredProvider: ImageProvider;
   apiKeys?: {
-    openai?: string;
+    gemini?: string;
   };
   fontSize: 'small' | 'medium' | 'large';
 }

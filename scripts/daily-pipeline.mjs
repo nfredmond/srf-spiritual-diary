@@ -4,7 +4,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js';
 import { buildSpiritualImagePrompt } from './lib/prompt-engine.mjs';
 
@@ -68,49 +67,52 @@ async function loadFallbackEntry(dateKey) {
 }
 
 async function generateImage({ prompt, negativePrompt, runDate }) {
-  const openai = new OpenAI({ apiKey: requiredEnv('OPENAI_API_KEY') });
-  const primaryModel = process.env.SRF_GENERATION_MODEL || 'gpt-image-1';
-  const models = primaryModel === 'dall-e-3' ? ['dall-e-3'] : [primaryModel, 'dall-e-3'];
-  const errors = [];
-
-  for (const model of models) {
-    try {
-      const response = await openai.images.generate({
-        model,
-        prompt: `${prompt}\n\nNegative prompt: ${negativePrompt}`,
-        size: '1024x1024',
-        quality: 'standard',
-      });
-
-      const imageData = response.data?.[0];
-      if (!imageData) throw new Error('OpenAI returned no image data');
-
-      const artifactDir = path.resolve(__dirname, `../artifacts/daily/${runDate}`);
-      await fs.mkdir(artifactDir, { recursive: true });
-      const imagePath = path.join(artifactDir, 'image.png');
-
-      let imageUrl = imageData.url || null;
-      if (imageData.b64_json) {
-        const buffer = Buffer.from(imageData.b64_json, 'base64');
-        await fs.writeFile(imagePath, buffer);
-      } else if (imageUrl) {
-        const download = await fetch(imageUrl);
-        if (!download.ok) {
-          throw new Error(`Failed to download image URL: ${download.status}`);
-        }
-        const arrayBuffer = await download.arrayBuffer();
-        await fs.writeFile(imagePath, Buffer.from(arrayBuffer));
-      } else {
-        throw new Error('OpenAI returned neither b64_json nor url');
-      }
-
-      return { model, imageUrl, imagePath };
-    } catch (err) {
-      errors.push(`${model}: ${err.message}`);
-    }
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing required env var: GEMINI_API_KEY or GOOGLE_GENAI_API_KEY');
   }
 
-  throw new Error(`Image generation failed for all models. ${errors.join(' | ')}`);
+  const model = process.env.SRF_GENERATION_MODEL || process.env.SRF_GOOGLE_IMAGE_MODEL || 'gemini-2.5-flash-image';
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: `${prompt}\n\nNegative prompt: ${negativePrompt}` }] }],
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      }),
+    },
+  );
+
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload?.error?.message || 'Google Gemini image generation failed');
+  }
+
+  const parts = payload?.candidates?.[0]?.content?.parts || [];
+  const imagePart = parts.find((part) => part?.inlineData?.data);
+  const imageBase64 = imagePart?.inlineData?.data;
+
+  if (!imageBase64) {
+    throw new Error('Google Gemini returned no image data');
+  }
+
+  const artifactDir = path.resolve(__dirname, `../artifacts/daily/${runDate}`);
+  await fs.mkdir(artifactDir, { recursive: true });
+  const imagePath = path.join(artifactDir, 'image.png');
+  await fs.writeFile(imagePath, Buffer.from(imageBase64, 'base64'));
+
+  return {
+    model,
+    imageUrl: `data:${imagePart?.inlineData?.mimeType || 'image/png'};base64,${imageBase64}`,
+    imagePath,
+  };
 }
 
 async function runGog(args) {

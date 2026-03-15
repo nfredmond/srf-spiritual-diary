@@ -40,7 +40,7 @@
 - [ ] Sign up/Login to Vercel
 - [ ] Import GitHub repository
 - [ ] Click Deploy
-- [ ] Add OpenAI API key
+- [ ] Add Google Gemini API key
 - [ ] Get live URL
 
 **Follow: VERCEL_DEPLOY.md for step-by-step guide!**
@@ -81,7 +81,7 @@ srf-spiritual-diary/
 - Beautiful typography
 
 ### 2. AI-Generated Sacred Art
-- DALL-E 3 integration
+- Google Gemini 🍌 integration
 - Intelligent prompt generation
 - Keyword-based symbolism
 - Spiritual aesthetic
@@ -111,7 +111,7 @@ srf-spiritual-diary/
 | Icons | Lucide React | ✅ |
 | Date Handling | date-fns | ✅ |
 | Storage | IndexedDB (idb) | ✅ |
-| AI Provider | OpenAI DALL-E 3 | ✅ |
+| AI Provider | Google Gemini 🍌 | ✅ |
 | Hosting | Vercel (ready) | 🚀 |
 | Repository | GitHub | ✅ |
 
@@ -161,10 +161,10 @@ dist/assets/index.js    397.07 kB (gzipped: 127.82 kB)
 
 For Vercel deployment:
 ```
-OPENAI_API_KEY=your_openai_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Get yours at: https://platform.openai.com/api-keys
+Get yours at: https://aistudio.google.com/app/apikey
 
 ---
 
@@ -210,7 +210,7 @@ Get yours at: https://platform.openai.com/api-keys
 
 - **GitHub Issues**: For code questions
 - **Vercel Docs**: https://vercel.com/docs
-- **OpenAI Help**: https://help.openai.com
+- **Google Gemini Help**: https://ai.google.dev/gemini-api/docs
 - **React Docs**: https://react.dev
 
 ---

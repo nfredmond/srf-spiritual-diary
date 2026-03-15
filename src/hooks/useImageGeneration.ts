@@ -1,26 +1,52 @@
-import { useState } from 'react';
-import type { ImageProvider, GeneratedImage } from '../types/ImageProvider';
+import { useEffect, useState } from 'react';
+import type { GeneratedImage, ImageProvider } from '../types/ImageProvider';
 import { cacheImage, getCachedImage } from './useImageCache';
 
-export function useImageGeneration(dateKey: string) {
+const DEFAULT_PROVIDER: ImageProvider = 'gemini';
+
+export function useImageGeneration(dateKey: string, preferredProvider: ImageProvider = DEFAULT_PROVIDER) {
   const [image, setImage] = useState<GeneratedImage | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const generateImage = async (prompt: string, provider: ImageProvider, apiKey?: string) => {
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCachedImage = async () => {
+      try {
+        const cached = await getCachedImage(dateKey);
+        if (!isMounted) return;
+
+        if (cached && cached.provider === preferredProvider) {
+          setImage(cached);
+        } else {
+          setImage(null);
+        }
+        setError(null);
+      } catch (err) {
+        console.error('Error loading cached image:', err);
+      }
+    };
+
+    loadCachedImage();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dateKey, preferredProvider]);
+
+  const generateImage = async (prompt: string, provider: ImageProvider = preferredProvider, apiKey?: string) => {
     setLoading(true);
     setError(null);
 
     try {
-      // Check cache first
       const cached = await getCachedImage(dateKey);
-      if (cached) {
+      if (cached && cached.provider === provider) {
         setImage(cached);
         setLoading(false);
         return;
       }
 
-      // Call serverless function
       const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,7 +67,6 @@ export function useImageGeneration(dateKey: string) {
         dateKey,
       };
 
-      // Cache it
       await cacheImage(generatedImage);
       setImage(generatedImage);
     } catch (err) {
@@ -51,6 +76,5 @@ export function useImageGeneration(dateKey: string) {
     }
   };
 
-  return { image, loading, error, generateImage };
+  return { image, loading, error, generateImage, preferredProvider };
 }
-

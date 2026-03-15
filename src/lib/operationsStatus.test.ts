@@ -106,7 +106,7 @@ test('getOperationsStatusAnnouncement narrates loading, error, and success state
       runDate: '2026-03-06',
       imageExists: true,
       image: {
-        provider: 'openai',
+        provider: 'gemini',
         status: 'completed',
         created_at: '2026-03-06T10:00:00.000Z',
       },

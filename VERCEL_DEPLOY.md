@@ -46,27 +46,27 @@ https://srf-spiritual-diary.vercel.app
 
 (Your actual URL may have a different subdomain)
 
-### Step 6: Add OpenAI API Key (For AI Images)
+### Step 6: Add Google Gemini API Key (For AI Images)
 
 1. In your Vercel project dashboard, go to **Settings** → **Environment Variables**
 2. Click **"Add New"**
 3. Enter:
-   - **Key**: `OPENAI_API_KEY`
-   - **Value**: Your OpenAI API key (get from https://platform.openai.com/api-keys)
+   - **Key**: `GEMINI_API_KEY`
+   - **Value**: Your Google Gemini API key (get from https://aistudio.google.com/app/apikey)
    - **Environment**: Production (checked)
 4. Click **"Save"**
 5. Go to **Deployments** tab and click **"Redeploy"** on the latest deployment
 
-## 🔑 Getting OpenAI API Key
+## 🔑 Getting Google Gemini API Key
 
-1. Visit: https://platform.openai.com/
+1. Visit: https://aistudio.google.com/
 2. Sign up or log in
 3. Go to **API Keys** section
 4. Click **"Create new secret key"**
 5. Copy the key (you won't see it again!)
 6. New accounts get **$5 in free credits** (~125 images)
 
-**Cost**: ~$0.04 per DALL-E 3 image (1024x1024)
+**Cost**: ~$0.04 per Google Gemini 🍌 image (1024x1024)
 
 ## 🎨 Optional: Custom Domain
 
@@ -86,8 +86,8 @@ Want a custom domain like `spiritual-diary.com`?
 - Performance metrics
 - All free on the Hobby plan!
 
-### OpenAI Usage
-Monitor your API usage at: https://platform.openai.com/usage
+### Google Gemini Usage
+Monitor your API usage at: https://aistudio.google.com/usage
 
 ## 🐛 Troubleshooting
 
@@ -96,8 +96,8 @@ Monitor your API usage at: https://platform.openai.com/usage
 - Usually a dependency issue - Vercel team is very helpful!
 
 ### AI images not generating
-1. Make sure OPENAI_API_KEY is added
-2. Check you have credits in your OpenAI account
+1. Make sure GEMINI_API_KEY is added
+2. Check you have credits in your Google Gemini account
 3. Verify the key in Environment Variables
 
 ### Want to update the app?
@@ -116,7 +116,7 @@ Vercel automatically redeploys! 🚀
 - [ ] GitHub connected to Vercel
 - [ ] Project imported and deployed
 - [ ] Live URL received
-- [ ] OpenAI API key added
+- [ ] Google Gemini API key added
 - [ ] Tested the live app
 - [ ] AI image generation working
 

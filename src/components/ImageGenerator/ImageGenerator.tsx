@@ -10,11 +10,11 @@ interface ImageGeneratorProps {
 }
 
 export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
-  const { image, loading, error, generateImage } = useImageGeneration(dateKey);
+  const { image, loading, error, generateImage } = useImageGeneration(dateKey, 'gemini');
 
   const handleGenerate = () => {
     const prompt = generateImagePrompt(entry);
-    generateImage(prompt, 'openai');
+    generateImage(prompt, 'gemini');
   };
 
   const handleDownload = () => {
@@ -29,7 +29,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
 
   const handleShare = async () => {
     if (!image) return;
-    
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -37,7 +37,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
           text: `${entry.quote.substring(0, 100)}...`,
           url: window.location.href,
         });
-      } catch (err) {
+      } catch {
         console.log('Share cancelled');
       }
     }
@@ -45,28 +45,34 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
 
   return (
     <div className="card max-w-4xl mx-auto mt-8">
-      {/* Generate Button */}
+      {!image && !loading && (
+        <div className="generator-intro mb-5 rounded-2xl border border-srf-gold/20 bg-gradient-to-r from-srf-blue/5 to-srf-gold/10 p-4 text-center">
+          <p className="font-heading text-base text-srf-blue">Google Gemini 🍌 Sacred Imagery</p>
+          <p className="generator-intro-copy mt-1 text-sm text-gray-600">
+            Generate a contemplative image inspired by today&apos;s reading using Google Banana.
+          </p>
+        </div>
+      )}
+
       {!image && !loading && (
         <button
           onClick={handleGenerate}
           disabled={loading}
-          className="w-full py-4 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-xl font-heading text-lg hover:shadow-lg transition-shadow disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-4 bg-gradient-to-r from-srf-blue via-[#4769b5] to-srf-gold text-white rounded-xl font-heading text-lg hover:shadow-lg transition-shadow disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
-          Generate Imagery Based on this Spiritual Diary Entry
+          Generate Sacred Imagery with Google Banana
         </button>
       )}
 
-      {/* Loading State */}
       {loading && (
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-srf-blue border-t-transparent mb-4"></div>
-          <p className="text-srf-blue font-heading text-lg">Creating sacred imagery...</p>
-          <p className="text-gray-600 text-sm mt-2">This may take 10-15 seconds</p>
+          <p className="text-srf-blue font-heading text-lg">Creating sacred imagery with Google Banana...</p>
+          <p className="text-gray-600 text-sm mt-2">This may take 10-20 seconds</p>
         </div>
       )}
 
-      {/* Error Message */}
       {error && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-700 font-semibold mb-2">Unable to generate image</p>
@@ -80,7 +86,6 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
         </div>
       )}
 
-      {/* Generated Image */}
       <AnimatePresence>
         {image && (
           <motion.div
@@ -97,7 +102,10 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
               />
             </div>
 
-            {/* Action Buttons */}
+            <div className="generator-provider-note mt-4 text-center text-sm text-gray-600">
+              Generated with Google Gemini 🍌
+            </div>
+
             <div className="flex justify-center gap-4 mt-6">
               <button
                 onClick={handleDownload}
@@ -106,7 +114,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
                 <Download className="w-5 h-5" />
                 Download
               </button>
-              
+
               {typeof navigator.share !== 'undefined' && (
                 <button
                   onClick={handleShare}
@@ -118,13 +126,12 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
               )}
             </div>
 
-            {/* Generate New */}
             <button
               onClick={handleGenerate}
               disabled={loading}
               className="w-full mt-4 py-3 bg-srf-lotus/30 text-srf-blue rounded-lg hover:bg-srf-lotus/50 transition-colors font-medium"
             >
-              Generate New Imagery
+              Generate Another with Google Banana
             </button>
           </motion.div>
         )}

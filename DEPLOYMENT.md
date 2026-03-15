@@ -13,7 +13,7 @@ Use `.env.example` as source of truth and configure the same keys in Vercel.
 
 Required core keys:
 
-- `OPENAI_API_KEY`
+- `GEMINI_API_KEY`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`

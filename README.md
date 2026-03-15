@@ -7,7 +7,7 @@ SRF Spiritual Diary is a Vite + React spiritual companion app with daily Paramah
 Version 3 adds production integration for Nat Ford operations:
 
 - Supabase persistence for `diary_entries`, `daily_renders`, and `delivery_logs`
-- OpenAI daily render pipeline with strict no-text prompt constraints
+- Google Gemini daily render pipeline with strict no-text prompt constraints
 - Host pipeline automation with Google Drive archival (`gog`) and OpenClaw multi-channel delivery
 - Gmail sending (`gog`) for daily dispatch
 - Vercel API endpoints:

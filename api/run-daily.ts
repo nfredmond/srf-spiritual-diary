@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import OpenAI from 'openai';
 import { getPacificDateParts, loadFallbackEntry } from './_lib/common';
 import { buildSpiritualImagePrompt } from './_lib/promptEngine';
 import { getSupabaseServiceClient } from './_lib/supabase';
@@ -22,47 +21,52 @@ function boolEnv(name: string, defaultValue: boolean) {
   return value === 'true';
 }
 
-async function generateImageWithFallback(prompt: string, negativePrompt: string) {
-  const apiKey = process.env.OPENAI_API_KEY;
+function getGeminiKey() {
+  return process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || null;
+}
+
+async function generateImageWithGemini(prompt: string, negativePrompt: string) {
+  const apiKey = getGeminiKey();
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is required for generation');
+    throw new Error('GEMINI_API_KEY or GOOGLE_GENAI_API_KEY is required for generation');
   }
 
-  const openai = new OpenAI({ apiKey });
-  const preferredModel = process.env.SRF_GENERATION_MODEL || 'gpt-image-1';
-  const models = preferredModel === 'dall-e-3' ? ['dall-e-3'] : [preferredModel, 'dall-e-3'];
-  const errors: string[] = [];
+  const model = process.env.SRF_GENERATION_MODEL || process.env.SRF_GOOGLE_IMAGE_MODEL || 'gemini-2.5-flash-image';
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: `${prompt}\n\nNegative prompt: ${negativePrompt}` }] }],
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      }),
+    },
+  );
 
-  for (const model of models) {
-    try {
-      const response = await openai.images.generate({
-        model,
-        prompt: `${prompt}\n\nNegative prompt: ${negativePrompt}`,
-        size: '1024x1024',
-        quality: 'standard',
-      });
-
-      const image = response.data?.[0];
-      if (!image) {
-        throw new Error('No image data returned');
-      }
-
-      if (image.url) {
-        return { provider: model, imageUrl: image.url };
-      }
-
-      if (image.b64_json) {
-        return { provider: model, imageUrl: `data:image/png;base64,${image.b64_json}` };
-      }
-
-      throw new Error('No image URL or base64 returned');
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Unknown error';
-      errors.push(`${model}: ${msg}`);
-    }
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload?.error?.message || 'Google Gemini image generation failed');
   }
 
-  throw new Error(`Image generation failed. ${errors.join(' | ')}`);
+  const parts = payload?.candidates?.[0]?.content?.parts || [];
+  const imagePart = parts.find((part: any) => part?.inlineData?.data);
+  const mimeType = imagePart?.inlineData?.mimeType || 'image/png';
+  const imageData = imagePart?.inlineData?.data;
+
+  if (!imageData) {
+    throw new Error('No image data returned from Google Gemini');
+  }
+
+  return {
+    provider: model,
+    imageUrl: `data:${mimeType};base64,${imageData}`,
+  };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -128,7 +132,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const allowOmSymbol = boolEnv('SRF_ALLOW_OM_SYMBOL', true);
     const promptResult = buildSpiritualImagePrompt(entry, { dateKey, allowOmSymbol });
-    const generated = await generateImageWithFallback(promptResult.prompt, promptResult.negativePrompt);
+    const generated = await generateImageWithGemini(promptResult.prompt, promptResult.negativePrompt);
 
     const { data: render, error: upsertError } = await supabase
       .from('daily_renders')

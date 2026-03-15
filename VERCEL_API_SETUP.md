@@ -1,8 +1,8 @@
-# 🔑 Setting Up OpenAI API Key in Vercel
+# 🔑 Setting Up Google Gemini API Key in Vercel
 
 ## ✅ API Key Configuration
 
-Your OpenAI API key has been configured locally in `.env.local`. Now you need to add it to Vercel for production.
+Your Google Gemini API key has been configured locally in `.env.local`. Now you need to add it to Vercel for production.
 
 ---
 
@@ -19,8 +19,8 @@ Your OpenAI API key has been configured locally in `.env.local`. Now you need to
 
 ### Step 3: Enter Your API Key
 ```
-Key:   OPENAI_API_KEY
-Value: [Your OpenAI API key starting with sk-proj-...]
+Key:   GEMINI_API_KEY
+Value: [Your Google Gemini API key starting with sk-proj-...]
 
 Environment: ✓ Production ✓ Preview ✓ Development
 ```
@@ -62,7 +62,7 @@ Your image generation will now work on the live site!
 ### "Failed to generate image"
 - Check that API key is added in Vercel dashboard
 - Make sure you redeployed after adding the key
-- Check OpenAI dashboard for credits: https://platform.openai.com/usage
+- Check OpenAI dashboard for credits: https://aistudio.google.com/
 
 ### "Invalid API key"
 - Double-check the key in Vercel matches exactly
@@ -78,7 +78,7 @@ Your image generation will now work on the live site!
 
 ## 📊 Monitor Usage
 
-Visit: https://platform.openai.com/usage
+Visit: https://aistudio.google.com/
 
 You can see:
 - How many images generated

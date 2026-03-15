@@ -10,7 +10,7 @@
 [daily-pipeline host script]
   -> reads today's entry (Supabase first, JSON fallback)
   -> builds strict no-text spiritual prompt (optional subtle Om only)
-  -> generates image via OpenAI Images API
+  -> generates image via Google Gemini Images API
   -> writes local artifacts (image + metadata JSON)
   -> uploads artifacts to Google Drive via gog
   -> sends Telegram/Slack/Discord via openclaw
@@ -39,7 +39,7 @@ cp .env.example .env
 
 2. Fill all required values:
 
-- `OPENAI_API_KEY`
+- `GEMINI_API_KEY`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
@@ -55,7 +55,7 @@ Defaults already set in `.env.example`:
 - `SRF_OPENCLAW_CHANNEL_TELEGRAM=telegram`
 - `SRF_OPENCLAW_CHANNEL_SLACK=slack`
 - `SRF_OPENCLAW_CHANNEL_DISCORD=discord`
-- `SRF_GENERATION_MODEL=gpt-image-1`
+- `SRF_GENERATION_MODEL=gemini-2.5-flash-image`
 - `SRF_ALLOW_OM_SYMBOL=true`
 
 Security for cron trigger:
@@ -121,7 +121,7 @@ vercel rollback
 
 | Symptom | Likely cause | Action |
 |---|---|---|
-| OpenAI image generation fails | invalid key, quota/rate, model mismatch | verify `OPENAI_API_KEY`, check billing/usage, set `SRF_GENERATION_MODEL=dall-e-3` as fallback |
+| Google Gemini image generation fails | invalid key, quota/rate, model mismatch | verify `GEMINI_API_KEY`, check billing/usage, set `SRF_GENERATION_MODEL=gemini-2.5-flash-image` as fallback |
 | Drive archival fails | gog auth or bad folder id | run `gog auth login`, verify `SRF_DRIVE_ROOT_FOLDER_ID`, test `gog drive mkdir` manually |
 | Channel delivery skipped | targets missing or openclaw command mismatch | set `SRF_TELEGRAM_TARGET`/`SRF_SLACK_TARGET`/`SRF_DISCORD_TARGET`; validate local `openclaw` CLI send syntax |
 | Supabase write error | missing service role key or schema mismatch | confirm `SUPABASE_SERVICE_ROLE_KEY`, run migration, verify table names and columns |

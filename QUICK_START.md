@@ -8,7 +8,7 @@ Your SRF Spiritual Diary app is fully built and ready! Here's what you need to d
 - 🎨 SRF-themed design with Tailwind CSS  
 - 📅 Date navigation with calendar picker
 - 🪷 Quote display with weekly themes and special days
-- 🤖 AI image generation integration (DALL-E 3)
+- 🤖 AI image generation integration (Google Gemini 🍌)
 - 💾 Local image caching with IndexedDB
 - 📱 Fully responsive mobile design
 - 🏗️ Production build tested and working
@@ -46,9 +46,9 @@ git push -u origin main
 3. Import your `srf-spiritual-diary` repository
 4. Vercel will auto-detect settings
 5. Click "Deploy"
-6. Add your OpenAI API key in Settings → Environment Variables:
-   - Key: `OPENAI_API_KEY`
-   - Value: (your OpenAI API key)
+6. Add your Google Gemini API key in Settings → Environment Variables:
+   - Key: `GEMINI_API_KEY`
+   - Value: (your Google Gemini API key)
 7. Redeploy
 
 **🎉 Your app will be live at `https://your-project.vercel.app`!**
@@ -83,8 +83,8 @@ npm run preview  # Preview production build
 **Q: Git says "Author identity unknown"**
 A: Run the git config commands in Step 1 above
 
-**Q: Where do I get an OpenAI API key?**
-A: Go to https://platform.openai.com/api-keys (new accounts get $5 free credits)
+**Q: Where do I get a Google Gemini API key?**
+A: Go to https://aistudio.google.com/app/apikey (new accounts get $5 free credits)
 
 **Q: The app won't build**
 A: Make sure you're in the `srf-spiritual-diary` directory and run `npm install` first
