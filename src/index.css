@@ -118,6 +118,29 @@
     border: 1px solid rgba(30, 75, 135, 0.08);
   }
 
+  .app-shell {
+    background:
+      linear-gradient(135deg, rgba(248, 246, 241, 0.92), rgba(248, 246, 241, 0.88)),
+      url('/art/background-soft.png') center/cover fixed no-repeat;
+  }
+
+  .app-header {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 241, 0.88)),
+      url('/art/hero-main.png') center 42%/cover no-repeat;
+    overflow: hidden;
+  }
+
+  .app-footer {
+    background:
+      linear-gradient(180deg, rgba(30, 75, 135, 0.94), rgba(20, 54, 98, 0.96)),
+      url('/art/hero-secondary.png') center/cover no-repeat;
+  }
+
+  .brand-logo {
+    filter: drop-shadow(0 8px 20px rgba(30, 75, 135, 0.16));
+  }
+
   .theme-pill-group {
     background: rgba(255, 255, 255, 0.82);
     border: 1px solid rgba(30, 75, 135, 0.12);
@@ -139,6 +162,29 @@
   .theme-pill-indicator {
     background: linear-gradient(to right, #1E4B87, #D4AF37);
     box-shadow: 0 6px 14px rgba(30, 75, 135, 0.22);
+  }
+
+  .theme-dark .app-shell {
+    background:
+      linear-gradient(135deg, rgba(8, 16, 27, 0.92), rgba(12, 21, 36, 0.9)),
+      url('/art/background-soft.png') center/cover fixed no-repeat;
+  }
+
+  .theme-dark .app-header {
+    background:
+      linear-gradient(180deg, rgba(10, 19, 32, 0.88), rgba(12, 21, 36, 0.92)),
+      url('/art/hero-main.png') center 40%/cover no-repeat;
+  }
+
+  .theme-dark .app-footer {
+    background:
+      linear-gradient(180deg, rgba(8, 13, 22, 0.92), rgba(6, 10, 18, 0.96)),
+      url('/art/hero-secondary.png') center/cover no-repeat;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  .theme-dark .brand-logo {
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
   }
 
   .theme-dark .theme-pill-group {
@@ -163,6 +209,28 @@
   .theme-dark .theme-pill-indicator {
     background: linear-gradient(to right, #2D69B3, #D4AF37);
     box-shadow: 0 8px 18px rgba(5, 10, 24, 0.42);
+  }
+
+  .theme-sepia .app-shell {
+    background:
+      linear-gradient(135deg, rgba(244, 236, 216, 0.92), rgba(249, 244, 232, 0.88)),
+      url('/art/background-soft.png') center/cover fixed no-repeat;
+  }
+
+  .theme-sepia .app-header {
+    background:
+      linear-gradient(180deg, rgba(249, 244, 232, 0.9), rgba(244, 236, 216, 0.86)),
+      url('/art/hero-main.png') center 42%/cover no-repeat;
+  }
+
+  .theme-sepia .app-footer {
+    background:
+      linear-gradient(180deg, rgba(122, 106, 90, 0.86), rgba(92, 74, 58, 0.92)),
+      url('/art/hero-secondary.png') center/cover no-repeat;
+  }
+
+  .theme-sepia .brand-logo {
+    filter: drop-shadow(0 8px 18px rgba(92, 74, 58, 0.18));
   }
 
   .theme-sepia .theme-pill-group {

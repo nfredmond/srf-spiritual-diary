@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flower2, Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
+import { Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
 import { QuoteDisplay } from './components/QuoteDisplay/QuoteDisplay';
@@ -152,8 +152,13 @@ function App() {
       {/* Header */}
       <header className="app-header bg-white shadow-sm py-6 relative">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center gap-3">
-            <Flower2 className="w-8 h-8 text-srf-gold" />
+          <div className="relative z-10 flex items-center justify-center gap-3 md:gap-4">
+            <img
+              src="/branding/logo-transparent.png"
+              alt=""
+              aria-hidden="true"
+              className="brand-logo h-14 w-14 md:h-16 md:w-16 object-contain"
+            />
             <h1 className="font-heading text-3xl md:text-4xl text-srf-blue">
               SRF Spiritual Diary
             </h1>
