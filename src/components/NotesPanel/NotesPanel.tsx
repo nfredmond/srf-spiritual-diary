@@ -82,7 +82,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-6 max-w-2xl w-full"
+        className="notes-modal bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-6 max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -95,14 +95,14 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
           </h3>
           <button
             onClick={handleCloseRequest}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="notes-close-btn p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="Close reflections panel"
           >
             <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="notes-helper-text text-sm text-gray-600 mb-4">
           Write your thoughts, insights, or personal reflections on today&apos;s wisdom.
         </p>
 
@@ -114,13 +114,13 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="What does this quote mean to you? How can you apply it today?"
-          className="w-full h-64 p-4 border-2 border-srf-blue/20 rounded-xl focus:outline-none focus:border-srf-blue transition-colors resize-none"
+          className="notes-textarea w-full h-64 p-4 border-2 border-srf-blue/20 rounded-xl focus:outline-none focus:border-srf-blue transition-colors resize-none"
           autoFocus
         />
 
         <div className="flex items-center justify-between mt-4 gap-4">
           <div>
-            <p className="text-sm text-gray-500">{note.length} characters</p>
+            <p className="notes-meta-text text-sm text-gray-500">{note.length} characters</p>
             <p className={`text-xs mt-1 ${hasUnsavedChanges ? 'text-amber-700' : 'text-emerald-700'}`}>
               {hasUnsavedChanges ? 'Unsaved changes' : 'All changes saved'}
             </p>
@@ -136,7 +136,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
           </button>
         </div>
 
-        <p className="text-xs text-gray-500 mt-3" role="status" aria-live="polite">
+        <p className="notes-meta-text text-xs text-gray-500 mt-3" role="status" aria-live="polite">
           Tip: Press Ctrl/Cmd + S to save quickly.
         </p>
 
@@ -146,7 +146,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-center"
+              className="notes-success mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-center"
               role="status"
               aria-live="polite"
             >
