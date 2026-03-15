@@ -255,7 +255,7 @@ export function ExportImport({ onClose }: ExportImportProps) {
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-heading text-2xl text-srf-blue flex items-center gap-2">
             <FileText className="w-6 h-6" />
-            Backup & Restore
+            Preserve Your Journal
           </h3>
           <button
             onClick={onClose}

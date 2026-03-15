@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import { X, TrendingUp, Heart, BookOpen, Calendar, Award, Star, Sparkles } from 'lucide-react';
+import { X, TrendingUp, Heart, BookOpen, Calendar, Star, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 
 interface StatsDashboardProps {
   favorites: string[];
-  currentStreak: number;
-  longestStreak: number;
   totalDays: number;
   onClose: () => void;
 }
@@ -18,8 +16,6 @@ interface ThemeStats {
 
 export function StatsDashboard({
   favorites,
-  currentStreak,
-  longestStreak,
   totalDays,
   onClose,
 }: StatsDashboardProps) {
@@ -110,41 +106,26 @@ export function StatsDashboard({
           </button>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {/* Total Days */}
+        {/* Reflection Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="w-5 h-5 text-blue-500" />
-              <span className="text-sm text-gray-600">Total Days</span>
+              <span className="text-sm text-gray-600">Reading Days</span>
             </div>
             <p className="text-3xl font-bold text-srf-blue">{totalDays}</p>
-            <p className="text-xs text-gray-500 mt-1">{averagePerWeek}/week avg</p>
+            <p className="text-xs text-gray-500 mt-1">{averagePerWeek}/week average</p>
           </div>
 
-          {/* Current Streak */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <Award className="w-5 h-5 text-orange-500" />
-              <span className="text-sm text-gray-600">Current Streak</span>
-            </div>
-            <p className="text-3xl font-bold text-orange-500">{currentStreak}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {currentStreak === longestStreak ? 'Personal best! 🎉' : `Best: ${longestStreak}`}
-            </p>
-          </div>
-
-          {/* Favorites */}
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <Heart className="w-5 h-5 text-red-500" />
-              <span className="text-sm text-gray-600">Favorites</span>
+              <span className="text-sm text-gray-600">Saved Readings</span>
             </div>
             <p className="text-3xl font-bold text-red-500">{favorites.length}</p>
-            <p className="text-xs text-gray-500 mt-1">{favoritePercentage}% of all quotes</p>
+            <p className="text-xs text-gray-500 mt-1">{favoritePercentage}% of the full collection</p>
           </div>
 
-          {/* Notes */}
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <BookOpen className="w-5 h-5 text-srf-gold" />
@@ -193,7 +174,7 @@ export function StatsDashboard({
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <h4 className="font-heading text-lg text-srf-blue mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-500" />
-              Recent Activity (Last 7 Days)
+              Recent Reading Days
             </h4>
             <div className="flex gap-2">
               {recentActivity.map((date, index) => (
@@ -214,7 +195,7 @@ export function StatsDashboard({
         {/* Motivational Message */}
         <div className="mt-6 p-4 bg-gradient-to-r from-srf-blue/10 to-srf-gold/10 rounded-lg border border-srf-gold/30">
           <p className="text-center text-sm text-gray-700 italic">
-            {currentStreak >= 7
+            {totalDays >= 7
               ? '"Sainthood is not attained in a day. Spiritual truths come only through patient, persistent practice." — Paramahansa Yogananda'
               : '"Little by little, through patience and repeated effort, the mind will become stilled in the Self." — Paramahansa Yogananda'}
           </p>

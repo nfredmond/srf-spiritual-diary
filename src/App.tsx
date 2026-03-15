@@ -45,7 +45,7 @@ function App() {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const dateKey = format(selectedDate, 'MM-dd');
   const { note, saveNote, hasNote } = useNotes(dateKey);
-  const { currentStreak, longestStreak, totalDays, recordVisit } = useReadingStreak();
+  const { totalDays, recordVisit } = useReadingStreak();
   const { theme, setTheme } = useTheme();
   const { getRandomDateKey } = useRandomQuote();
   const { addToHistory } = useQuoteHistory();
@@ -159,31 +159,31 @@ function App() {
             </h1>
           </div>
           <p className="text-center text-gray-700 mt-2">
-            Daily Wisdom from Paramahansa Yogananda
+            Daily guidance inspired by the teachings of Paramahansa Yogananda
           </p>
 
           <p className="text-center text-sm text-gray-700 mt-4 max-w-2xl mx-auto leading-relaxed">
-            A quiet space for daily reading, reflection, favorites, notes, and meditation.
+            A calm place for daily reading, reflection, personal notes, and meditation.
           </p>
 
           {/* Top Right Controls */}
-          <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full border border-srf-blue/10 bg-white/90 px-2 py-1 shadow-sm backdrop-blur-sm">
             <button
               onClick={() => setShowSearch(!showSearch)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Search"
-              title="Search quotes (Press /)"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Search readings"
+              title="Search readings (Press /)"
             >
-              <SearchIcon className="w-5 h-5 text-gray-700" />
+              <SearchIcon className="w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
               onClick={() => setShowFavorites(!showFavorites)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors relative"
-              aria-label="Favorites"
-              title="View favorites (Press F)"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors relative"
+              aria-label="Saved readings"
+              title="View saved readings (Press F)"
             >
-              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'text-gray-700'}`} />
+              <Heart className={`w-5 h-5 ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'text-srf-blue/80'}`} />
               {favorites.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {favorites.length}
@@ -193,47 +193,47 @@ function App() {
 
             <button
               onClick={() => setShowStats(!showStats)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Statistics"
-              title="View your journey statistics"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Reflection overview"
+              title="View your reflection overview"
             >
-              <TrendingUp className="w-5 h-5 text-gray-700" />
+              <TrendingUp className="w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
               onClick={() => setShowCalendar(!showCalendar)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Calendar"
-              title="Calendar view"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Reading calendar"
+              title="Reading calendar"
             >
-              <CalendarIcon className="w-5 h-5 text-gray-700" />
+              <CalendarIcon className="w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
               onClick={() => setShowMeditationTimer(!showMeditationTimer)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Meditation Timer"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Meditation timer"
               title="Meditation timer (Press M)"
             >
-              <Timer className="w-5 h-5 text-gray-700" />
+              <Timer className="w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
               onClick={() => setShowExportImport(!showExportImport)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Backup & Restore"
-              title="Export/Import your data"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Preserve your journal"
+              title="Preserve your journal"
             >
-              <Database className="w-5 h-5 text-gray-700" />
+              <Database className="w-5 h-5 text-srf-blue/80" />
             </button>
 
             <button
               onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Keyboard shortcuts"
-              title="Keyboard shortcuts (Press ?)"
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="Reading shortcuts"
+              title="Reading shortcuts (Press ?)"
             >
-              <Keyboard className="w-5 h-5 text-gray-700" />
+              <Keyboard className="w-5 h-5 text-srf-blue/80" />
             </button>
           </div>
         </div>
@@ -241,7 +241,7 @@ function App() {
         {/* Enhanced Keyboard help modal */}
         {showKeyboardHelp && (
           <div className="absolute top-full right-4 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-72">
-            <h3 className="font-heading text-lg mb-3 text-srf-blue">Keyboard Shortcuts</h3>
+            <h3 className="font-heading text-lg mb-3 text-srf-blue">Reading Shortcuts</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <kbd className="px-2 py-1 bg-gray-100 rounded">← / H</kbd>
@@ -295,7 +295,7 @@ function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleRandomQuote}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-srf-blue border border-srf-blue/30 rounded-full hover:bg-srf-lotus/20 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-white/90 text-srf-blue border border-srf-gold/30 rounded-full hover:bg-srf-lotus/30 transition-all shadow-sm"
               title="Random reading (Press R)"
             >
               <Shuffle className="w-4 h-4" />
@@ -306,10 +306,10 @@ function App() {
               <button
                 onClick={() => setShowQuoteCard(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full hover:shadow-lg transition-all"
-                title="Create quote card"
+                title="Create quote image"
               >
                 <ImageIcon className="w-4 h-4" />
-                <span className="text-sm font-medium">Quote Card</span>
+                <span className="text-sm font-medium">Quote Image</span>
               </button>
             )}
           </div>
@@ -387,8 +387,6 @@ function App() {
         {showStats && (
           <StatsDashboard
             favorites={favorites}
-            currentStreak={currentStreak}
-            longestStreak={longestStreak}
             totalDays={totalDays}
             onClose={() => setShowStats(false)}
           />
