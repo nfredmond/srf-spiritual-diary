@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPacificDateParts, loadFallbackEntry } from './_lib/common';
-import { buildSpiritualImagePrompt } from './_lib/promptEngine';
-import { interpretQuoteVisually } from './_lib/quoteInterpreter';
-import { getSupabaseServiceClient } from './_lib/supabase';
+import { getPacificDateParts, loadFallbackEntry } from './_lib/common.js';
+import { buildSpiritualImagePrompt } from './_lib/promptEngine.js';
+import { interpretQuoteVisually } from './_lib/quoteInterpreter.js';
+import { getSupabaseServiceClient } from './_lib/supabase.js';
 
 function isAuthorized(req: VercelRequest): boolean {
   const secret = process.env.CRON_SECRET || process.env.SRF_RUN_DAILY_TOKEN;

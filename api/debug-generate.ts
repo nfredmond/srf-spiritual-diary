@@ -6,10 +6,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     checks.step1_handler = 'ok';
 
-    const { buildSpiritualImagePrompt } = await import('./_lib/promptEngine');
+    const { buildSpiritualImagePrompt } = await import('./_lib/promptEngine.js');
     checks.step2_promptEngine = typeof buildSpiritualImagePrompt;
 
-    const { interpretQuoteVisually } = await import('./_lib/quoteInterpreter');
+    const { interpretQuoteVisually } = await import('./_lib/quoteInterpreter.js');
     checks.step3_quoteInterpreter = typeof interpretQuoteVisually;
 
     checks.step4_geminiKey = process.env.GEMINI_API_KEY ? 'set' : 'missing';

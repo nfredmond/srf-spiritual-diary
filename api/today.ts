@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPacificDateParts, loadFallbackEntry } from './_lib/common';
-import { getSupabaseAnonClient } from './_lib/supabase';
+import { getPacificDateParts, loadFallbackEntry } from './_lib/common.js';
+import { getSupabaseAnonClient } from './_lib/supabase.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');

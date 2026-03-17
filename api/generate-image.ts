@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { buildSpiritualImagePrompt } from './_lib/promptEngine';
-import { interpretQuoteVisually } from './_lib/quoteInterpreter';
+import { buildSpiritualImagePrompt } from './_lib/promptEngine.js';
+import { interpretQuoteVisually } from './_lib/quoteInterpreter.js';
 
 const rateLimits = new Map<string, number[]>();
 
