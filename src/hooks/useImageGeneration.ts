@@ -39,24 +39,14 @@ export function useImageGeneration(dateKey: string, preferredProvider: ImageProv
   const generateImage = async (
     entry: DiaryEntry,
     provider: ImageProvider = preferredProvider,
-    options?: { force?: boolean },
+    _options?: { force?: boolean },
   ) => {
     setLoading(true);
     setError(null);
 
     try {
-      const force = options?.force === true;
-
-      if (!force) {
-        const cached = await getCachedImage(dateKey);
-        if (cached && cached.provider === provider) {
-          setImage(cached);
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Send entry data to the API for server-side LLM interpretation + image generation
+      // Always hit the API when the user explicitly requests generation.
+      // Cached images are loaded on page init via the effect above.
       const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
