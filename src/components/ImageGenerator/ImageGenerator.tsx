@@ -1,7 +1,6 @@
 import { Sparkles, Download, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useImageGeneration } from '../../hooks/useImageGeneration';
-import { generateImagePrompt } from '../../lib/utils/promptGenerator';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 
 interface ImageGeneratorProps {
@@ -13,8 +12,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
   const { image, loading, error, generateImage } = useImageGeneration(dateKey, 'gemini');
 
   const handleGenerate = () => {
-    const prompt = generateImagePrompt(entry);
-    generateImage(prompt, 'gemini');
+    generateImage(entry, 'gemini');
   };
 
   const handleDownload = () => {

@@ -14,6 +14,7 @@ const STYLE_PALETTES = [
   { name: 'desert of inner silence', visual: 'vast golden desert at twilight, long meditative shadows, still horizon, calm sacred minimalism' },
 ];
 
+/* Legacy symbol map — kept as fallback when LLM interpretation is unavailable */
 const SYMBOL_MAP: Array<{ words: string[]; imagery: string }> = [
   { words: ['light', 'radiant', 'illumination'], imagery: 'a central field of warm divine light' },
   { words: ['peace', 'calm', 'stillness'], imagery: 'mirror-like still water and tranquil open space' },
@@ -47,21 +48,38 @@ const NEGATIVE = [
   'no crowded scene',
 ].join(', ');
 
+function legacyKeywords(entry: PromptInputEntry): string[] {
+  const text = `${entry.topic} ${entry.weekly_theme ?? ''} ${entry.quote}`.toLowerCase();
+  const matches = SYMBOL_MAP.filter((item) => item.words.some((word) => text.includes(word))).map((item) => item.imagery);
+  return matches.length > 0 ? matches : [`a contemplative visual metaphor for ${entry.topic.toLowerCase()}`];
+}
+
 export function buildSpiritualImagePrompt(
   entry: PromptInputEntry,
-  options: { dateKey: string; allowOmSymbol: boolean },
+  options: {
+    dateKey: string;
+    allowOmSymbol: boolean;
+    /** LLM-interpreted visual scene description — replaces static keyword lookup */
+    interpretedVisual?: string;
+  },
 ): { prompt: string; negativePrompt: string; styleName: string } {
   const [monthRaw, dayRaw] = options.dateKey.split('-');
   const style = STYLE_PALETTES[((Number(monthRaw) || 1) * 31 + (Number(dayRaw) || 1)) % STYLE_PALETTES.length];
-  const text = `${entry.topic} ${entry.weekly_theme ?? ''} ${entry.quote}`.toLowerCase();
-  const keywords = SYMBOL_MAP.filter((item) => item.words.some((word) => text.includes(word))).map((item) => item.imagery);
+
+  const hasLlmVisual = options.interpretedVisual && options.interpretedVisual.length > 20;
+
+  const visualCuesLine = hasLlmVisual
+    ? `Scene concept (interpret this quote visually): ${options.interpretedVisual}`
+    : `Key visual cues: ${legacyKeywords(entry).join('; ')}.`;
 
   const prompt = [
     'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings, quiet devotion, humility, stillness, and inward communion with the Divine.',
     `Theme: ${entry.weekly_theme ?? entry.topic}. Topic focus: ${entry.topic}.`,
-    `Quote essence: ${entry.quote}`,
+    hasLlmVisual
+      ? `The artwork must visually express the specific meaning of this quote: "${entry.quote}"`
+      : `Quote essence: ${entry.quote}`,
     `Style palette: ${style.name} (${style.visual}).`,
-    `Key visual cues: ${(keywords.length > 0 ? keywords : [`a contemplative visual metaphor for ${entry.topic.toLowerCase()}`]).join('; ')}.`,
+    visualCuesLine,
     entry.special_day ? `Honor context: ${entry.special_day}.` : '',
     'Visual tone: calm, welcoming, sacred, contemplative, non-commercial, warm earth tones with soft gold, cream, rose dawn, mountain light, temple garden stillness, lotus symbolism, ocean or sky serenity when fitting.',
     'Composition: balanced, elegant, spacious, natural light, painterly realism or refined devotional illustration, no people posing for camera, no dramatic spectacle, no textual elements.',

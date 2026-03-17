@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { GeneratedImage, ImageProvider } from '../types/ImageProvider';
+import type { DiaryEntry } from '../types/DiaryEntry';
 import { cacheImage, getCachedImage } from './useImageCache';
 
 const DEFAULT_PROVIDER: ImageProvider = 'gemini';
@@ -35,7 +36,7 @@ export function useImageGeneration(dateKey: string, preferredProvider: ImageProv
     };
   }, [dateKey, preferredProvider]);
 
-  const generateImage = async (prompt: string, provider: ImageProvider = preferredProvider, apiKey?: string) => {
+  const generateImage = async (entry: DiaryEntry, provider: ImageProvider = preferredProvider) => {
     setLoading(true);
     setError(null);
 
@@ -47,10 +48,11 @@ export function useImageGeneration(dateKey: string, preferredProvider: ImageProv
         return;
       }
 
+      // Send entry data to the API for server-side LLM interpretation + image generation
       const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, provider, apiKey }),
+        body: JSON.stringify({ entry, dateKey }),
       });
 
       if (!response.ok) {

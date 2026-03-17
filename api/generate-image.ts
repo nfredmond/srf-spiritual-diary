@@ -1,4 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { buildSpiritualImagePrompt } from './_lib/promptEngine';
+import { interpretQuoteVisually } from './_lib/quoteInterpreter';
 
 const rateLimits = new Map<string, number[]>();
 
@@ -78,10 +80,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { prompt, apiKey } = req.body;
+    const { prompt, apiKey, entry, dateKey } = req.body;
 
-    if (!prompt) {
-      return res.status(400).json({ error: 'Prompt is required' });
+    // New path: entry data provided → do LLM interpretation + prompt building server-side
+    // Legacy path: raw prompt string → use directly (backward compat)
+    let finalPrompt: string;
+
+    if (entry && dateKey) {
+      console.log('Building quote-aware prompt via LLM interpretation...');
+
+      const interpretedVisual = await interpretQuoteVisually(
+        entry.quote,
+        entry.topic,
+        entry.weeklyTheme || entry.weekly_theme,
+        entry.specialDay || entry.special_day,
+      );
+      console.log('Visual interpretation:', interpretedVisual);
+
+      const allowOmSymbol = process.env.SRF_ALLOW_OM_SYMBOL !== 'false';
+      const result = buildSpiritualImagePrompt(
+        {
+          month: entry.month,
+          day: entry.day,
+          topic: entry.topic,
+          weekly_theme: entry.weeklyTheme || entry.weekly_theme || null,
+          quote: entry.quote,
+          special_day: entry.specialDay || entry.special_day || null,
+        },
+        { dateKey, allowOmSymbol, interpretedVisual },
+      );
+
+      finalPrompt = `${result.prompt}\n\nNegative prompt: ${result.negativePrompt}`;
+    } else if (prompt) {
+      finalPrompt = prompt;
+    } else {
+      return res.status(400).json({ error: 'Either entry+dateKey or prompt is required' });
     }
 
     const ip = (req.headers['x-forwarded-for'] as string) || 'unknown';
@@ -100,8 +133,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    console.log('Generating image with Google Gemini / Nano Banana...');
-    const imageUrl = await generateGeminiImage(prompt, key);
+    console.log('Generating image with Google Gemini...');
+    const imageUrl = await generateGeminiImage(finalPrompt, key);
     console.log('Image generated successfully with Google Gemini');
 
     return res.status(200).json({ imageUrl, provider: 'gemini' });

@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPacificDateParts, loadFallbackEntry } from './_lib/common';
 import { buildSpiritualImagePrompt } from './_lib/promptEngine';
+import { interpretQuoteVisually } from './_lib/quoteInterpreter';
 import { getSupabaseServiceClient } from './_lib/supabase';
 
 function isAuthorized(req: VercelRequest): boolean {
@@ -131,7 +132,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const allowOmSymbol = boolEnv('SRF_ALLOW_OM_SYMBOL', true);
-    const promptResult = buildSpiritualImagePrompt(entry, { dateKey, allowOmSymbol });
+
+    // LLM pass: interpret the quote into a bespoke visual scene description
+    console.log('Interpreting quote visually with Gemini text model...');
+    const interpretedVisual = await interpretQuoteVisually(
+      entry.quote,
+      entry.topic,
+      entry.weekly_theme,
+      entry.special_day,
+    );
+    console.log('Visual interpretation:', interpretedVisual);
+
+    const promptResult = buildSpiritualImagePrompt(entry, { dateKey, allowOmSymbol, interpretedVisual });
     const generated = await generateImageWithGemini(promptResult.prompt, promptResult.negativePrompt);
 
     const { data: render, error: upsertError } = await supabase
