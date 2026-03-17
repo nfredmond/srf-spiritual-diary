@@ -67,8 +67,11 @@ export function useImageGeneration(dateKey: string, preferredProvider: ImageProv
         dateKey,
       };
 
-      await cacheImage(generatedImage);
+      // Update the UI immediately; cache persistence is best-effort.
       setImage(generatedImage);
+      cacheImage(generatedImage).catch((cacheErr) => {
+        console.error('Error caching generated image:', cacheErr);
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
