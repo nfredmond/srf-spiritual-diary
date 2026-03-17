@@ -1,3 +1,5 @@
+import type { QuoteVisualInterpretation } from './quoteInterpreter.js';
+
 export interface PromptInputEntry {
   month: number;
   day: number;
@@ -8,10 +10,10 @@ export interface PromptInputEntry {
 }
 
 const STYLE_PALETTES = [
-  { name: 'lotus dawn', visual: 'misty lotus pond at sunrise, rose-gold atmosphere, devotional serenity, soft rays over still water' },
-  { name: 'himalayan light', visual: 'high Himalayan ridges, crystal air, dawn-blue sky, subtle snow glow, contemplative silence' },
-  { name: 'cosmic stillness', visual: 'deep midnight blue cosmos, tranquil aurora veil, luminous sacred geometry in natural forms' },
-  { name: 'desert of inner silence', visual: 'vast golden desert at twilight, long meditative shadows, still horizon, calm sacred minimalism' },
+  { name: 'rose-gold dawn', visual: 'soft rose-gold dawn light, luminous mist, gentle devotional warmth' },
+  { name: 'clear high-altitude light', visual: 'crisp blue-white atmosphere, clean clarity, elevated stillness' },
+  { name: 'midnight blue radiance', visual: 'deep blue-violet atmosphere, subtle inner glow, contemplative depth' },
+  { name: 'golden twilight minimalism', visual: 'quiet amber light, long shadows, restrained sacred simplicity' },
 ];
 
 /* Legacy symbol map — kept as fallback when LLM interpretation is unavailable */
@@ -33,7 +35,6 @@ const NEGATIVE = [
   'no signatures',
   'no watermarks',
   'no glyphs',
-  'no symbols',
   'no calligraphy',
   'no typographic marks',
   'no subtitles',
@@ -44,6 +45,9 @@ const NEGATIVE = [
   'no harsh contrast',
   'no sci-fi spectacle',
   'no exaggerated fantasy effects',
+  'no default generic lotus pond composition',
+  'no random mountain lake wallpaper',
+  'no decorative spiritual stock art look',
   'no people posing for camera',
   'no crowded scene',
 ].join(', ');
@@ -60,39 +64,52 @@ export function buildSpiritualImagePrompt(
     dateKey: string;
     allowOmSymbol: boolean;
     /** LLM-interpreted visual scene description — replaces static keyword lookup */
-    interpretedVisual?: string;
+    interpretedVisual?: QuoteVisualInterpretation;
   },
 ): { prompt: string; negativePrompt: string; styleName: string } {
   const [monthRaw, dayRaw] = options.dateKey.split('-');
   const style = STYLE_PALETTES[((Number(monthRaw) || 1) * 31 + (Number(dayRaw) || 1)) % STYLE_PALETTES.length];
 
-  const hasLlmVisual = options.interpretedVisual && options.interpretedVisual.length > 20;
+  const hasLlmVisual = Boolean(options.interpretedVisual?.scene && options.interpretedVisual.scene.length > 20);
 
-  const visualCuesLine = hasLlmVisual
-    ? `Scene concept (interpret this quote visually): ${options.interpretedVisual}`
-    : `Key visual cues: ${legacyKeywords(entry).join('; ')}.`;
+  const mustInclude = hasLlmVisual
+    ? options.interpretedVisual?.mustInclude?.filter(Boolean).join('; ')
+    : legacyKeywords(entry).join('; ');
+
+  const avoidList = hasLlmVisual
+    ? options.interpretedVisual?.avoid?.filter(Boolean).join('; ')
+    : 'generic interchangeable spiritual scenery unrelated to the quote';
+
+  const sceneConcept = hasLlmVisual
+    ? options.interpretedVisual?.scene
+    : `A contemplative visual metaphor for ${entry.topic.toLowerCase()}.`;
 
   const prompt = [
-    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings, quiet devotion, humility, stillness, and inward communion with the Divine.',
+    'Create reverent spiritual artwork inspired by Self-Realization Fellowship teachings, but prioritize the quote’s specific meaning over generic devotional wallpaper aesthetics.',
     `Theme: ${entry.weekly_theme ?? entry.topic}. Topic focus: ${entry.topic}.`,
-    hasLlmVisual
-      ? `The artwork must visually express the specific meaning of this quote: "${entry.quote}"`
-      : `Quote essence: ${entry.quote}`,
-    `Style palette: ${style.name} (${style.visual}).`,
-    visualCuesLine,
+    `This image must visually express the specific meaning of this quote: "${entry.quote}"`,
+    `Atmospheric treatment only: ${style.name} (${style.visual}). Do not let the style override the quote-specific scene concept.`,
+    `Primary scene concept: ${sceneConcept}`,
+    `Required visual anchors that must appear in the scene: ${mustInclude}.`,
+    `Avoid these generic fallback motifs unless the quote truly requires them: ${avoidList}.`,
+    options.interpretedVisual?.rationale ? `Interpretive rationale: ${options.interpretedVisual.rationale}` : '',
     entry.special_day ? `Honor context: ${entry.special_day}.` : '',
-    'Visual tone: calm, welcoming, sacred, contemplative, non-commercial, warm earth tones with soft gold, cream, rose dawn, mountain light, temple garden stillness, lotus symbolism, ocean or sky serenity when fitting.',
-    'Composition: balanced, elegant, spacious, natural light, painterly realism or refined devotional illustration, no people posing for camera, no dramatic spectacle, no textual elements.',
+    'Visual tone: sacred, calm, luminous, contemplative, non-commercial, painterly realism or refined devotional illustration. Quote-specific action, conflict, symbolism, and objects should dominate over generic yoga/spiritual decoration.',
+    'Composition: balanced and elegant, but concrete and legible. Use meaningful symbolic action or transformation when the quote implies effort, struggle, breakthrough, surrender, growth, or realization. No textual elements.',
     options.allowOmSymbol
-      ? 'Optionally include one very subtle Om (ॐ) symbol blended into natural texture; if used, only one and not dominant.'
+      ? 'Do not include Om by default. Only include one very subtle Om (ॐ) if it is genuinely justified by the quote-specific scene or special-day context; if used, only one and not dominant.'
       : 'Do not include Om or any symbol.',
   ]
     .filter(Boolean)
     .join(' ');
 
+  const negativePrompt = options.allowOmSymbol
+    ? `${NEGATIVE}, except at most one subtle Om symbol (ॐ) only when scene-justified`
+    : NEGATIVE;
+
   return {
     prompt,
-    negativePrompt: options.allowOmSymbol ? `${NEGATIVE}, except at most one subtle Om symbol (ॐ)` : NEGATIVE,
+    negativePrompt,
     styleName: style.name,
   };
 }
