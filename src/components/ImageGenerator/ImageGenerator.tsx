@@ -15,6 +15,10 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
     generateImage(entry, 'gemini');
   };
 
+  const handleGenerateAnother = () => {
+    generateImage(entry, 'gemini', { force: true });
+  };
+
   const handleDownload = () => {
     if (!image) return;
     const link = document.createElement('a');
@@ -67,7 +71,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
           <p className="text-red-700 font-semibold mb-2">Unable to generate image</p>
           <p className="text-red-600 text-sm">{error}</p>
           <button
-            onClick={handleGenerate}
+            onClick={handleGenerateAnother}
             className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
           >
             Try Again
@@ -116,7 +120,7 @@ export function ImageGenerator({ entry, dateKey }: ImageGeneratorProps) {
             </div>
 
             <button
-              onClick={handleGenerate}
+              onClick={handleGenerateAnother}
               disabled={loading}
               className="w-full mt-4 py-3 bg-srf-lotus/30 text-srf-blue rounded-lg hover:bg-srf-lotus/50 transition-colors font-medium"
             >

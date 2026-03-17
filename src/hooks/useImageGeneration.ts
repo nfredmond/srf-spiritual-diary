@@ -36,16 +36,24 @@ export function useImageGeneration(dateKey: string, preferredProvider: ImageProv
     };
   }, [dateKey, preferredProvider]);
 
-  const generateImage = async (entry: DiaryEntry, provider: ImageProvider = preferredProvider) => {
+  const generateImage = async (
+    entry: DiaryEntry,
+    provider: ImageProvider = preferredProvider,
+    options?: { force?: boolean },
+  ) => {
     setLoading(true);
     setError(null);
 
     try {
-      const cached = await getCachedImage(dateKey);
-      if (cached && cached.provider === provider) {
-        setImage(cached);
-        setLoading(false);
-        return;
+      const force = options?.force === true;
+
+      if (!force) {
+        const cached = await getCachedImage(dateKey);
+        if (cached && cached.provider === provider) {
+          setImage(cached);
+          setLoading(false);
+          return;
+        }
       }
 
       // Send entry data to the API for server-side LLM interpretation + image generation
