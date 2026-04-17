@@ -29,6 +29,11 @@
 - `projects/srf-spiritual-diary/WORKSPACE_DEPRECATED.md` — stub at the stale workspace copy pointing at the canonical repo. No files moved or deleted.
 - `.gitignore` widened to `.env.*` (excluding `.env.example`) + excludes `supabase/.temp/` + `supabase/.branches/`.
 
+### UX polish (Phase 6)
+- New `src/components/AboutModal/AboutModal.tsx` — Headless UI `Dialog` reusing the `DatePickerModal` pattern. Four sections (what this is, attribution + covenant disclosure, local-only data, keyboard tips) plus a footer link to `yogananda.org` for readers who want to support the teachings directly. Wired to a new `Info` icon in the top-right utility toolbar.
+- New `src/components/OnboardingTour/OnboardingTour.tsx` — three-panel first-visit welcome (what this is → navigation hotkeys → toolbar tour). Step indicator, Skip / Back / Next / Got-it buttons. Gated on `localStorage.srf-onboarding-completed`; dismissal (Skip or Got-it) sets the flag so it never re-fires. Existing users without the flag will see the tour once on their next visit, which is the intended upgrade path.
+- `src/App.tsx` — imports both modals, adds `showAbout` / `showOnboarding` state, `handleOnboardingComplete`, the first-visit effect, and the Info toolbar button.
+
 ### Not in this release
 - No production ComfyUI path (Vercel cron can't reach the home box). `SRF_IMAGE_PROVIDER` stays unset in Production → Gemini continues to serve daily renders.
 - No hand-transcription plumbing for the 20 missing MM-DD dates.

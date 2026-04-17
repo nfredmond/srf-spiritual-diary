@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database } from 'lucide-react';
+import { Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database, Info } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
 import { QuoteDisplay } from './components/QuoteDisplay/QuoteDisplay';
@@ -17,6 +17,8 @@ import { StatsDashboard } from './components/StatsDashboard/StatsDashboard';
 import { CalendarView } from './components/CalendarView/CalendarView';
 import { ExportImport } from './components/ExportImport/ExportImport';
 import { WeeklyThemeView } from './components/WeeklyThemeView/WeeklyThemeView';
+import { AboutModal } from './components/AboutModal/AboutModal';
+import { OnboardingTour } from './components/OnboardingTour/OnboardingTour';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -42,6 +44,8 @@ function App() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showExportImport, setShowExportImport] = useState(false);
   const [showWeeklyThemes, setShowWeeklyThemes] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
@@ -74,6 +78,21 @@ function App() {
     recordVisit();
     addToHistory(dateKey);
   }, [recordVisit, addToHistory, dateKey]);
+
+  // First-visit onboarding tour
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!window.localStorage.getItem('srf-onboarding-completed')) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('srf-onboarding-completed', 'true');
+    }
+    setShowOnboarding(false);
+  };
 
   // Swipe gestures
   useSwipeGesture({
@@ -242,6 +261,15 @@ function App() {
               title="Reading shortcuts (Press ?)"
             >
               <Keyboard className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
+            </button>
+
+            <button
+              onClick={() => setShowAbout(true)}
+              className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
+              aria-label="About this reader"
+              title="About this reader"
+            >
+              <Info className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
             </button>
           </div>
         </div>
@@ -451,6 +479,9 @@ function App() {
           />
         )}
       </AnimatePresence>
+
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+      {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}
 
       {/* Footer */}
       <footer className="app-footer bg-srf-blue text-white py-8 mt-20">
