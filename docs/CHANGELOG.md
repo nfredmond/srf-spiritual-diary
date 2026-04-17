@@ -8,10 +8,15 @@
 
 ### Image provider layer (Phase 2)
 - New `scripts/lib/imageProviders.mjs` — `getImageProvider()` factory returns `GeminiImageProvider` (default) or `ComfyUIImageProvider` based on `SRF_IMAGE_PROVIDER` env. `scripts/daily-pipeline.mjs` now calls the factory instead of an inline Gemini fetch.
-- ComfyUI provider posts an 8-step SDXL workflow to `127.0.0.1:8188` (`RealVisXL_V5.0_fp16.safetensors` + `Hyper-SDXL-8steps-CFG-lora.safetensors`), polls `/history/{id}`, fetches the PNG via `/view`, uploads to Supabase Storage bucket `daily-renders/{runDate}.png`, and stores the public HTTPS URL in `daily_renders.image_url`.
+- ComfyUI provider posts an 8-step SDXL workflow to `127.0.0.1:8188`, polls `/history/{id}`, fetches the PNG via `/view`, uploads to Supabase Storage bucket `daily-renders/{runDate}.png`, and stores the public HTTPS URL in `daily_renders.image_url`.
 - Migration `202604170002_daily_renders_image_provider.sql` adds a `image_provider` TEXT column + index (additive, idempotent).
 - `.env.example` documents the new `SRF_IMAGE_PROVIDER`, `SRF_IMAGE_BUCKET`, and `SRF_COMFY_*` vars.
-- Verified 2026-04-17: ComfyUI path produced `daily-renders/2026-04-16.png` (1.65 MB, public HTTPS) + `daily_renders` row with `image_provider='comfyui'`. Gemini path is a byte-identical code port of the prior inline call; not live-tested this session (production `GEMINI_API_KEY` is marked sensitive and not exposed via `vercel env pull`).
+- Gemini path is a byte-identical code port of the prior inline call; not live-tested this session (production `GEMINI_API_KEY` is sensitive and not exposed via `vercel env pull`).
+
+### ComfyUI model + prompt tuning
+- Default checkpoint flipped `RealVisXL_V5.0` (photoreal, drifts toward portraits) → `DreamShaperXL_Turbo_v2_1` (painterly, devotional-art bias, already distilled for ~8-step generation). CFG dropped `5.0` → `2.5` to match Turbo expectations. `SRF_COMFY_LORA` default emptied — Turbo checkpoints don't want extra step-reduction LoRAs, and the workflow now skips the `LoraLoader` node entirely when no LoRA is set (ComfyUI rejects `lora_name=''`).
+- `scripts/lib/prompt-engine.mjs` hardened against figurative output: added `no humans / no people / no faces / no portraits / no saints / no gurus / no deities / no meditating figure / no sitting figure / no robed person / no monk` to the negative prompt, and rewrote the composition clause to "pure unpopulated landscape and natural symbolism only." The fallback when no symbol keywords match is now "unpopulated landscape metaphor using only natural elements" rather than "contemplative visual metaphor" (which DreamShaper read as a meditating figure).
+- Verified 2026-04-17 across 4 varied topics (Obedience / Prayer / Freedom / Overcoming Temptation) → pure devotional landscapes, zero human figures, painterly light, lotus / mountain / water / sky composition. Sample URLs: `daily-renders/sample-v3-{01-15,04-16,07-04,10-28}.png` in Supabase Storage.
 
 ### Docs / hygiene
 - `docs/DEPLOY_LOG.md` — new file tracking production deploys `ohhynqvph`, `dagtqkwiy`, `qaheoznxj`, `n0wu46m2s` with commits, changes, and smoke results.

@@ -89,30 +89,27 @@ class GeminiImageProvider {
 // ------------------------- ComfyUI -------------------------
 
 function buildComfyWorkflow({ prompt, negativePrompt, checkpoint, lora, steps, cfg, width, height, seed, sampler, scheduler }) {
-  // Minimal SDXL workflow: Checkpoint → LoRA → two CLIP prompts → KSampler → VAE → SaveImage.
-  // Node IDs are string keys per ComfyUI API requirements.
+  // Minimal SDXL workflow: Checkpoint (+ optional LoRA) → two CLIP prompts →
+  // KSampler → VAE → SaveImage. Node IDs are string keys per the ComfyUI API.
+  // When no LoRA is requested we skip the LoraLoader node entirely — ComfyUI's
+  // LoraLoader rejects an empty `lora_name`, and Turbo checkpoints don't need
+  // extra step-reduction LoRAs.
+  const hasLora = Boolean(lora);
+  const modelSource = hasLora ? ['2', 0] : ['1', 0];
+  const clipSource = hasLora ? ['2', 1] : ['1', 1];
+
   const workflow = {
     '1': {
       class_type: 'CheckpointLoaderSimple',
       inputs: { ckpt_name: checkpoint },
     },
-    '2': {
-      class_type: 'LoraLoader',
-      inputs: {
-        lora_name: lora,
-        strength_model: 1.0,
-        strength_clip: 1.0,
-        model: ['1', 0],
-        clip: ['1', 1],
-      },
-    },
     '3': {
       class_type: 'CLIPTextEncode',
-      inputs: { text: prompt, clip: ['2', 1] },
+      inputs: { text: prompt, clip: clipSource },
     },
     '4': {
       class_type: 'CLIPTextEncode',
-      inputs: { text: negativePrompt, clip: ['2', 1] },
+      inputs: { text: negativePrompt, clip: clipSource },
     },
     '5': {
       class_type: 'EmptyLatentImage',
@@ -127,7 +124,7 @@ function buildComfyWorkflow({ prompt, negativePrompt, checkpoint, lora, steps, c
         sampler_name: sampler,
         scheduler,
         denoise: 1.0,
-        model: ['2', 0],
+        model: modelSource,
         positive: ['3', 0],
         negative: ['4', 0],
         latent_image: ['5', 0],
@@ -143,14 +140,13 @@ function buildComfyWorkflow({ prompt, negativePrompt, checkpoint, lora, steps, c
     },
   };
 
-  // If the lora is empty/not requested, bypass the LoraLoader node by rewriting edges.
-  if (!lora) {
+  if (hasLora) {
     workflow['2'] = {
       class_type: 'LoraLoader',
       inputs: {
-        lora_name: '',
-        strength_model: 0.0,
-        strength_clip: 0.0,
+        lora_name: lora,
+        strength_model: 1.0,
+        strength_clip: 1.0,
         model: ['1', 0],
         clip: ['1', 1],
       },
@@ -238,10 +234,16 @@ class ComfyUIImageProvider {
   constructor({ artifactRoot }) {
     this.artifactRoot = artifactRoot;
     this.host = (process.env.SRF_COMFY_HOST || 'http://127.0.0.1:8188').replace(/\/$/, '');
-    this.checkpoint = process.env.SRF_COMFY_CHECKPOINT || 'RealVisXL_V5.0_fp16.safetensors';
-    this.lora = process.env.SRF_COMFY_LORA ?? 'from_checkpoints/SDXL/Hyper-SDXL-8steps-CFG-lora.safetensors';
+    // Default: DreamShaperXL Turbo — painterly / devotional-art bias, already distilled
+    // for ~6–8 steps at low CFG. Much better fit for SRF diary artwork than photoreal
+    // checkpoints like RealVisXL, which tend to drift toward portraits.
+    this.checkpoint = process.env.SRF_COMFY_CHECKPOINT || 'DreamShaperXL_Turbo_v2_1.safetensors';
+    // Turbo checkpoints are already distilled — stacking an 8-step LoRA is redundant and
+    // often harmful. Leave empty by default; set SRF_COMFY_LORA if pairing with a non-turbo.
+    this.lora = process.env.SRF_COMFY_LORA ?? '';
     this.steps = Number(process.env.SRF_COMFY_STEPS || 8);
-    this.cfg = Number(process.env.SRF_COMFY_CFG || 5.0);
+    // Turbo checkpoints want CFG ~2–3, not 5+.
+    this.cfg = Number(process.env.SRF_COMFY_CFG || 2.5);
     this.sampler = process.env.SRF_COMFY_SAMPLER || 'dpmpp_sde';
     this.scheduler = process.env.SRF_COMFY_SCHEDULER || 'karras';
     this.timeoutMs = Number(process.env.SRF_COMFY_TIMEOUT_MS || 180_000);

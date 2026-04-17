@@ -27,6 +27,24 @@ const SYMBOLS = [
 ];
 
 const NEGATIVE = [
+  'no humans',
+  'no people',
+  'no human figures',
+  'no faces',
+  'no portraits',
+  'no saints',
+  'no gurus',
+  'no religious figure illustrations',
+  'no deities',
+  'no figurative religious iconography',
+  'no halos around figures',
+  'no hands',
+  'no bodies',
+  'no meditating figure',
+  'no sitting figure',
+  'no robed person',
+  'no silhouettes of people',
+  'no monk',
   'no visible text',
   'no letters',
   'no words',
@@ -46,7 +64,6 @@ const NEGATIVE = [
   'no harsh contrast',
   'no sci-fi spectacle',
   'no exaggerated fantasy effects',
-  'no people posing for camera',
   'no crowded scene',
 ].join(', ');
 
@@ -66,7 +83,9 @@ function extractKeywords(entry) {
     }
   }
   if (results.size === 0) {
-    results.add(`a contemplative visual metaphor for ${String(entry.topic || 'devotion').toLowerCase()}`);
+    results.add(
+      `an unpopulated landscape metaphor for ${String(entry.topic || 'devotion').toLowerCase()} — use only natural elements (mountains, water, light, sky, flora), no people, no figures`,
+    );
   }
   return [...results];
 }
@@ -85,7 +104,7 @@ export function buildSpiritualImagePrompt(entry, options = {}) {
     `Key visual cues: ${keywords.join('; ')}.`,
     entry.special_day || entry.specialDay ? `Honor context: ${entry.special_day || entry.specialDay}.` : '',
     'Visual tone: calm, welcoming, sacred, contemplative, non-commercial, warm earth tones with soft gold, cream, rose dawn, mountain light, temple garden stillness, lotus symbolism, ocean or sky serenity when fitting.',
-    'Composition: balanced, elegant, spacious, natural light, painterly realism or refined devotional illustration, no people posing for camera, no dramatic spectacle, no textual elements.',
+    'Composition: pure unpopulated landscape and natural symbolism only — no people, no faces, no religious figures, no saints, no gurus, no deities. Painterly symbolic devotional landscape, balanced, elegant, spacious, natural light, no textual elements, no dramatic spectacle.',
     allowOm
       ? 'Optionally include one very subtle Om (ॐ) symbol blended into natural texture; if used, only one and not dominant.'
       : 'Do not include Om or any symbol.',
