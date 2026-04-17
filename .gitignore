@@ -34,3 +34,7 @@ dist-ssr
 
 # Generated pipeline artifacts
 artifacts/daily
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/

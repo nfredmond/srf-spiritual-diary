@@ -27,8 +27,7 @@ async function main() {
   const parsed = JSON.parse(raw);
   const entries = parsed.entries || {};
 
-  const rows = Object.entries(entries).map(([dateKey, entry]) => ({
-    date_key: dateKey,
+  const rows = Object.entries(entries).map(([, entry]) => ({
     month: entry.month,
     day: entry.day,
     weekly_theme: entry.weeklyTheme || null,
