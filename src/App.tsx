@@ -454,14 +454,14 @@ function App() {
 
       {/* Footer */}
       <footer className="app-footer bg-srf-blue text-white py-8 mt-20">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm">
-            © 2025 Self-Realization Fellowship. All rights reserved.
+        <div className="container mx-auto px-4 text-center space-y-2">
+          <p className="text-sm text-srf-sky">
+            A personal reading companion for <em>The Spiritual Diary</em> by Paramahansa Yogananda.
           </p>
-          <p className="text-sm mt-2 text-srf-sky">
-            Made with devotion to share the teachings of Paramahansa Yogananda
+          <p className="text-xs text-srf-sky/80 max-w-2xl mx-auto">
+            Quotes are sourced from <em>The Spiritual Diary</em>, published by Self-Realization Fellowship (Los Angeles, CA). Yogananda&apos;s writings are © Self-Realization Fellowship. This site is an unofficial personal devotional reader; it is not affiliated with, endorsed by, or sponsored by Self-Realization Fellowship.
           </p>
-          <p className="text-xs mt-3 text-srf-sky/70">
+          <p className="text-xs text-srf-sky/70 pt-2">
             Press <kbd className="px-1 py-0.5 bg-white/10 rounded text-xs">?</kbd> for keyboard shortcuts
           </p>
         </div>
