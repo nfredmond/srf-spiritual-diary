@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-04-17 (Round 3 Chunk A — performance)
+
+### Bundle split
+- `src/App.tsx` — 10 modal components converted to `React.lazy(() => import(...))` with a single `<Suspense fallback={null}>` boundary around the modal block. Lazy: `FavoritesPanel`, `EnhancedMeditationTimer`, `EnhancedQuoteCard`, `NotesPanel`, `StatsDashboard`, `CalendarView`, `ExportImport`, `WeeklyThemeView`, `AboutModal`, `OnboardingTour`. Each now ships as its own 2.5–7.9 KB chunk, fetched the first time the user opens that modal. Above-the-fold imports remain eager: `DateNavigator`, `WeekRhythm`, `QuoteDisplay`, `SearchBar`/`SearchResults`, `ThemeSwitcher`, `ReadingControls`, `ImageGenerator`, `SkeletonLoader`.
+- `vite.config.ts` — `rollupOptions.output.manualChunks` splits the heavy vendors into independent chunks: `vendor-motion` (115.96 KB, framer-motion), `vendor-supabase` (171.65 KB, @supabase/supabase-js), `vendor-headless` (47.61 KB, @headlessui/react), `vendor-dates` (20.06 KB, date-fns), `vendor-icons` (18.12 KB, lucide-react). Each caches independently across deploys; a CSS-only change no longer invalidates the 172 KB Supabase bundle.
+- Result: main shell 643.94 KB → **227.08 KB** (192.18 KB → **69.94 KB** gzipped). Vite "chunks larger than 500 kB" warning removed.
+
+### Gemini image path unified to Storage
+- `scripts/lib/imageProviders.mjs` — `GeminiImageProvider.generate()` now uploads the PNG to Supabase Storage (same `daily-renders/{runDate}.png` path the ComfyUI provider already used) and returns the public HTTPS URL. Falls back to the base64 data URL only when Storage credentials are missing or upload fails. Keeps `daily_renders.image_url` a consistent HTTPS URL shape across both providers and ends the ~1 MB/row bloat from data-URL rows.
+
+### Verification
+- `npm run verify` green (typecheck + 5 lib tests + Vite build, no warnings).
+- Live smoke (`5wf6qfrzf`): `https://srf-spiritual-diary.vercel.app` returns 200; initial HTML preloads the app shell + 5 vendor chunks only, no modal chunks; `AboutModal` chunk reachable at the hashed asset URL; `/api/reflection-prompt` still responding.
+
 ## 2026-04-17
 
 ### Data path live on production
