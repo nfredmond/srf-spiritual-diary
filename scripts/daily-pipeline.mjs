@@ -6,6 +6,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createClient } from '@supabase/supabase-js';
 import { buildSpiritualImagePrompt } from './lib/prompt-engine.mjs';
+import { getImageProvider } from './lib/imageProviders.mjs';
 
 const execFileAsync = promisify(execFile);
 const __filename = fileURLToPath(import.meta.url);
@@ -67,52 +68,9 @@ async function loadFallbackEntry(dateKey) {
 }
 
 async function generateImage({ prompt, negativePrompt, runDate }) {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('Missing required env var: GEMINI_API_KEY or GOOGLE_GENAI_API_KEY');
-  }
-
-  const model = process.env.SRF_GENERATION_MODEL || process.env.SRF_GOOGLE_IMAGE_MODEL || 'gemini-2.5-flash-image';
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: `${prompt}\n\nNegative prompt: ${negativePrompt}` }] }],
-        generationConfig: {
-          responseModalities: ['TEXT', 'IMAGE'],
-        },
-      }),
-    },
-  );
-
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload?.error?.message || 'Google Gemini image generation failed');
-  }
-
-  const parts = payload?.candidates?.[0]?.content?.parts || [];
-  const imagePart = parts.find((part) => part?.inlineData?.data);
-  const imageBase64 = imagePart?.inlineData?.data;
-
-  if (!imageBase64) {
-    throw new Error('Google Gemini returned no image data');
-  }
-
-  const artifactDir = path.resolve(__dirname, `../artifacts/daily/${runDate}`);
-  await fs.mkdir(artifactDir, { recursive: true });
-  const imagePath = path.join(artifactDir, 'image.png');
-  await fs.writeFile(imagePath, Buffer.from(imageBase64, 'base64'));
-
-  return {
-    model,
-    imageUrl: `data:${imagePart?.inlineData?.mimeType || 'image/png'};base64,${imageBase64}`,
-    imagePath,
-  };
+  const artifactRoot = path.resolve(__dirname, '../artifacts');
+  const provider = getImageProvider({ artifactRoot });
+  return provider.generate({ prompt, negativePrompt, runDate });
 }
 
 async function runGog(args) {
@@ -259,6 +217,7 @@ async function main() {
       image_url: generation.imageUrl,
       image_path: generation.imagePath,
       provider: generation.model,
+      image_provider: generation.provider,
       status: 'success',
     },
     { onConflict: 'run_date' },

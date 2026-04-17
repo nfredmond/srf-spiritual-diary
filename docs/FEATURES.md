@@ -14,15 +14,13 @@ One-time overlay that walks new visitors through: today's reading, keyboard shor
 
 ### Local image generation (zero API cost)
 
-Status: considered 2026-04-16, not built. Goal: stop paying Gemini image-API cost for the daily render.
+Status: **shipped 2026-04-17 as an env-switched provider layer** in `scripts/lib/imageProviders.mjs`. `SRF_IMAGE_PROVIDER=gemini` (default) keeps the prior cloud path; `SRF_IMAGE_PROVIDER=comfyui` routes through a local ComfyUI SDXL workflow and uploads the PNG to Supabase Storage bucket `daily-renders/`.
 
-Three viable routes, ordered by practicality for this app:
+Verified 2026-04-17: ComfyUI path runs end-to-end for run date 2026-04-16 — `RealVisXL_V5.0_fp16.safetensors` + `Hyper-SDXL-8steps-CFG-lora.safetensors` at 8 steps → 1.65 MB PNG uploaded to `daily-renders/2026-04-16.png` (public HTTPS URL stored in `daily_renders.image_url`, `image_provider='comfyui'`). Gemini path is a byte-identical code port of the prior inline call (same URL, headers, body, response parsing, artifact write) and keeps producing a base64 data URL.
 
-1. **Local ComfyUI → Supabase Storage, generated offline (recommended).** Nathaniel already runs ComfyUI at `127.0.0.1:8188`. Adapt `scripts/daily-pipeline.mjs` to call the ComfyUI HTTP API instead of Gemini, upload the PNG to Supabase Storage, and upsert the URL into `daily_renders`. Vercel then only reads the cached URL; it never calls an image API. Additive: keep Gemini path behind a provider env flag as a fallback. Cost: $0 plus home-power. Tradeoff: the box needs to be on when the daily job fires, or the pipeline pre-generates a week at a time.
-2. **Tunnel local ComfyUI to Vercel** (Cloudflare Tunnel / Tailscale Funnel). Vercel's `api/run-daily.ts` calls the tunnel URL. Zero cost; fragile — home-network outage = no image.
-3. **Small always-on server (~$5–10/mo)** running ComfyUI behind an API key. More reliable than home; still materially cheaper long-term than Gemini-per-image.
-
-Recommended next step is (1): additive provider layer, no removal of the Gemini path. Needs a `ComfyUIImageProvider` module in `api/_lib/` with the same shape as the Gemini generator, and a `SRF_IMAGE_PROVIDER=comfyui|gemini` env switch. Stays inside the no-new-deploys boundary of the 2026-04-16 pass.
+Still open:
+- **When ComfyUI is unreachable**: Vercel cron + `api/run-daily.ts` can't hit the home box, so production currently still uses Gemini. Options (deferred): pre-generate a week at a time while the box is awake, tunnel to Vercel (Cloudflare Tunnel / Tailscale Funnel), or a small always-on server ($5–10/mo).
+- **Prompt tuning for SDXL**: Gemini-tuned prompts may need iteration to match the reverent-artwork aesthetic on the ComfyUI path.
 
 ### Hand-transcribe the 20 missing diary dates
 
