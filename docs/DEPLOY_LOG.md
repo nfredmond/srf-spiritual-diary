@@ -16,6 +16,7 @@ Production URL: `https://srf-spiritual-diary.vercel.app` · Vercel team: `natfor
 | ~07:00 (next day UTC) | `5wf6qfrzf` | `ccb709a` | Round 3 Chunk A — perf: `React.lazy` 10 modals + `manualChunks` vendor split (framer-motion, Headless UI, Supabase, date-fns, lucide-react) + Gemini image path unified to Supabase Storage. Main bundle 643.94 KB → 227.08 KB (192.18 KB → 69.94 KB gzipped). Vite >500 KB warning gone. | Live URL returns 200; HTML preloads shell + 5 vendor chunks only, no modal chunks in initial payload. `AboutModal-D3UdY2-K.js` reachable at 4.37 KB. `/api/reflection-prompt` returns validation error on empty payload (alive). |
 | ~07:50 (next day UTC) | `opvxbec47` | `05d7459` | Round 3 Chunk B — PWA/offline: `vite-plugin-pwa` + Workbox. Precaches 26 entries (~1 MB, app shell + modal chunks + vendor chunks + `data/diary-entries.json` + icons); runtime-caches `/art/*` + `/branding/*`, Supabase REST (stale-while-revalidate), Supabase `daily-renders` Storage (cache-first 1yr), Google Fonts. `registerSW.js` auto-injected into `index.html`. | Live URL returns 200; `<script id="vite-plugin-pwa:register-sw">` present in HTML; `/sw.js` returns 200 application/javascript (3.5 KB); `/registerSW.js` returns the expected `navigator.serviceWorker.register('/sw.js', { scope: '/' })` 134 B payload; `/data/diary-entries.json` returns 200 (186 KB). |
 | ~07:05 (2026-04-18 UTC) | `ekxo1bdu4` | `6eb207e` | Round 3 Chunk C — tests: Vitest + React Testing Library. 23 component tests across 5 colocated `*.test.tsx` files (AboutModal, OnboardingTour, WeekRhythm, DateNavigator, QuoteDisplay). `npm test` now chains `test:lib` (node --test, 5 existing tests) + `test:components` (vitest run, 23 new tests). SPA output unchanged from `opvxbec47`. | Live URL returns 200; bundle unchanged (same hashes as Chunk B); full `npm run verify` green locally (5 lib + 23 component + PWA build). No backend change. |
+| ~00:40 (2026-04-18 UTC) | `9dhklxej4` | `c808646` | Daily-run cron wiring: `vercel.json` adds `crons` entry (`/api/run-daily` at `0 9 * * *` UTC), `api/run-daily.ts` accepts GET in addition to POST, serverless Gemini path unified to upload bytes to `daily-renders/{runDate}.png` (matching Chunk A local script) and return the public HTTPS URL instead of a 1 MB base64 data URL. Falls back to data URL if Storage is unreachable. SPA output unchanged. | Live URL 200. `GET /api/run-daily` → 401 (was 405 before this deploy — confirms method guard opened to GET). `POST /api/run-daily` → 401. Auth gate intact; cron inert until `CRON_SECRET` is added to Production env. |
 
 ## Env vars on Production
 
@@ -26,6 +27,8 @@ As of 2026-04-17:
 - `OPENAI_API_KEY` (legacy, pre-Gemini; retained for compatibility)
 
 Not set (Phase 2 lane): `SRF_IMAGE_PROVIDER`, `SRF_COMFY_*`, `SRF_TEXT_MODEL`.
+
+Not set (daily-run cron): `CRON_SECRET`. Until this is added, the cron hits `/api/run-daily` daily at 09:00 UTC and receives a 401 with no DB/Storage side effects. To activate: `vercel env add CRON_SECRET production` (random 32+ byte hex), then any push redeploys with the value loaded.
 
 ## Rollback
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-17 (Daily-run cron)
+
+### Vercel cron wiring
+- `vercel.json` — new top-level `crons` block schedules `/api/run-daily` at `0 9 * * *` (09:00 UTC = ~01:00-02:00 Pacific, always past midnight in both DST modes). Vercel's cron service sends a GET with `Authorization: Bearer ${CRON_SECRET}` when the env var is set.
+- `api/run-daily.ts` — method guard now accepts `GET` in addition to `POST` (previously returned 405 on GET, which would have broken the cron); CORS `Allow-Methods` updated accordingly. Auth logic (`isAuthorized` checking `Bearer ${CRON_SECRET}` or `x-cron-secret` header) unchanged.
+
+### Gemini path unified to Storage (serverless side)
+- Chunk A unified the local `scripts/lib/imageProviders.mjs` Gemini provider to Supabase Storage, but the separate serverless route `api/run-daily.ts` still returned `data:image/png;base64,...` URLs. Now it matches: new `uploadRenderToStorage(bytes, runDate)` helper posts the PNG to `daily-renders/{runDate}.png` via the REST Storage API, and `generateImageWithGemini` returns the public HTTPS URL. Falls back to a data URL if Storage is unreachable so the endpoint stays self-contained. Without this fix, every cron run would have added a ~1 MB base64 blob to `daily_renders.image_url` and bypassed the PWA `daily-renders` cache entry.
+
+### Activation still required (manual)
+- `CRON_SECRET` is not yet set in Vercel Production env. Until it is, the cron fires daily and the endpoint returns 401 harmlessly (no DB or Storage writes). To activate: `vercel env add CRON_SECRET production` with a random 32+ byte hex value, then redeploy (any push). No code change needed to flip it on.
+
+### Verification
+- `npm run verify` green: typecheck clean, 5 lib tests pass, 23 component tests pass, Vite + Workbox build succeeds.
+- Live smoke (`9dhklxej4`): homepage 200; `GET /api/run-daily` returns `{error:"Unauthorized"}` 401 (was 405 before — confirms method guard is now open to GET); `POST /api/run-daily` returns 401 (auth still intact).
+
 ## 2026-04-17 (Round 3 Chunk C — component tests)
 
 ### Vitest + React Testing Library
