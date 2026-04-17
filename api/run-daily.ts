@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPacificDateParts, loadFallbackEntry } from './_lib/common.js';
+import { getPacificDateParts, loadDiaryEntry } from './_lib/common.js';
 import { buildSpiritualImagePrompt } from './_lib/promptEngine.js';
 import { interpretQuoteVisually } from './_lib/quoteInterpreter.js';
 import { getSupabaseServiceClient } from './_lib/supabase.js';
@@ -119,15 +119,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    let { data: entry } = await supabase
-      .from('diary_entries')
-      .select('*')
-      .eq('month', month)
-      .eq('day', day)
-      .maybeSingle();
-
-    if (!entry) {
-      entry = await loadFallbackEntry(dateKey);
+    const { entry, fromFallback } = await loadDiaryEntry(supabase, { dateKey, month, day });
+    if (fromFallback) {
       await supabase.from('diary_entries').upsert(entry, { onConflict: 'date_key' });
     }
 

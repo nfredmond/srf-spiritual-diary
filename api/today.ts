@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPacificDateParts, loadFallbackEntry } from './_lib/common.js';
+import { getPacificDateParts, loadDiaryEntry } from './_lib/common.js';
 import { getSupabaseAnonClient } from './_lib/supabase.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,16 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { month, day, runDate, dateKey } = getPacificDateParts();
     const supabase = getSupabaseAnonClient();
 
-    let { data: entry } = await supabase
-      .from('diary_entries')
-      .select('date_key, month, day, weekly_theme, topic, quote, source, book, special_day')
-      .eq('month', month)
-      .eq('day', day)
-      .maybeSingle();
-
-    if (!entry) {
-      entry = await loadFallbackEntry(dateKey);
-    }
+    const { entry } = await loadDiaryEntry(supabase, { dateKey, month, day });
 
     const { data: todayRender } = await supabase
       .from('daily_renders')

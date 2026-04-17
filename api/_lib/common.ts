@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface PacificDateParts {
   year: number;
@@ -7,6 +8,23 @@ export interface PacificDateParts {
   day: number;
   runDate: string;
   dateKey: string;
+}
+
+export interface DiaryEntryRow {
+  date_key: string;
+  month: number;
+  day: number;
+  weekly_theme: string | null;
+  topic: string;
+  quote: string;
+  source: string;
+  book: string | null;
+  special_day: string | null;
+}
+
+export interface LoadedDiaryEntry {
+  entry: DiaryEntryRow;
+  fromFallback: boolean;
 }
 
 export function getPacificDateParts(now = new Date()): PacificDateParts {
@@ -29,7 +47,7 @@ export function getPacificDateParts(now = new Date()): PacificDateParts {
   };
 }
 
-export async function loadFallbackEntry(dateKey: string) {
+export async function loadFallbackEntry(dateKey: string): Promise<DiaryEntryRow> {
   const jsonPath = path.resolve(process.cwd(), 'public/data/diary-entries.json');
   const raw = await fs.readFile(jsonPath, 'utf8');
   const parsed = JSON.parse(raw) as {
@@ -61,4 +79,29 @@ export async function loadFallbackEntry(dateKey: string) {
     book: entry.book || null,
     special_day: entry.specialDay || null,
   };
+}
+
+export async function loadDiaryEntry(
+  supabase: SupabaseClient,
+  parts: { dateKey: string; month: number; day: number },
+): Promise<LoadedDiaryEntry> {
+  const { dateKey, month, day } = parts;
+
+  const { data, error } = await supabase
+    .from('diary_entries')
+    .select('date_key, month, day, weekly_theme, topic, quote, source, book, special_day')
+    .eq('month', month)
+    .eq('day', day)
+    .maybeSingle();
+
+  if (error && error.code !== 'PGRST116') {
+    throw error;
+  }
+
+  if (data) {
+    return { entry: data as DiaryEntryRow, fromFallback: false };
+  }
+
+  const entry = await loadFallbackEntry(dateKey);
+  return { entry, fromFallback: true };
 }

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Star, Share2, Copy, Check, Heart, BookOpen } from 'lucide-react';
+import { Star, Share2, Copy, Check, Heart, BookOpen, Volume2, VolumeX } from 'lucide-react';
 import { useState } from 'react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
+import { useSpeech } from '../../hooks/useSpeech';
 
 interface QuoteDisplayProps {
   entry: DiaryEntry;
@@ -22,6 +23,7 @@ export function QuoteDisplay({
   onOpenNotes,
 }: QuoteDisplayProps) {
   const [copied, setCopied] = useState(false);
+  const { supported: speechSupported, speaking, toggle } = useSpeech();
 
   const fontSizeClasses = {
     small: 'text-lg',
@@ -59,6 +61,10 @@ export function QuoteDisplay({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleListen = () => {
+    toggle(`${entry.topic}. ${entry.quote}. ${entry.source}.`);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -90,6 +96,24 @@ export function QuoteDisplay({
             <BookOpen className={`w-5 h-5 ${hasNote ? 'text-srf-gold fill-srf-gold/20' : 'text-srf-blue'}`} />
             <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
               {hasNote ? 'Edit note' : 'Add note'}
+            </span>
+          </button>
+        )}
+
+        {speechSupported && (
+          <button
+            onClick={handleListen}
+            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
+            aria-label={speaking ? 'Stop reading aloud' : 'Listen to this quote'}
+            aria-pressed={speaking}
+          >
+            {speaking ? (
+              <VolumeX className="w-5 h-5 text-srf-gold" />
+            ) : (
+              <Volume2 className="w-5 h-5 text-srf-blue" />
+            )}
+            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {speaking ? 'Stop' : 'Listen'}
             </span>
           </button>
         )}

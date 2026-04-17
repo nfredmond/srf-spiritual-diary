@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "node --experimental-strip-types --test src/lib/*.test.ts",
     "lint": "tsc --noEmit",
+    "verify": "tsc --noEmit && npm test && vite build",
     "pipeline:daily": "node scripts/daily-pipeline.mjs",
     "seed:supabase": "node scripts/seed-diary-entries.mjs"
   },

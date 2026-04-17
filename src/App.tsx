@@ -16,6 +16,7 @@ import { SkeletonLoader } from './components/SkeletonLoader/SkeletonLoader';
 import { StatsDashboard } from './components/StatsDashboard/StatsDashboard';
 import { CalendarView } from './components/CalendarView/CalendarView';
 import { ExportImport } from './components/ExportImport/ExportImport';
+import { WeeklyThemeView } from './components/WeeklyThemeView/WeeklyThemeView';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -24,7 +25,8 @@ import { useTheme } from './hooks/useTheme';
 import { useSwipeGesture } from './hooks/useSwipeGesture';
 import { useRandomQuote } from './hooks/useRandomQuote';
 import { useQuoteHistory } from './hooks/useQuoteHistory';
-import { format, addDays, subDays } from 'date-fns';
+import { addDays, subDays } from 'date-fns';
+import { toMMDD, fromMMDD } from './lib/diaryDate';
 import type { DiaryEntry } from './types/DiaryEntry';
 
 function App() {
@@ -39,11 +41,12 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showExportImport, setShowExportImport] = useState(false);
+  const [showWeeklyThemes, setShowWeeklyThemes] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
 
   const { entry, loading, error } = useDiaryEntry(selectedDate);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
-  const dateKey = format(selectedDate, 'MM-dd');
+  const dateKey = toMMDD(selectedDate);
   const { note, saveNote, hasNote } = useNotes(dateKey);
   const { totalDays, recordVisit } = useReadingStreak();
   const { theme, setTheme } = useTheme();
@@ -119,6 +122,10 @@ function App() {
           e.preventDefault();
           setShowMeditationTimer(!showMeditationTimer);
           break;
+        case 'w':
+          e.preventDefault();
+          setShowWeeklyThemes(prev => !prev);
+          break;
         case '?':
           e.preventDefault();
           setShowKeyboardHelp(prev => !prev);
@@ -128,21 +135,17 @@ function App() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showSearch, showFavorites, showMeditationTimer]);
+  }, [showSearch, showFavorites, showMeditationTimer, showWeeklyThemes]);
 
   const handleRandomQuote = () => {
     const randomKey = getRandomDateKey();
     if (randomKey) {
-      const [month, day] = randomKey.split('-');
-      const randomDate = new Date(2024, parseInt(month) - 1, parseInt(day));
-      setSelectedDate(randomDate);
+      setSelectedDate(fromMMDD(randomKey));
     }
   };
 
   const handleSearchResultSelect = (dateKey: string) => {
-    const [month, day] = dateKey.split('-');
-    const date = new Date(2024, parseInt(month) - 1, parseInt(day));
-    setSelectedDate(date);
+    setSelectedDate(fromMMDD(dateKey));
     setShowSearch(false);
     setSearchResults([]);
   };
@@ -275,6 +278,10 @@ function App() {
               <div className="flex justify-between">
                 <kbd className="px-2 py-1 bg-gray-100 rounded">M</kbd>
                 <span>Meditation timer</span>
+              </div>
+              <div className="flex justify-between">
+                <kbd className="px-2 py-1 bg-gray-100 rounded">W</kbd>
+                <span>Weekly themes</span>
               </div>
               <div className="flex justify-between">
                 <kbd className="px-2 py-1 bg-gray-100 rounded">?</kbd>
@@ -432,6 +439,15 @@ function App() {
             initialNote={note}
             onSave={saveNote}
             onClose={() => setShowNotes(false)}
+            prompt={entry ? { quote: entry.quote, topic: entry.topic, weeklyTheme: entry.weeklyTheme ?? null } : undefined}
+          />
+        )}
+
+        {showWeeklyThemes && (
+          <WeeklyThemeView
+            currentDateKey={dateKey}
+            onSelectDate={setSelectedDate}
+            onClose={() => setShowWeeklyThemes(false)}
           />
         )}
       </AnimatePresence>

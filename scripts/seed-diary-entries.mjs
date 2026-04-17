@@ -37,6 +37,11 @@ async function main() {
     source: entry.source || 'Paramahansa Yogananda',
     book: entry.book || null,
     special_day: entry.specialDay || null,
+    source_book: entry.sourceBook || entry.book || null,
+    source_year: entry.sourceYear ?? null,
+    jurisdiction: entry.jurisdiction || null,
+    confidence_score: entry.confidenceScore ?? null,
+    provenance: entry.provenance ?? null,
   }));
 
   if (rows.length === 0) {

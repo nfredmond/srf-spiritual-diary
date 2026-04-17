@@ -1,18 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Save, X } from 'lucide-react';
+import { BookOpen, Save, Sparkles, X } from 'lucide-react';
 
 interface NotesPanelProps {
   dateKey: string;
   initialNote: string;
   onSave: (content: string) => void;
   onClose: () => void;
+  prompt?: {
+    quote: string;
+    topic: string;
+    weeklyTheme?: string | null;
+  };
 }
 
-export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanelProps) {
+export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: NotesPanelProps) {
   const [note, setNote] = useState(initialNote);
   const [lastSavedNote, setLastSavedNote] = useState(initialNote);
   const [isSaved, setIsSaved] = useState(false);
+  const [suggestedPrompt, setSuggestedPrompt] = useState<string | null>(null);
+  const [promptLoading, setPromptLoading] = useState(false);
+  const [promptError, setPromptError] = useState<string | null>(null);
   const saveMessageTimeoutRef = useRef<number | null>(null);
 
   const hasUnsavedChanges = note !== lastSavedNote;
@@ -31,6 +39,35 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
     }
 
     saveMessageTimeoutRef.current = window.setTimeout(() => setIsSaved(false), 2000);
+  };
+
+  const handleSuggestPrompt = async () => {
+    if (!prompt || promptLoading) return;
+    setPromptLoading(true);
+    setPromptError(null);
+    try {
+      const response = await fetch('/api/reflection-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prompt),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.prompt) {
+        throw new Error(payload.error || 'Could not generate a prompt right now.');
+      }
+      setSuggestedPrompt(payload.prompt);
+    } catch (err) {
+      setPromptError(err instanceof Error ? err.message : 'Could not generate a prompt right now.');
+    } finally {
+      setPromptLoading(false);
+    }
+  };
+
+  const handleUsePrompt = () => {
+    if (!suggestedPrompt) return;
+    const separator = note.trim() ? '\n\n' : '';
+    setNote((prev) => `${prev}${separator}${suggestedPrompt}\n\n`);
+    setSuggestedPrompt(null);
   };
 
   const handleCloseRequest = () => {
@@ -105,6 +142,46 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose }: NotesPanel
         <p className="notes-helper-text text-sm text-gray-600 mb-4">
           Write your thoughts, insights, or personal reflections on today&apos;s wisdom.
         </p>
+
+        {prompt && (
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={handleSuggestPrompt}
+              disabled={promptLoading}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-srf-blue border border-srf-gold/40 bg-white rounded-full hover:bg-srf-lotus/30 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <Sparkles className="w-4 h-4" />
+              {promptLoading ? 'Thinking…' : 'Suggest a prompt'}
+            </button>
+            {promptError && (
+              <p className="text-xs text-red-600 mt-2" role="status" aria-live="polite">
+                {promptError}
+              </p>
+            )}
+            {suggestedPrompt && (
+              <div className="mt-3 p-3 bg-srf-lotus/20 border border-srf-gold/30 rounded-lg">
+                <p className="text-sm text-srf-blue italic">{suggestedPrompt}</p>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleUsePrompt}
+                    className="text-xs font-medium text-srf-blue hover:underline"
+                  >
+                    Use in my reflection
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSuggestedPrompt(null)}
+                    className="text-xs text-gray-500 hover:underline"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <label htmlFor="reflection-note" className="sr-only">
           Reflection notes for {dateKey}
