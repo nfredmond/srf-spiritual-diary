@@ -10,11 +10,17 @@
 //   {
 //     model: string;      // full provider-specific model id
 //     provider: string;   // 'gemini' | 'comfyui' | custom
-//     imageUrl: string;   // data URL (gemini) OR public https URL (comfyui)
+//     imageUrl: string;   // public HTTPS URL from Supabase Storage (preferred)
+//                         // or a data URL fallback if Storage is unavailable
 //     imagePath: string;  // local artifact PNG path
 //   }
 //
 // Providers also write the raw PNG to artifacts/daily/<runDate>/image.png.
+// When SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are set (the production
+// default), both providers upload the PNG to Storage and return the public
+// URL. Gemini falls back to a data URL if Storage upload fails so local
+// runs without Supabase still work; ComfyUI requires Storage because
+// ComfyUI's /view URL is only reachable from the host that spawned it.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -77,10 +83,18 @@ class GeminiImageProvider {
     const bytes = Buffer.from(imageBase64, 'base64');
     const imagePath = await writeArtifact({ runDate, artifactRoot: this.artifactRoot, bytes });
 
+    let imageUrl;
+    try {
+      imageUrl = await uploadToSupabaseStorage({ bytes, runDate });
+    } catch (err) {
+      console.warn('[GeminiImageProvider] Storage upload unavailable, falling back to data URL:', err.message);
+      imageUrl = `data:${mimeType};base64,${imageBase64}`;
+    }
+
     return {
       model,
       provider: 'gemini',
-      imageUrl: `data:${mimeType};base64,${imageBase64}`,
+      imageUrl,
       imagePath,
     };
   }

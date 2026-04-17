@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database, Info } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -8,18 +8,48 @@ import { SearchBar } from './components/SearchBar/SearchBar';
 import { SearchResults } from './components/SearchResults/SearchResults';
 import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { ReadingControls } from './components/ReadingControls/ReadingControls';
-import { FavoritesPanel } from './components/FavoritesPanel/FavoritesPanel';
-import { EnhancedMeditationTimer } from './components/EnhancedMeditationTimer/EnhancedMeditationTimer';
-import { EnhancedQuoteCard } from './components/EnhancedQuoteCard/EnhancedQuoteCard';
-import { NotesPanel } from './components/NotesPanel/NotesPanel';
 import { SkeletonLoader } from './components/SkeletonLoader/SkeletonLoader';
-import { StatsDashboard } from './components/StatsDashboard/StatsDashboard';
-import { CalendarView } from './components/CalendarView/CalendarView';
-import { ExportImport } from './components/ExportImport/ExportImport';
-import { WeeklyThemeView } from './components/WeeklyThemeView/WeeklyThemeView';
-import { AboutModal } from './components/AboutModal/AboutModal';
-import { OnboardingTour } from './components/OnboardingTour/OnboardingTour';
 import { WeekRhythm } from './components/WeekRhythm/WeekRhythm';
+
+// Modals — lazily loaded so each ships as its own chunk the first time it
+// opens. Keeps the initial bundle under Vite's 500 kB warning and defers
+// framer-motion-heavy panels until they're actually needed.
+const FavoritesPanel = lazy(() =>
+  import('./components/FavoritesPanel/FavoritesPanel').then((m) => ({ default: m.FavoritesPanel })),
+);
+const EnhancedMeditationTimer = lazy(() =>
+  import('./components/EnhancedMeditationTimer/EnhancedMeditationTimer').then((m) => ({
+    default: m.EnhancedMeditationTimer,
+  })),
+);
+const EnhancedQuoteCard = lazy(() =>
+  import('./components/EnhancedQuoteCard/EnhancedQuoteCard').then((m) => ({
+    default: m.EnhancedQuoteCard,
+  })),
+);
+const NotesPanel = lazy(() =>
+  import('./components/NotesPanel/NotesPanel').then((m) => ({ default: m.NotesPanel })),
+);
+const StatsDashboard = lazy(() =>
+  import('./components/StatsDashboard/StatsDashboard').then((m) => ({ default: m.StatsDashboard })),
+);
+const CalendarView = lazy(() =>
+  import('./components/CalendarView/CalendarView').then((m) => ({ default: m.CalendarView })),
+);
+const ExportImport = lazy(() =>
+  import('./components/ExportImport/ExportImport').then((m) => ({ default: m.ExportImport })),
+);
+const WeeklyThemeView = lazy(() =>
+  import('./components/WeeklyThemeView/WeeklyThemeView').then((m) => ({
+    default: m.WeeklyThemeView,
+  })),
+);
+const AboutModal = lazy(() =>
+  import('./components/AboutModal/AboutModal').then((m) => ({ default: m.AboutModal })),
+);
+const OnboardingTour = lazy(() =>
+  import('./components/OnboardingTour/OnboardingTour').then((m) => ({ default: m.OnboardingTour })),
+);
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -422,74 +452,76 @@ function App() {
         )}
       </main>
 
-      {/* Modals */}
-      <AnimatePresence>
-        {showFavorites && (
-          <FavoritesPanel
-            favorites={favorites}
-            onSelectDate={handleSearchResultSelect}
-            onClose={() => setShowFavorites(false)}
-          />
-        )}
+      {/* Modals — all lazy-loaded; a single Suspense boundary below. */}
+      <Suspense fallback={null}>
+        <AnimatePresence>
+          {showFavorites && (
+            <FavoritesPanel
+              favorites={favorites}
+              onSelectDate={handleSearchResultSelect}
+              onClose={() => setShowFavorites(false)}
+            />
+          )}
 
-        {showStats && (
-          <StatsDashboard
-            favorites={favorites}
-            totalDays={totalDays}
-            onClose={() => setShowStats(false)}
-          />
-        )}
+          {showStats && (
+            <StatsDashboard
+              favorites={favorites}
+              totalDays={totalDays}
+              onClose={() => setShowStats(false)}
+            />
+          )}
 
-        {showCalendar && (
-          <CalendarView
-            selectedDate={selectedDate}
-            favorites={favorites}
-            notesCount={getNotesMap()}
-            onSelectDate={(date) => {
-              setSelectedDate(date);
-              setShowCalendar(false);
-            }}
-            onClose={() => setShowCalendar(false)}
-          />
-        )}
+          {showCalendar && (
+            <CalendarView
+              selectedDate={selectedDate}
+              favorites={favorites}
+              notesCount={getNotesMap()}
+              onSelectDate={(date) => {
+                setSelectedDate(date);
+                setShowCalendar(false);
+              }}
+              onClose={() => setShowCalendar(false)}
+            />
+          )}
 
-        {showMeditationTimer && (
-          <EnhancedMeditationTimer onClose={() => setShowMeditationTimer(false)} />
-        )}
+          {showMeditationTimer && (
+            <EnhancedMeditationTimer onClose={() => setShowMeditationTimer(false)} />
+          )}
 
-        {showQuoteCard && entry && (
-          <EnhancedQuoteCard
-            entry={entry}
-            dateKey={dateKey}
-            onClose={() => setShowQuoteCard(false)}
-          />
-        )}
+          {showQuoteCard && entry && (
+            <EnhancedQuoteCard
+              entry={entry}
+              dateKey={dateKey}
+              onClose={() => setShowQuoteCard(false)}
+            />
+          )}
 
-        {showExportImport && (
-          <ExportImport onClose={() => setShowExportImport(false)} />
-        )}
+          {showExportImport && (
+            <ExportImport onClose={() => setShowExportImport(false)} />
+          )}
 
-        {showNotes && (
-          <NotesPanel
-            dateKey={dateKey}
-            initialNote={note}
-            onSave={saveNote}
-            onClose={() => setShowNotes(false)}
-            prompt={entry ? { quote: entry.quote, topic: entry.topic, weeklyTheme: entry.weeklyTheme ?? null } : undefined}
-          />
-        )}
+          {showNotes && (
+            <NotesPanel
+              dateKey={dateKey}
+              initialNote={note}
+              onSave={saveNote}
+              onClose={() => setShowNotes(false)}
+              prompt={entry ? { quote: entry.quote, topic: entry.topic, weeklyTheme: entry.weeklyTheme ?? null } : undefined}
+            />
+          )}
 
-        {showWeeklyThemes && (
-          <WeeklyThemeView
-            currentDateKey={dateKey}
-            onSelectDate={setSelectedDate}
-            onClose={() => setShowWeeklyThemes(false)}
-          />
-        )}
-      </AnimatePresence>
+          {showWeeklyThemes && (
+            <WeeklyThemeView
+              currentDateKey={dateKey}
+              onSelectDate={setSelectedDate}
+              onClose={() => setShowWeeklyThemes(false)}
+            />
+          )}
+        </AnimatePresence>
 
-      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
-      {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}
+        {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+        {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}
+      </Suspense>
 
       {/* Footer */}
       <footer className="app-footer bg-srf-blue text-white py-8 mt-20">
