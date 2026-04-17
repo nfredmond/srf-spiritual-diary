@@ -30,9 +30,10 @@
 - `.gitignore` widened to `.env.*` (excluding `.env.example`) + excludes `supabase/.temp/` + `supabase/.branches/`.
 
 ### UX polish (Phase 6)
+- New `src/components/WeekRhythm/WeekRhythm.tsx` — compact 7-tile horizontal strip under the `DateNavigator` showing the three days before and after `selectedDate` with weekday letters, day number, and truncated topic. Today gets a soft lotus/gold halo; the selected tile has the blue-gradient fill; visited MM-DD keys (from `useQuoteHistory`) get a small gold dot. Clicking a tile navigates. Fetches `diary-entries.json` once on mount.
 - New `src/components/AboutModal/AboutModal.tsx` — Headless UI `Dialog` reusing the `DatePickerModal` pattern. Four sections (what this is, attribution + covenant disclosure, local-only data, keyboard tips) plus a footer link to `yogananda.org` for readers who want to support the teachings directly. Wired to a new `Info` icon in the top-right utility toolbar.
 - New `src/components/OnboardingTour/OnboardingTour.tsx` — three-panel first-visit welcome (what this is → navigation hotkeys → toolbar tour). Step indicator, Skip / Back / Next / Got-it buttons. Gated on `localStorage.srf-onboarding-completed`; dismissal (Skip or Got-it) sets the flag so it never re-fires. Existing users without the flag will see the tour once on their next visit, which is the intended upgrade path.
-- `src/App.tsx` — imports both modals, adds `showAbout` / `showOnboarding` state, `handleOnboardingComplete`, the first-visit effect, and the Info toolbar button.
+- `src/App.tsx` — imports the two modals plus `WeekRhythm`, pulls `history` from `useQuoteHistory` to derive `visitedKeys`, adds `showAbout` / `showOnboarding` state, `handleOnboardingComplete`, the first-visit effect, the Info toolbar button, and mounts `WeekRhythm` between `DateNavigator` and the quote body.
 
 ### Not in this release
 - No production ComfyUI path (Vercel cron can't reach the home box). `SRF_IMAGE_PROVIDER` stays unset in Production → Gemini continues to serve daily renders.

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Keyboard, Search as SearchIcon, Heart, Timer, Shuffle, Image as ImageIcon, TrendingUp, Calendar as CalendarIcon, Database, Info } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -19,6 +19,7 @@ import { ExportImport } from './components/ExportImport/ExportImport';
 import { WeeklyThemeView } from './components/WeeklyThemeView/WeeklyThemeView';
 import { AboutModal } from './components/AboutModal/AboutModal';
 import { OnboardingTour } from './components/OnboardingTour/OnboardingTour';
+import { WeekRhythm } from './components/WeekRhythm/WeekRhythm';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -55,7 +56,8 @@ function App() {
   const { totalDays, recordVisit } = useReadingStreak();
   const { theme, setTheme } = useTheme();
   const { getRandomDateKey } = useRandomQuote();
-  const { addToHistory } = useQuoteHistory();
+  const { history, addToHistory } = useQuoteHistory();
+  const visitedKeys = useMemo(() => history.map((h) => h.dateKey), [history]);
 
   // Get notes count map for calendar
   const getNotesMap = () => {
@@ -379,6 +381,12 @@ function App() {
         <DateNavigator
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
+        />
+
+        <WeekRhythm
+          selectedDate={selectedDate}
+          visitedKeys={visitedKeys}
+          onSelectDate={setSelectedDate}
         />
 
         {loading && <SkeletonLoader />}
