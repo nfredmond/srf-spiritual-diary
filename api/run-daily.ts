@@ -26,7 +26,32 @@ function getGeminiKey() {
   return process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || null;
 }
 
-async function generateImageWithGemini(prompt: string, negativePrompt: string) {
+async function uploadRenderToStorage(bytes: Buffer, runDate: string): Promise<string> {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required for Storage upload');
+  }
+  const bucket = process.env.SRF_IMAGE_BUCKET || 'daily-renders';
+  const objectPath = `${runDate}.png`;
+  const res = await fetch(`${url}/storage/v1/object/${bucket}/${objectPath}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      apikey: key,
+      'Content-Type': 'image/png',
+      'x-upsert': 'true',
+      'Cache-Control': '3600',
+    },
+    body: bytes,
+  });
+  if (!res.ok) {
+    throw new Error(`Supabase Storage upload failed: ${res.status} ${await res.text()}`);
+  }
+  return `${url}/storage/v1/object/public/${bucket}/${objectPath}`;
+}
+
+async function generateImageWithGemini(prompt: string, negativePrompt: string, runDate: string) {
   const apiKey = getGeminiKey();
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY or GOOGLE_GENAI_API_KEY is required for generation');
@@ -64,22 +89,31 @@ async function generateImageWithGemini(prompt: string, negativePrompt: string) {
     throw new Error('No image data returned from Google Gemini');
   }
 
+  const bytes = Buffer.from(imageData, 'base64');
+  let imageUrl: string;
+  try {
+    imageUrl = await uploadRenderToStorage(bytes, runDate);
+  } catch (err) {
+    console.warn('[run-daily] Storage upload failed, falling back to data URL:', err instanceof Error ? err.message : err);
+    imageUrl = `data:${mimeType};base64,${imageData}`;
+  }
+
   return {
     provider: model,
-    imageUrl: `data:${mimeType};base64,${imageData}`,
+    imageUrl,
   };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cron-secret');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -137,7 +171,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('Visual interpretation:', interpretedVisual);
 
     const promptResult = buildSpiritualImagePrompt(entry, { dateKey, allowOmSymbol, interpretedVisual });
-    const generated = await generateImageWithGemini(promptResult.prompt, promptResult.negativePrompt);
+    const generated = await generateImageWithGemini(promptResult.prompt, promptResult.negativePrompt, runDate);
 
     const { data: render, error: upsertError } = await supabase
       .from('daily_renders')
