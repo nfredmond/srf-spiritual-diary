@@ -22,6 +22,23 @@
  *     [--dry-run] [--verbose]
  *     [--in <new-raw-json>] [--current <current-json>]
  *     [--out <target-json>] [--report <report-json>]
+ *
+ * Patch mode (hand-transcribed additions for the 20 dates missing from the
+ * cleaned raw export — see docs/HAND_TRANSCRIPTION.md):
+ *   node scripts/merge-diary-json.mjs --patch <patch.json>
+ *     [--dry-run] [--force] [--current <current-json>] [--out <target-json>]
+ *     [--report <report-json>]
+ *
+ * Patch file shape (keys starting with `_` are ignored as comments):
+ *   {
+ *     "09-05": { "month": 9, "day": 5, "topic": "...", "quote": "...",
+ *                "weeklyTheme": null, "specialDay": null,
+ *                "source": "Paramahansa Yogananda", "book": null },
+ *     ...
+ *   }
+ *
+ * Patch mode refuses to overwrite existing keys unless --force is passed,
+ * and refuses to merge any entry whose topic or quote is blank.
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -39,21 +56,28 @@ const DEFAULTS = {
 };
 
 function parseArgs(argv) {
-  const opts = { dryRun: false, verbose: false, ...DEFAULTS };
+  const opts = { dryRun: false, verbose: false, force: false, patch: null, ...DEFAULTS };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--verbose') opts.verbose = true;
+    else if (a === '--force') opts.force = true;
+    else if (a === '--patch') opts.patch = argv[++i];
     else if (a === '--in') opts.in = argv[++i];
     else if (a === '--current') opts.current = argv[++i];
     else if (a === '--out') opts.out = argv[++i];
     else if (a === '--report') opts.report = argv[++i];
     else if (a === '--help' || a === '-h') {
       console.log(
-        'Usage: node scripts/merge-diary-json.mjs\n' +
-          '  [--dry-run] [--verbose]\n' +
-          '  [--in <new-raw-json>] [--current <current-json>]\n' +
-          '  [--out <target-json>] [--report <report-json>]',
+        'Usage:\n' +
+          '  node scripts/merge-diary-json.mjs\n' +
+          '    [--dry-run] [--verbose]\n' +
+          '    [--in <new-raw-json>] [--current <current-json>]\n' +
+          '    [--out <target-json>] [--report <report-json>]\n' +
+          '\n' +
+          '  node scripts/merge-diary-json.mjs --patch <patch.json>\n' +
+          '    [--dry-run] [--force] [--current <current-json>]\n' +
+          '    [--out <target-json>] [--report <report-json>]',
       );
       process.exit(0);
     } else {
@@ -191,8 +215,128 @@ function contiguousTopicRun(orderedKeys, dedupedByKey, targetKey) {
   return run;
 }
 
+function isValidMMDD(key) {
+  if (!/^\d{2}-\d{2}$/.test(key)) return false;
+  const m = Number(key.slice(0, 2));
+  const d = Number(key.slice(3, 5));
+  if (m < 1 || m > 12 || d < 1 || d > 31) return false;
+  const daysInMonth = { 1: 31, 2: 29, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31 };
+  return d <= daysInMonth[m];
+}
+
+async function applyPatch(opts) {
+  const [patchRaw, currentRaw] = await Promise.all([
+    fs.readFile(opts.patch, 'utf8'),
+    fs.readFile(opts.current, 'utf8'),
+  ]);
+  const patchDoc = JSON.parse(patchRaw);
+  const currentDoc = JSON.parse(currentRaw);
+  const currentEntries = currentDoc.entries ?? {};
+  const weeklyThemes = currentDoc.weeklyThemes ?? null;
+
+  if (!patchDoc || typeof patchDoc !== 'object' || Array.isArray(patchDoc)) {
+    throw new Error('Patch file must be a JSON object keyed by MM-DD');
+  }
+
+  const patchKeys = Object.keys(patchDoc).filter((k) => !k.startsWith('_'));
+  const errors = [];
+  const accepted = [];
+  const overwrites = [];
+
+  for (const key of patchKeys) {
+    const entry = patchDoc[key];
+    if (!isValidMMDD(key)) {
+      errors.push(`${key}: not a valid MM-DD key`);
+      continue;
+    }
+    if (!entry || typeof entry !== 'object') {
+      errors.push(`${key}: entry must be an object`);
+      continue;
+    }
+    const month = Number(key.slice(0, 2));
+    const day = Number(key.slice(3, 5));
+    if (entry.month !== month) errors.push(`${key}: entry.month (${entry.month}) does not match key month (${month})`);
+    if (entry.day !== day) errors.push(`${key}: entry.day (${entry.day}) does not match key day (${day})`);
+    const topic = typeof entry.topic === 'string' ? entry.topic.trim() : '';
+    const quote = typeof entry.quote === 'string' ? entry.quote.trim() : '';
+    if (!topic) errors.push(`${key}: topic is blank — fill in from the physical diary`);
+    if (!quote) errors.push(`${key}: quote is blank — fill in from the physical diary`);
+    if (entry.source && typeof entry.source !== 'string') errors.push(`${key}: source must be a string`);
+    if (key in currentEntries) overwrites.push(key);
+    accepted.push(key);
+  }
+
+  if (errors.length > 0) {
+    console.error('Patch validation failed:');
+    for (const e of errors) console.error('  -', e);
+    throw new Error(`${errors.length} validation error(s) — fix the patch file and re-run`);
+  }
+
+  if (overwrites.length > 0 && !opts.force) {
+    console.error('Refusing to overwrite existing entries:');
+    for (const k of overwrites) console.error(`  - ${k} (already present in ${opts.current})`);
+    throw new Error(`${overwrites.length} key(s) already exist — re-run with --force to overwrite`);
+  }
+
+  const mergedEntries = { ...currentEntries };
+  for (const key of accepted.filter((k) => !k.startsWith('_'))) {
+    const entry = patchDoc[key];
+    mergedEntries[key] = {
+      month: entry.month,
+      day: entry.day,
+      topic: entry.topic.trim(),
+      weeklyTheme: entry.weeklyTheme ?? null,
+      specialDay: entry.specialDay ?? null,
+      quote: entry.quote.trim(),
+      source: entry.source || 'Paramahansa Yogananda',
+      book: entry.book ?? null,
+    };
+  }
+
+  const mergedDoc = {
+    entries: mergedEntries,
+    ...(weeklyThemes ? { weeklyThemes } : {}),
+  };
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    mode: 'patch',
+    inputs: { patch: opts.patch, current: opts.current },
+    counts: {
+      patchKeys: patchKeys.length,
+      accepted: accepted.length,
+      overwritten: overwrites.length,
+      currentKeysBefore: Object.keys(currentEntries).length,
+      currentKeysAfter: Object.keys(mergedEntries).length,
+    },
+    acceptedKeys: accepted,
+    overwrittenKeys: overwrites,
+  };
+
+  if (opts.dryRun) {
+    console.log('[dry-run] patch would merge:');
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
+  const reportPath = opts.report === DEFAULTS.report
+    ? path.join(PROJECT_ROOT, 'artifacts/data-patch-report.json')
+    : opts.report;
+
+  await fs.mkdir(path.dirname(opts.out), { recursive: true });
+  await fs.mkdir(path.dirname(reportPath), { recursive: true });
+  await fs.writeFile(opts.out, JSON.stringify(mergedDoc, null, 2) + '\n', 'utf8');
+  await fs.writeFile(reportPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
+  console.log('Patch merge complete.');
+  console.log('  wrote:', opts.out, `(${Object.keys(mergedEntries).length} entries, +${accepted.length - overwrites.length} new, ${overwrites.length} overwritten)`);
+  console.log('  report:', reportPath);
+}
+
 async function main() {
   const opts = parseArgs(process.argv);
+  if (opts.patch) {
+    return applyPatch(opts);
+  }
   const [newRaw, currentRaw] = await Promise.all([
     fs.readFile(opts.in, 'utf8'),
     fs.readFile(opts.current, 'utf8'),

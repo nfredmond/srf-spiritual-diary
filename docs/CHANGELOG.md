@@ -18,6 +18,12 @@
 - `scripts/lib/prompt-engine.mjs` hardened against figurative output: added `no humans / no people / no faces / no portraits / no saints / no gurus / no deities / no meditating figure / no sitting figure / no robed person / no monk` to the negative prompt, and rewrote the composition clause to "pure unpopulated landscape and natural symbolism only." The fallback when no symbol keywords match is now "unpopulated landscape metaphor using only natural elements" rather than "contemplative visual metaphor" (which DreamShaper read as a meditating figure).
 - Verified 2026-04-17 across 4 varied topics (Obedience / Prayer / Freedom / Overcoming Temptation) → pure devotional landscapes, zero human figures, painterly light, lotus / mountain / water / sky composition. Sample URLs: `daily-renders/sample-v3-{01-15,04-16,07-04,10-28}.png` in Supabase Storage.
 
+### Hand-transcription plumbing (Phase 5)
+- New `data/missing-dates-patch.example.json` — 20-key template for the MM-DD dates missing from `public/data/diary-entries.json` (3 in Feb, 1 in Mar, 2 in May, 12 in Sep, 1 in Oct, 1 in Dec). Copy to `data/missing-dates-patch.json` (gitignored), fill in from the physical diary, run the merge.
+- Extended `scripts/merge-diary-json.mjs` with `--patch <file>` mode (plus `--force` for overwrites and `--dry-run` for validation). The validator rejects blank topic/quote, invalid MM-DD keys, month/day mismatches, and — unless `--force` is passed — refuses to overwrite entries already present in the current JSON.
+- New npm script `patch-missing-dates` wraps the common path.
+- New `docs/HAND_TRANSCRIPTION.md` walks through the flow (copy template → fill in → dry-run → apply → re-seed Supabase → verify → commit → auto-deploy). Explicitly rejects scraping or LLM-generated quotes (covenant posture).
+
 ### Docs / hygiene
 - `docs/DEPLOY_LOG.md` — new file tracking production deploys `ohhynqvph`, `dagtqkwiy`, `qaheoznxj`, `n0wu46m2s` with commits, changes, and smoke results.
 - `projects/srf-spiritual-diary/WORKSPACE_DEPRECATED.md` — stub at the stale workspace copy pointing at the canonical repo. No files moved or deleted.

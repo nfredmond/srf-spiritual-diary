@@ -37,3 +37,8 @@ artifacts/daily
 # Supabase CLI local state
 supabase/.temp/
 supabase/.branches/
+
+# Hand-transcription working file (copy the .example to here, fill it in, run
+# npm run patch-missing-dates, do not commit the unfiltered working copy —
+# save a cleaned audit copy to artifacts/hand-transcription-*.json instead).
+data/missing-dates-patch.json

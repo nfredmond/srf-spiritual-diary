@@ -11,7 +11,8 @@
     "lint": "tsc --noEmit",
     "verify": "tsc --noEmit && npm test && vite build",
     "pipeline:daily": "node scripts/daily-pipeline.mjs",
-    "seed:supabase": "node scripts/seed-diary-entries.mjs"
+    "seed:supabase": "node scripts/seed-diary-entries.mjs",
+    "patch-missing-dates": "node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

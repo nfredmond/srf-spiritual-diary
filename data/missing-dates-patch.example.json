@@ -1,0 +1,23 @@
+{
+  "_comment": "Template for hand-transcribing the 20 diary dates missing from public/data/diary-entries.json. Copy this file to data/missing-dates-patch.json (drop the .example), fill in `topic` and `quote` for each key from the physical SRF Spiritual Diary, then run `npm run patch-missing-dates` (or `node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json`). The script refuses to merge entries where topic or quote is still blank. `weeklyTheme`, `specialDay`, and `book` are optional — leave as null unless the physical page shows a weekly theme header, a commemorated day, or a book attribution you want preserved. See docs/HAND_TRANSCRIPTION.md for the full walkthrough.",
+  "02-17": { "month": 2, "day": 17, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "02-25": { "month": 2, "day": 25, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "02-29": { "month": 2, "day": 29, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "03-05": { "month": 3, "day": 5,  "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "05-14": { "month": 5, "day": 14, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "05-29": { "month": 5, "day": 29, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-05": { "month": 9, "day": 5,  "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-07": { "month": 9, "day": 7,  "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-15": { "month": 9, "day": 15, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-16": { "month": 9, "day": 16, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-17": { "month": 9, "day": 17, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-22": { "month": 9, "day": 22, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-23": { "month": 9, "day": 23, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-25": { "month": 9, "day": 25, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-26": { "month": 9, "day": 26, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-27": { "month": 9, "day": 27, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-28": { "month": 9, "day": 28, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "09-29": { "month": 9, "day": 29, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "10-04": { "month": 10, "day": 4, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null },
+  "12-14": { "month": 12, "day": 14, "topic": "", "quote": "", "weeklyTheme": null, "specialDay": null, "source": "Paramahansa Yogananda", "book": null }
+}
