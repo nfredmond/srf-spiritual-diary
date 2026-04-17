@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-04-17 (Round 3 Chunk B — offline)
+
+### Service worker + precache
+- `npm i -D vite-plugin-pwa workbox-window`.
+- `vite.config.ts` — `VitePWA` plugin registered with `registerType: 'autoUpdate'`, `manifest: false` (reuse the existing hand-written `public/manifest.json`), `injectRegister: 'auto'`. Workbox config: `clientsClaim` + `skipWaiting` (new SW takes over without a full tab close); `navigateFallback: /index.html` so SPA routes still work offline. Precache glob picks up the app shell, every lazy modal chunk, every vendor chunk, `data/diary-entries.json` (fingerprinted with a content hash at build time), the 192/512 icons, and the apple-touch-icon — 26 entries, ~1 MB. Oversized crawler/screenshot images (`og-image.png`, `screenshot-*.png`, `art/**`, full-size `favicon-transparent.png`, `logo-transparent.png`) excluded from precache; those are runtime-cached on first visit instead.
+- Runtime caches:
+  - `/art/**` + `/branding/**` (same-origin images) — cache-first, 30 days, 30 entries.
+  - Supabase `/rest/v1/**` — stale-while-revalidate, 7 days, 50 entries. Gives an offline user the last-seen diary rows instantly.
+  - Supabase `/storage/v1/object/public/daily-renders/**` — cache-first, 1 year, 400 entries. Each day's render is effectively immutable, so once you've seen it you keep it.
+  - `fonts.googleapis.com` — stale-while-revalidate.
+  - `fonts.gstatic.com` — cache-first, 1 year, 30 entries.
+- Registration is auto-injected by the plugin via a 134-byte `/registerSW.js` script tag appended to `index.html`. No changes to `main.tsx` or `App.tsx` were needed.
+- Result: a devotional reader sitting on a phone in a forest / airplane / cabin opens today's entry after the first visit, and any day they've navigated to before still renders.
+
+### Verification
+- `npm run verify` green: typecheck + 5 lib tests + Vite build (`PWA v1.2.0 · precache 26 entries (1034.49 KiB) · files generated dist/sw.js + dist/workbox-*.js`).
+- Live smoke (`opvxbec47`): homepage 200 with `<script id="vite-plugin-pwa:register-sw">` in HTML; `/sw.js` 200 (3.5 KB application/javascript); `/registerSW.js` serves the standard `navigator.serviceWorker.register('/sw.js', { scope: '/' })` payload; `/data/diary-entries.json` still 200 (186 KB).
+
 ## 2026-04-17 (Round 3 Chunk A — performance)
 
 ### Bundle split
