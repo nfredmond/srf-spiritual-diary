@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-04-17 (Round 3 Chunk C — component tests)
+
+### Vitest + React Testing Library
+- `npm i -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom`.
+- New `vitest.config.ts` — jsdom environment, `src/test/setup.ts` (imports `@testing-library/jest-dom/vitest`), `include: src/components/**/*.test.tsx` so the runner stays clear of the existing `src/lib/*.test.ts` suite which still runs under `node --test`.
+- `package.json` — split the `test` script into `test:lib` (the existing `node --experimental-strip-types --test src/lib/*.test.ts` runner) and `test:components` (`vitest run`). The top-level `test` chains both and `verify` keeps calling `npm test`, so CI-style verification exercises all 28 tests in one shot.
+
+### 23 component tests across 5 colocated files
+- `src/components/AboutModal/AboutModal.test.tsx` — four sections render, close button fires `onClose`, yogananda.org link carries `target="_blank" rel="noopener noreferrer"`, unofficial / unaffiliated posture copy is present. (4 tests)
+- `src/components/OnboardingTour/OnboardingTour.test.tsx` — starts on Welcome, Skip on step 0 fires `onComplete`, Next→Next→Got-it fires `onComplete` once, progress dots expose `aria-current="step"` on the active panel. (4 tests)
+- `src/components/WeekRhythm/WeekRhythm.test.tsx` — with `globalThis.fetch` mocked to return a 7-day fixture: 7 tiles render centered on `selectedDate` with topics wired in, selected tile gets `aria-current="date"`, clicking a tile fires `onSelectDate` with the right Date, visited tiles tag their aria-label `(visited)`. (4 tests)
+- `src/components/DateNavigator/DateNavigator.test.tsx` — formatted date renders, prev/next/today call `onDateChange` with the correct date, clicking the date label opens the `DatePickerModal`. (5 tests)
+- `src/components/QuoteDisplay/QuoteDisplay.test.tsx` — topic/quote/source render, weekly-theme pill renders when present, favorite + notes buttons fire their callbacks, aria-label reflects `isFavorite`, both buttons are omitted when their callbacks are absent. (6 tests)
+
+### Verification
+- `npm run verify` green: typecheck clean, 5 lib tests pass, 23 component tests pass, Vite + Workbox build succeeds with PWA v1.2.0 precaching 26 entries.
+- No runtime code change; deploy `ekxo1bdu4` serves the same app-shell hash as `opvxbec47`.
+
 ## 2026-04-17 (Round 3 Chunk B — offline)
 
 ### Service worker + precache
