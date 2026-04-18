@@ -203,6 +203,12 @@ function App() {
 
   return (
     <div className="app-shell min-h-screen bg-gradient-to-br from-srf-white to-srf-lotus/20">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-srf-blue focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       {/* Header */}
       <header className="app-header bg-white shadow-sm py-6 relative">
         <div className="container mx-auto px-4">
@@ -290,6 +296,8 @@ function App() {
               onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
               className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors"
               aria-label="Reading shortcuts"
+              aria-expanded={showKeyboardHelp}
+              aria-controls="keyboard-help-popover"
               title="Reading shortcuts (Press ?)"
             >
               <Keyboard className="utility-toolbar-icon w-5 h-5 text-srf-blue/80" />
@@ -308,7 +316,12 @@ function App() {
 
         {/* Enhanced Keyboard help modal */}
         {showKeyboardHelp && (
-          <div className="utility-popover absolute top-full right-4 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-72">
+          <div
+            id="keyboard-help-popover"
+            role="dialog"
+            aria-label="Reading shortcuts"
+            className="utility-popover absolute top-full right-4 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-72"
+          >
             <h3 className="font-heading text-lg mb-3 text-srf-blue">Reading Shortcuts</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -356,7 +369,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main id="main-content" tabIndex={-1} className="container mx-auto px-4 py-12">
         {/* Controls Bar */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div className="flex items-center gap-3">
