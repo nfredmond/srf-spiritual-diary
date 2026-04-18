@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-04-19 (A11y polish)
+
+### Skip-link + main landmark target
+- `src/App.tsx` — first focusable element in the tree is now a skip-link (`<a href="#main-content">Skip to main content</a>`), styled `sr-only focus:not-sr-only` so it's invisible to mouse users but becomes a highlighted gold button at `top-2 left-2` once tab-focused. Keyboard and screen-reader users no longer have to tab through all 8 utility-toolbar icons before reaching content.
+- The `<main>` element gains `id="main-content"` (skip-link target) and `tabIndex={-1}` so the landmark is programmatically focusable — without this, activating the skip-link updates the URL hash but doesn't actually move focus.
+
+### Keyboard-help popover aria wiring
+- The shortcuts popover trigger button now exposes `aria-expanded={showKeyboardHelp}` + `aria-controls="keyboard-help-popover"`, and the popover itself is a labeled `role="dialog"`. Screen readers announce the expand/collapse state and can navigate into the popover as a discrete region instead of seeing it as an unnamed absolute-positioned div.
+
+### Verification
+- `npm run verify` green: typecheck + 5 lib tests + 23 component tests + Vite/PWA build. Bundle grew 227.08 KB → 227.48 KB (+0.4 KB; +0.15 KB gzipped) — skip-link Tailwind classes are already in the utility bundle, so only the markup is new.
+- Live smoke (`ie87rujx3`): fetching `assets/index-*.js` and grep confirms `Skip to main content`, `main-content`, and `keyboard-help-popover` are all present in the shipped bundle.
+
 ## 2026-04-17 (Daily-run cron)
 
 ### Vercel cron wiring
