@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-04-19 (ErrorBoundary around lazy modals)
+
+### Resilience
+- New `src/components/ErrorBoundary/ErrorBoundary.tsx` — tiny class component (React's only API for catching render errors; no hook equivalent) wrapping the modal `Suspense` in `App.tsx`. When a lazy chunk fails to load — network blip, or a tab left open across a deploy whose old hash no longer exists — the boundary catches the error, logs it to console, and renders a bottom-right `role="alert"` toast: *"We couldn't load that panel. Your reading is safe."* with Reload / Dismiss buttons. Dismiss resets boundary state so the user can try another modal; Reload fetches fresh chunks.
+- Scope is deliberately narrow: only the lazy-modal Suspense block. The main reading surface (DateNavigator, WeekRhythm, QuoteDisplay, ImageGenerator, etc.) is eagerly imported, so it can't fail on a chunk load. No need to wrap it.
+- 3 new tests in `src/components/ErrorBoundary/ErrorBoundary.test.tsx`: healthy pass-through renders children, a throwing child produces the alert with both buttons, Dismiss clears state and re-renders the now-healthy children. Component-test total: 23 → 26.
+
+### Verification
+- `npm run verify` green: typecheck + 5 lib tests + 26 component tests + Vite/PWA build. Bundle 227.48 KB → **228.38 KB** (+0.9 KB; +0.28 KB gzipped).
+- Live smoke (`5sbvs7v4j`): deployed bundle `index-ByZagZac.js` carries the `ErrorBoundary` class name and the fallback copy string.
+
 ## 2026-04-19 (ComfyUI pre-render script)
 
 ### Answers the "ComfyUI production reachability" open question
