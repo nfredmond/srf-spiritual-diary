@@ -19,6 +19,7 @@ Production URL: `https://srf-spiritual-diary.vercel.app` · Vercel team: `natfor
 | ~00:40 (2026-04-18 UTC) | `9dhklxej4` | `c808646` | Daily-run cron wiring: `vercel.json` adds `crons` entry (`/api/run-daily` at `0 9 * * *` UTC), `api/run-daily.ts` accepts GET in addition to POST, serverless Gemini path unified to upload bytes to `daily-renders/{runDate}.png` (matching Chunk A local script) and return the public HTTPS URL instead of a 1 MB base64 data URL. Falls back to data URL if Storage is unreachable. SPA output unchanged. | Live URL 200. `GET /api/run-daily` → 401 (was 405 before this deploy — confirms method guard opened to GET). `POST /api/run-daily` → 401. Auth gate intact; cron inert until `CRON_SECRET` is added to Production env. |
 | ~00:23 (2026-04-19 UTC) | `ie87rujx3` | `50d9f87` | A11y polish: skip-link as first focusable element (`sr-only` until focus), `<main id="main-content" tabIndex={-1}>` as landmark target, keyboard-help popover gains `role="dialog"` + `aria-label` and its trigger button gets `aria-expanded` + `aria-controls`. Bundle `index-BEwIKS_S.js` 227.48 KB (+0.4 KB vs `ie87rujx3` predecessor). | Live URL 200; deployed bundle carries `Skip to main content`, `main-content`, and `keyboard-help-popover` strings. 28 tests green. No backend change. |
 | ~01:49 (2026-04-19 UTC) | `5sbvs7v4j` | `75a79ef` | Resilience: `ErrorBoundary` wraps the lazy-modal `Suspense` so a chunk-load failure (network blip / mid-deploy race) shows a small bottom-right toast (Reload / Dismiss) instead of whiting out the app. 3 new tests (healthy pass-through, catches a throwing child, Dismiss recovers). Bundle 227.48 KB → 228.38 KB (+0.9 KB; +0.28 KB gzipped). | Live URL 200; deployed `index-ByZagZac.js` carries `ErrorBoundary` class name + `couldn't load that panel` copy. Test total now 31 (5 lib + 26 components). No backend change. |
+| ~02:05 (2026-04-19 UTC) | `b59nuaiu1` (Error) → `ay9jyrt3h` (Ready) | `87c4ffa` → `dbfd981` (empty commits) | Activated daily-run cron: `CRON_SECRET` (64 hex chars) added to Production env, empty commit pushed to redeploy and load the value into `/api/run-daily`. First attempt errored because `openssl rand -hex 32` piped into `vercel env add` left a trailing `\n` — retry used `tr -d '\n'`. | Auth chain smoke: no bearer → 401, wrong bearer → 401, good bearer → 500 from Gemini free-tier image quota (auth passed, downstream reached the model — cron is wired). Error body: `"Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests"`. Self-resolves on daily reset / billing activation. |
 
 ## Env vars on Production
 
@@ -30,7 +31,11 @@ As of 2026-04-17:
 
 Not set (Phase 2 lane): `SRF_IMAGE_PROVIDER`, `SRF_COMFY_*`, `SRF_TEXT_MODEL`.
 
-Not set (daily-run cron): `CRON_SECRET`. Until this is added, the cron hits `/api/run-daily` daily at 09:00 UTC and receives a 401 with no DB/Storage side effects. To activate: `vercel env add CRON_SECRET production` (random 32+ byte hex), then any push redeploys with the value loaded.
+Set (daily-run cron, 2026-04-19): `CRON_SECRET` (64 hex chars). Auth chain smoke-tested against `ay9jyrt3h`: no bearer → 401, bad bearer → 401, correct bearer → 500 from Gemini quota (auth passed, downstream work reached the model). The cron endpoint is correctly wired.
+
+**Known gotcha**: `openssl rand -hex 32 | vercel env add …` injects a trailing newline, which Vercel rejects with `The CRON_SECRET environment variable contains leading or trailing whitespace`. First attempt errored in 3s; fix was `openssl rand -hex 32 | tr -d '\n' | vercel env add …`. Deploy `b59nuaiu1` is the error artifact; `ay9jyrt3h` is the successful retry.
+
+**Known quota note**: Gemini free-tier image generation is exhausted today, so a manual POST to `/api/run-daily` with the correct bearer currently returns 500 with `"Quota exceeded for ... generate_content_free_tier_requests"`. This will self-resolve when the tier resets (daily) or when billing is activated. The cron itself is functioning — this is an external dependency, not a code issue.
 
 ## Rollback
 
