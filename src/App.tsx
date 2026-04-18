@@ -10,6 +10,7 @@ import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { ReadingControls } from './components/ReadingControls/ReadingControls';
 import { SkeletonLoader } from './components/SkeletonLoader/SkeletonLoader';
 import { WeekRhythm } from './components/WeekRhythm/WeekRhythm';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 // Modals — lazily loaded so each ships as its own chunk the first time it
 // opens. Keeps the initial bundle under Vite's 500 kB warning and defers
@@ -465,7 +466,10 @@ function App() {
         )}
       </main>
 
-      {/* Modals — all lazy-loaded; a single Suspense boundary below. */}
+      {/* Modals — all lazy-loaded; ErrorBoundary catches chunk-load failures
+          so a bad network or mid-deploy race shows a reload toast instead
+          of whiting out the whole app. */}
+      <ErrorBoundary>
       <Suspense fallback={null}>
         <AnimatePresence>
           {showFavorites && (
@@ -535,6 +539,7 @@ function App() {
         {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
         {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}
       </Suspense>
+      </ErrorBoundary>
 
       {/* Footer */}
       <footer className="app-footer bg-srf-blue text-white py-8 mt-20">
