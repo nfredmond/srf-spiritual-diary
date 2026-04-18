@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-04-19 (ComfyUI pre-render script)
+
+### Answers the "ComfyUI production reachability" open question
+- Round 3 plan flagged that the Vercel cron can't reach a local ComfyUI instance. The two options were Cloudflare Tunnel (infra) or a pre-generate-a-week script (code). This ships the code path: `scripts/prerender-range.mjs` + `npm run pipeline:prerender` loops any date range through the existing provider layer and upserts `daily_renders` rows.
+- CLI: `node scripts/prerender-range.mjs [--start YYYY-MM-DD] [--days N] [--force]`. Defaults: start = today (Pacific), days = 7, force = off. Refuses `--days` outside `[1, 60]`. Exits non-zero if any date fails. Prints a JSON summary (`generated`/`skipped`/`errors` counts) so it's scriptable.
+- Honors `SRF_IMAGE_PROVIDER` (gemini|comfyui) and all `SRF_COMFY_*` env vars the provider layer already reads. Gemini mode works for CI smoke-tests; ComfyUI mode is the intended production use case.
+- Deliberately narrower than `daily-pipeline.mjs`: no Drive upload, no channel delivery, no email. Those belong to "today"; this is bulk pre-seeding.
+- Existing-render skip logic matches the daily pipeline: a successful `daily_renders` row is left alone unless `--force` is passed, so re-running is idempotent.
+
+### No deploy impact
+- Local-only Node script. SPA bundle, serverless routes, and Vercel cron config are unchanged. No redeploy.
+
 ## 2026-04-19 (A11y polish)
 
 ### Skip-link + main landmark target
