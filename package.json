@@ -19,6 +19,8 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.1",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "jsdom": "^29.0.2",
@@ -32,8 +34,6 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.544.0",
     "react": "^19.2.0",
