@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Bell, X, Wind } from 'lucide-react';
 import { Modal } from '../Modal/Modal';
 
@@ -17,7 +16,6 @@ export function EnhancedMeditationTimer({ onClose }: EnhancedMeditationTimerProp
   const intervalRef = useRef<number | null>(null);
   const breathIntervalRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setTimeLeft(duration * 60);
@@ -134,17 +132,6 @@ export function EnhancedMeditationTimer({ onClose }: EnhancedMeditationTimerProp
     }
   };
 
-  const getBreathingCircleScale = () => {
-    switch (breathPhase) {
-      case 'inhale':
-        return 1.3;
-      case 'hold':
-        return 1.3;
-      case 'exhale':
-        return 0.7;
-    }
-  };
-
   return (
     <Modal
       onClose={onClose}
@@ -178,27 +165,16 @@ export function EnhancedMeditationTimer({ onClose }: EnhancedMeditationTimerProp
       </div>
 
       {/* Breathing Circle (when enabled) */}
-      <AnimatePresence>
-        {showBreathing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="mb-6 flex flex-col items-center"
-          >
-            <motion.div
-              animate={prefersReducedMotion ? undefined : { scale: getBreathingCircleScale() }}
-              transition={prefersReducedMotion ? undefined : { duration: 4, ease: 'easeInOut' }}
-              className="w-32 h-32 rounded-full bg-gradient-to-br from-srf-blue to-srf-blue-700 shadow-2xl flex items-center justify-center"
-            >
-              <div className="text-white text-lg font-medium">{getBreathingInstruction()}</div>
-            </motion.div>
-            <p className="text-sm text-gray-600 mt-4 text-center">
-              Inhale for 4s, Hold for 4s, Exhale for 4s
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showBreathing && (
+        <div className="anim-fade-in mb-6 flex flex-col items-center">
+          <div className="anim-breathe w-32 h-32 rounded-full bg-gradient-to-br from-srf-blue to-srf-blue-700 shadow-2xl flex items-center justify-center">
+            <div className="text-white text-lg font-medium">{getBreathingInstruction()}</div>
+          </div>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            Inhale for 4s, Hold for 4s, Exhale for 4s
+          </p>
+        </div>
+      )}
 
       {/* Timer Display */}
       <div className="relative mb-8">
@@ -285,20 +261,13 @@ export function EnhancedMeditationTimer({ onClose }: EnhancedMeditationTimerProp
       </div>
 
       {/* Completion Message */}
-      <AnimatePresence>
-        {isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="mt-6 p-4 bg-srf-gold/10 border-2 border-srf-gold rounded-lg text-center"
-          >
-            <Bell className="w-8 h-8 text-gold-accent mx-auto mb-2" />
-            <p className="font-heading text-lg text-srf-blue">Meditation Complete</p>
-            <p className="text-sm text-gray-600 mt-1">May peace be with you</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isComplete && (
+        <div className="anim-fade-in mt-6 p-4 bg-srf-gold/10 border-2 border-srf-gold rounded-lg text-center">
+          <Bell className="w-8 h-8 text-gold-accent mx-auto mb-2" />
+          <p className="font-heading text-lg text-srf-blue">Meditation Complete</p>
+          <p className="text-sm text-gray-600 mt-1">May peace be with you</p>
+        </div>
+      )}
 
       {/* Quote */}
       <div className="mt-6 p-4 bg-srf-blue/5 rounded-lg">

@@ -51,7 +51,6 @@ export default defineConfig({
         // libraries (framer-motion, Supabase, date-fns) cache independently
         // across deploys.
         manualChunks: {
-          'vendor-motion': ['framer-motion'],
           'vendor-headless': ['@headlessui/react'],
           'vendor-dates': ['date-fns'],
           'vendor-icons': ['lucide-react'],

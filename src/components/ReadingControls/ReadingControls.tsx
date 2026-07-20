@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Type } from 'lucide-react';
 
 interface ReadingControlsProps {
@@ -22,17 +21,10 @@ export function ReadingControls({ fontSize, onFontSizeChange }: ReadingControlsP
           key={value}
           onClick={() => onFontSizeChange(value)}
           className={`theme-pill-button relative px-3 py-1.5 rounded-full transition-all text-sm font-medium ${
-            fontSize === value ? 'text-white' : ''
+            fontSize === value ? 'theme-pill-indicator text-white' : ''
           }`}
           aria-label={`${label} font size`}
         >
-          {fontSize === value && (
-            <motion.div
-              layoutId="font-size-indicator"
-              className="theme-pill-indicator absolute inset-0 rounded-full"
-              transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-            />
-          )}
           <span className="relative z-10">{label}</span>
         </button>
       ))}

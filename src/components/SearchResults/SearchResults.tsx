@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Calendar, Sparkles } from 'lucide-react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 
@@ -13,11 +12,7 @@ export function SearchResults({ results, onSelectDate }: SearchResultsProps) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="card max-w-4xl mx-auto mb-6 max-h-96 overflow-y-auto"
-    >
+    <div className="anim-fade-in card max-w-4xl mx-auto mb-6 max-h-96 overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg text-srf-blue flex items-center gap-2">
           <Sparkles className="w-5 h-5" />
@@ -57,6 +52,6 @@ export function SearchResults({ results, onSelectDate }: SearchResultsProps) {
           );
         })}
       </div>
-    </motion.div>
+    </div>
   );
 }

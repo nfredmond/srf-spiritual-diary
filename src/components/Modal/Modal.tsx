@@ -1,6 +1,5 @@
 import { type ReactNode } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
-import { motion } from 'framer-motion';
 
 interface ModalProps {
   onClose: () => void;
@@ -16,7 +15,7 @@ interface ModalProps {
  * UI's Dialog, so it provides — for free and correctly — a focus trap, Escape
  * to close, outside-click to close, focus restoration to the trigger, and
  * background scroll lock. The gentle entrance animation honors the reader's
- * reduced-motion preference via the app-level MotionConfig.
+ * reduced-motion preference.
  */
 export function Modal({ onClose, children, ariaLabel, panelClassName = '' }: ModalProps) {
   return (
@@ -24,14 +23,9 @@ export function Modal({ onClose, children, ariaLabel, panelClassName = '' }: Mod
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={panelClassName}
-          >
+          <div className={`anim-modal-in ${panelClassName}`}>
             {children}
-          </motion.div>
+          </div>
         </DialogPanel>
       </div>
     </Dialog>

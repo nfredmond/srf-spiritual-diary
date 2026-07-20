@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Search, X, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 
 interface SearchBarProps {
@@ -60,12 +59,7 @@ export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
   }, [query, searchType, allEntries, onSearchResults]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="card max-w-4xl mx-auto mb-6"
-    >
+    <div className="anim-fade-in card max-w-4xl mx-auto mb-6">
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -114,6 +108,6 @@ export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
           </div>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

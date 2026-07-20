@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Share2, Copy, Check, Heart, BookOpen, Volume2, VolumeX } from 'lucide-react';
 import { useState } from 'react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
@@ -62,11 +61,8 @@ export function QuoteDisplay({
   };
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="card mx-auto max-w-3xl text-center"
+    <article
+      className="anim-fade-up card mx-auto max-w-3xl text-center"
       aria-label={`Reading for ${entry.topic}`}
     >
       {/* One quiet meta line for the weekly theme */}
@@ -158,6 +154,6 @@ export function QuoteDisplay({
           <Share2 className="h-5 w-5" />
         </button>
       </div>
-    </motion.article>
+    </article>
   );
 }

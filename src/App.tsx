@@ -12,7 +12,6 @@ import {
   MoreHorizontal,
   BookImage,
 } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 import { addDays, subDays, format } from 'date-fns';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -398,17 +397,15 @@ function App() {
         </div>
 
         {/* Search */}
-        <AnimatePresence>
-          {showSearch && (
-            <SearchBar
-              onSearchResults={setSearchResults}
-              onClose={() => {
-                setShowSearch(false);
-                setSearchResults([]);
-              }}
-            />
-          )}
-        </AnimatePresence>
+        {showSearch && (
+          <SearchBar
+            onSearchResults={setSearchResults}
+            onClose={() => {
+              setShowSearch(false);
+              setSearchResults([]);
+            }}
+          />
+        )}
 
         {searchResults.length > 0 && (
           <SearchResults results={searchResults} onSelectDate={handleSearchResultSelect} />
@@ -452,8 +449,7 @@ function App() {
       {/* Modals — lazy-loaded; the boundary catches chunk-load failures. */}
       <ErrorBoundary>
         <Suspense fallback={null}>
-          <AnimatePresence>
-            {showFavorites && (
+          {showFavorites && (
               <FavoritesPanel
                 favorites={favorites}
                 onSelectDate={handleSearchResultSelect}
@@ -505,7 +501,6 @@ function App() {
                 onClose={() => setShowWeeklyThemes(false)}
               />
             )}
-          </AnimatePresence>
 
           {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
           {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}

@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
 import { X, Download, Upload, FileText, Heart, BookOpen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { Modal } from '../Modal/Modal';
 
 interface ExportImportProps {
   onClose: () => void;
@@ -238,20 +238,11 @@ export function ExportImport({ onClose }: ExportImportProps) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={onClose}
+    <Modal
+      onClose={onClose}
+      ariaLabel="Preserve your journal"
+      panelClassName="bg-white rounded-2xl p-6 max-w-2xl w-full"
     >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl p-6 max-w-2xl w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-heading text-2xl text-srf-blue flex items-center gap-2">
             <FileText className="w-6 h-6" />
@@ -322,10 +313,8 @@ export function ExportImport({ onClose }: ExportImportProps) {
           </label>
 
           {statusMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`mt-4 p-3 rounded-lg text-center ${
+            <div
+              className={`anim-fade-in mt-4 p-3 rounded-lg text-center ${
                 statusType === 'error'
                   ? 'bg-srf-lotus/40 text-srf-blue'
                   : 'bg-srf-lotus/40 text-gold-accent'
@@ -334,7 +323,7 @@ export function ExportImport({ onClose }: ExportImportProps) {
               aria-live={statusType === 'error' ? 'assertive' : 'polite'}
             >
               {statusMessage}
-            </motion.div>
+            </div>
           )}
           <div
             className="sr-only"
@@ -352,7 +341,6 @@ export function ExportImport({ onClose }: ExportImportProps) {
             <strong>Tip:</strong> Regular backups ensure you never lose your favorites, notes, and reading progress. Export your data periodically for safekeeping!
           </p>
         </div>
-      </motion.div>
-    </motion.div>
+    </Modal>
   );
 }
