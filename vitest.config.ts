@@ -8,9 +8,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    // Only component tests — `src/lib/*.test.ts` files continue to run under
-    // `node --test` so we don't have to rewrite existing coverage.
-    include: ['src/components/**/*.test.{ts,tsx}'],
+    // Component + App integration tests (all .tsx). The `src/lib/*.test.ts`
+    // files continue to run under `node --test`, so we scope to .tsx here.
+    include: ['src/**/*.test.tsx'],
     globals: true,
     css: true,
   },
