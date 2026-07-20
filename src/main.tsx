@@ -2,10 +2,14 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {/* Top-level boundary: any render error degrades to a calm reload screen
+        instead of a white page. */}
+    <ErrorBoundary variant="screen">
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 )
-

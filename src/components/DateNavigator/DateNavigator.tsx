@@ -29,7 +29,7 @@ export function DateNavigator({ selectedDate, onDateChange }: DateNavigatorProps
         className="nav-date-btn flex items-center gap-2 px-6 py-3 bg-white rounded-full border border-srf-blue/20 shadow-sm hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
         title="Choose a date"
       >
-        <Calendar className="w-5 h-5 text-srf-gold" />
+        <Calendar className="w-5 h-5 text-gold-accent" />
         <span className="font-heading text-lg text-srf-blue">
           {format(selectedDate, 'MMMM d')}
         </span>
@@ -48,7 +48,7 @@ export function DateNavigator({ selectedDate, onDateChange }: DateNavigatorProps
       {/* Today Button */}
       <button
         onClick={() => onDateChange(new Date())}
-        className="nav-today-btn px-5 py-2.5 text-sm font-medium bg-srf-blue text-white rounded-full hover:bg-srf-blue/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
+        className="nav-today-btn px-5 py-2.5 text-sm font-medium bg-srf-blue text-white rounded-full hover:bg-srf-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
       >
         Today
       </button>

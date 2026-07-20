@@ -10,7 +10,7 @@ describe('AboutModal', () => {
     expect(screen.getByRole('heading', { name: /About this reader/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /What this is/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Attribution/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Your data stays with you/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Your reflections stay with you/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /^Tips$/i })).toBeInTheDocument();
   });
 
@@ -36,7 +36,7 @@ describe('AboutModal', () => {
     render(<AboutModal onClose={() => {}} />);
 
     expect(
-      screen.getByText(/unofficial personal devotional reader/i),
+      screen.getByText(/independent, unofficial devotional reader/i),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/not affiliated with, endorsed by, or sponsored/i),

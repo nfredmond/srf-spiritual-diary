@@ -8,33 +8,31 @@ interface AboutModalProps {
 export function AboutModal({ onClose }: AboutModalProps) {
   return (
     <Dialog open={true} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="sticky top-0 flex justify-between items-center p-6 pb-4 bg-gradient-to-br from-srf-white to-srf-lotus/20 border-b border-srf-blue/10">
-            <Dialog.Title className="font-heading text-2xl text-srf-blue">
-              About this reader
-            </Dialog.Title>
+        <Dialog.Panel className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+          <div className="sticky top-0 flex items-center justify-between border-b border-srf-blue/10 bg-white p-6 pb-4">
+            <Dialog.Title className="font-heading text-2xl text-srf-blue">About this reader</Dialog.Title>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/60 rounded-full transition-colors"
+              className="rounded-full p-2 text-srf-blue/70 transition-colors hover:bg-srf-lotus/50"
               aria-label="Close"
             >
-              <X className="w-5 h-5 text-gray-600" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
-          <div className="p-6 pt-4 space-y-6 text-gray-800">
+          <div className="space-y-6 p-6 pt-4 text-gray-800">
             <section>
               <div className="flex items-start gap-3">
-                <BookOpen className="w-5 h-5 text-srf-blue mt-1 flex-shrink-0" />
+                <BookOpen className="mt-1 h-5 w-5 flex-shrink-0 text-srf-blue" />
                 <div>
-                  <h3 className="font-heading text-lg text-srf-blue mb-2">What this is</h3>
+                  <h3 className="mb-2 font-heading text-lg text-srf-blue">What this is</h3>
                   <p className="text-sm leading-relaxed">
-                    A personal reading companion that shows one entry per day from{' '}
-                    <em>The Spiritual Diary</em> by Paramahansa Yogananda, with room
-                    for your own reflections, favorites, and a meditation timer.
+                    A quiet reading companion that shows one entry each day from{' '}
+                    <em>The Spiritual Diary</em> by Paramahansa Yogananda, with room for your own
+                    reflections, favorite readings, and a meditation timer.
                   </p>
                 </div>
               </div>
@@ -42,18 +40,17 @@ export function AboutModal({ onClose }: AboutModalProps) {
 
             <section>
               <div className="flex items-start gap-3">
-                <Heart className="w-5 h-5 text-srf-gold mt-1 flex-shrink-0" />
+                <Heart className="mt-1 h-5 w-5 flex-shrink-0 text-gold-accent" />
                 <div>
-                  <h3 className="font-heading text-lg text-srf-blue mb-2">Attribution</h3>
-                  <p className="text-sm leading-relaxed mb-2">
-                    Quotes are sourced from <em>The Spiritual Diary</em>, published
-                    by Self-Realization Fellowship (Los Angeles, CA). Yogananda&apos;s
-                    writings are © Self-Realization Fellowship.
+                  <h3 className="mb-2 font-heading text-lg text-srf-blue">Attribution</h3>
+                  <p className="mb-2 text-sm leading-relaxed">
+                    The readings are drawn from <em>The Spiritual Diary</em>, published by
+                    Self-Realization Fellowship (Los Angeles, CA). The writings of Paramahansa Yogananda
+                    are © Self-Realization Fellowship.
                   </p>
-                  <p className="text-sm leading-relaxed font-medium text-srf-blue">
-                    This site is an unofficial personal devotional reader. It is not
-                    affiliated with, endorsed by, or sponsored by Self-Realization
-                    Fellowship.
+                  <p className="text-sm font-medium leading-relaxed text-srf-blue">
+                    This is an independent, unofficial devotional reader. It is not affiliated with,
+                    endorsed by, or sponsored by Self-Realization Fellowship.
                   </p>
                 </div>
               </div>
@@ -61,14 +58,13 @@ export function AboutModal({ onClose }: AboutModalProps) {
 
             <section>
               <div className="flex items-start gap-3">
-                <Lock className="w-5 h-5 text-srf-blue mt-1 flex-shrink-0" />
+                <Lock className="mt-1 h-5 w-5 flex-shrink-0 text-srf-blue" />
                 <div>
-                  <h3 className="font-heading text-lg text-srf-blue mb-2">Your data stays with you</h3>
+                  <h3 className="mb-2 font-heading text-lg text-srf-blue">Your reflections stay with you</h3>
                   <p className="text-sm leading-relaxed">
-                    Favorites, notes, reading streaks, and settings are stored only
-                    in your browser&apos;s local storage. Nothing is sent to any
-                    server. Use the preserve-journal button in the toolbar to
-                    export a backup.
+                    Favorites, notes, reading history, and settings are stored only in your browser&apos;s
+                    local storage. Nothing is sent to any server. Use the &ldquo;Preserve your
+                    journal&rdquo; option in the menu to export a backup.
                   </p>
                 </div>
               </div>
@@ -76,17 +72,17 @@ export function AboutModal({ onClose }: AboutModalProps) {
 
             <section>
               <div className="flex items-start gap-3">
-                <Keyboard className="w-5 h-5 text-srf-blue mt-1 flex-shrink-0" />
+                <Keyboard className="mt-1 h-5 w-5 flex-shrink-0 text-srf-blue" />
                 <div>
-                  <h3 className="font-heading text-lg text-srf-blue mb-2">Tips</h3>
-                  <ul className="text-sm leading-relaxed space-y-1 list-disc list-inside">
+                  <h3 className="mb-2 font-heading text-lg text-srf-blue">Tips</h3>
+                  <ul className="list-inside list-disc space-y-1 text-sm leading-relaxed">
                     <li>Arrow keys or swipe to move between days</li>
                     <li>
-                      Press <kbd className="px-1.5 py-0.5 bg-white/70 border border-gray-300 rounded text-xs">?</kbd>{' '}
+                      Press <kbd className="rounded border border-gray-300 bg-white/70 px-1.5 py-0.5 text-xs">?</kbd>{' '}
                       anytime to see every keyboard shortcut
                     </li>
                     <li>
-                      Press <kbd className="px-1.5 py-0.5 bg-white/70 border border-gray-300 rounded text-xs">W</kbd>{' '}
+                      Press <kbd className="rounded border border-gray-300 bg-white/70 px-1.5 py-0.5 text-xs">W</kbd>{' '}
                       to browse readings grouped by weekly theme
                     </li>
                   </ul>
@@ -94,17 +90,17 @@ export function AboutModal({ onClose }: AboutModalProps) {
               </div>
             </section>
 
-            <section className="pt-4 border-t border-srf-blue/10">
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Built by Nathaniel Ford Redmond as a personal devotional project.
-                Not for sale, not monetized, not redistributed. If you want to
-                support Paramahansa Yogananda&apos;s teachings, please purchase
-                official Self-Realization Fellowship publications directly from{' '}
+            <section className="border-t border-srf-blue/10 pt-4">
+              <p className="text-xs leading-relaxed text-gray-600">
+                Offered freely as a devotional project, in loving gratitude to Paramahansa Yogananda and
+                Self-Realization Fellowship. Not for sale, not monetized, not redistributed. To support
+                Yogananda&apos;s teachings, please obtain official Self-Realization Fellowship publications
+                directly from{' '}
                 <a
                   href="https://yogananda.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-srf-blue underline hover:text-srf-gold transition-colors"
+                  className="text-srf-blue underline transition-colors hover:text-gold-accent"
                 >
                   yogananda.org
                 </a>

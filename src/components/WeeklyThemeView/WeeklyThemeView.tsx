@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { X, Calendar as CalendarIcon, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import type { DiaryData, DiaryEntry } from '../../types/DiaryEntry';
@@ -78,22 +77,15 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
   }, [groups, currentDateKey]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-stretch justify-end"
+    <div
+      className="anim-fade-in fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-stretch justify-end"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="weekly-theme-title"
     >
-      <motion.aside
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-        className="w-full max-w-md h-full bg-white shadow-2xl flex flex-col"
+      <aside
+        className="anim-slide-in-right w-full max-w-md h-full bg-white shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-center justify-between px-6 py-4 border-b border-srf-blue/10">
@@ -112,7 +104,7 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
 
         <div className="flex-1 overflow-y-auto">
           {error && (
-            <p className="p-6 text-sm text-red-600">{error}</p>
+            <p className="p-6 text-sm text-muted">{error}</p>
           )}
           {!data && !error && (
             <p className="p-6 text-sm text-gray-600">Loading themes…</p>
@@ -161,7 +153,7 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
           Press <kbd className="px-1 py-0.5 bg-gray-100 rounded">Esc</kbd> to close ·
           <kbd className="px-1 py-0.5 bg-gray-100 rounded ml-1">W</kbd> toggles this panel
         </footer>
-      </motion.aside>
-    </motion.div>
+      </aside>
+    </div>
   );
 }

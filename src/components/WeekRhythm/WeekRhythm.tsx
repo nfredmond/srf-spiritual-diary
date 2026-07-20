@@ -74,29 +74,29 @@ export function WeekRhythm({ selectedDate, visitedKeys, onSelectDate }: WeekRhyt
               title={tile.topic}
               className={`week-rhythm-tile flex flex-col items-center justify-between gap-1 rounded-xl border p-2 min-w-[78px] md:min-w-[100px] min-h-[84px] md:min-h-[92px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue ${
                 tile.isSelected
-                  ? 'bg-gradient-to-b from-srf-blue to-srf-blue/80 text-white border-srf-blue shadow-md scale-[1.04]'
+                  ? 'bg-srf-blue text-white border-srf-blue shadow-md scale-[1.04]'
                   : tile.isToday
-                  ? 'bg-srf-lotus/40 border-srf-gold/50 text-srf-blue hover:bg-srf-lotus/60'
-                  : 'bg-white border-srf-blue/10 hover:bg-srf-lotus/30 text-gray-700'
+                  ? 'bg-srf-lotus/40 border-srf-gold/50 text-accent hover:bg-srf-lotus/60'
+                  : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:bg-srf-lotus/30 text-accent'
               }`}
             >
               <span
                 className={`text-[10px] uppercase tracking-[0.15em] ${
-                  tile.isSelected ? 'text-white/80' : 'text-gray-500'
+                  tile.isSelected ? 'text-white/80' : 'text-muted'
                 }`}
               >
                 {tile.weekdayLabel}
               </span>
               <span
                 className={`font-heading text-lg leading-none ${
-                  tile.isSelected ? 'text-white' : 'text-srf-blue'
+                  tile.isSelected ? 'text-white' : 'text-accent'
                 }`}
               >
                 {tile.dayNumber}
               </span>
               <span
                 className={`text-[11px] leading-tight truncate max-w-[64px] md:max-w-[88px] ${
-                  tile.isSelected ? 'text-white/90' : 'text-gray-600'
+                  tile.isSelected ? 'text-white/90' : 'text-muted'
                 }`}
               >
                 {tile.topic}

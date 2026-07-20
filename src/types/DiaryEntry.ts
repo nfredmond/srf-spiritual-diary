@@ -11,10 +11,5 @@ export interface DiaryEntry {
 
 export interface DiaryData {
   entries: Record<string, DiaryEntry>;
-  weeklyThemes?: Record<string, {
-    startDate: string;
-    endDate: string;
-    theme: string;
-  }>;
 }
 

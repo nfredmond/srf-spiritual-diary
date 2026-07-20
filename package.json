@@ -12,9 +12,6 @@
     "test:components": "vitest run",
     "lint": "tsc --noEmit",
     "verify": "tsc --noEmit && npm test && vite build",
-    "pipeline:daily": "node scripts/daily-pipeline.mjs",
-    "pipeline:prerender": "node scripts/prerender-range.mjs",
-    "seed:supabase": "node scripts/seed-diary-entries.mjs",
     "patch-missing-dates": "node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json"
   },
   "devDependencies": {
@@ -22,7 +19,6 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.1",
-    "@vercel/node": "^5.3.24",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "jsdom": "^29.0.2",
@@ -35,18 +31,12 @@
     "workbox-window": "^7.4.0"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^2.2.9",
-    "@supabase/supabase-js": "^2.58.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "date-fns": "^4.1.0",
-    "framer-motion": "^12.23.22",
-    "idb": "^8.0.3",
     "lucide-react": "^0.544.0",
-    "openai": "^6.1.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "vite-plugin-react": "^4.0.1"
+    "react-dom": "^19.2.0"
   }
 }

@@ -1,0 +1,52 @@
+The Spiritual Diary — a devotional reader
+=========================================
+
+This is an independent, unofficial devotional reading application. It is not
+affiliated with, endorsed by, or sponsored by Self-Realization Fellowship (SRF).
+It is offered freely as a gift, with the hope that it may be of service.
+
+
+1. Source code
+--------------
+The application source code is © 2026 the contributors to this project and is
+released under the MIT License (see the LICENSE file).
+
+
+2. The diary readings — © Self-Realization Fellowship
+-----------------------------------------------------
+The daily readings, topics, and weekly themes in public/data/diary-entries.json
+are drawn from *The Spiritual Diary of Paramahansa Yogananda*, published by
+Self-Realization Fellowship (Los Angeles, CA). These writings are
+© Self-Realization Fellowship. ALL RIGHTS RESERVED.
+
+This text is NOT covered by the MIT License and is NOT dedicated to the public
+domain. It is reproduced here with reverence, for personal, non-commercial,
+devotional reading only — one reading per day, in the spirit of the printed
+book. Upon acceptance of this donation by Self-Realization Fellowship, the
+diary text and its presentation are governed entirely by SRF.
+
+The reader has been built with these disciplines (see docs/ATTRIBUTION.md):
+  • No Yogananda content is ever scraped, OCR'd from unauthorized scans, or
+    generated/paraphrased by an AI model. Missing days are filled only by
+    faithful hand-transcription from the printed book.
+  • The application is never sold, monetized, or ad-supported.
+
+
+3. Names, marks, and imagery
+----------------------------
+"Self-Realization Fellowship," "SRF," "Paramahansa Yogananda," and the SRF
+emblem are the property of Self-Realization Fellowship. They are referred to in
+this project only nominatively, for accurate attribution.
+
+The lotus icon used by this app (public/lotus-icon.svg and the generated
+branding icons) is an ORIGINAL, generic lotus mark created for this project. It
+is deliberately NOT the SRF emblem — it has no star and no lettering — so that
+it cannot be mistaken for an official SRF mark. Should SRF adopt this gift, SRF
+may replace it with the official SRF emblem.
+
+
+4. Fonts
+--------
+Cormorant Garamond, Crimson Text, and Inter are loaded from Google Fonts and
+are licensed under the SIL Open Font License / Apache License 2.0 by their
+respective authors.
