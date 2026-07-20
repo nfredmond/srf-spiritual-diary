@@ -40,31 +40,36 @@ to turn this working repo into the clean package SRF receives.
 
 ## Turning this repo into the clean gift
 
-Do these before handing the code to SRF, so nothing personal or private travels
-with it:
+Most of this is now **done** on the `reverent-redesign-and-donation-prep` branch —
+the private pipeline and dev config have been extracted, deps trimmed, docs pruned.
+What's left is yours to finish.
 
-- **Exclude the private daily-delivery pipeline** — it is your own tool and is
-  not needed by the reader. Remove from the gift: `scripts/daily-pipeline.mjs`,
-  the delivery/archival parts of `api/run-daily.ts`, and the pipeline docs
-  (`OPERATIONS.md`). The reader runs from bundled JSON with no backend.
-- **Remove developer/account config:** `.mcp.json`, `opencode.json`, the
-  `.vercel/` directory, and anything referencing your personal Supabase project,
-  Vercel team, Gmail, Drive, or the `gog`/`openclaw` tools. (The stale `_archive/`
-  snapshot and `.vercel-trigger` were already removed and are now git-ignored.)
-- **Slim the environment:** `.env.example` now separates the (optional) reader
-  settings from the owner-only pipeline settings. The donated reader needs no
-  secrets at all.
-- **Prune internal docs** that are status logs or contain personal info:
-  `PROJECT_STATUS.md`, `MAJOR_UPDATE.md`, `QUICK_START.md`, `VERCEL_*.md`,
-  `DATA_CONVERSION.md`, `docs/DEPLOY_LOG.md`, `docs/CHANGELOG.md`. Keep `README.md`,
-  `NOTICE`, `LICENSE`, `docs/ATTRIBUTION.md`, `docs/HAND_TRANSCRIPTION.md`, and
-  this file. (`docs/COVENANT.md` names you and your company — either delete it or
-  fold its useful parts into `docs/ATTRIBUTION.md`, which is already anonymized.)
-- **Start a fresh git history** for the gift (a single clean initial commit), so
-  no personal name, email, deploy hash, or Supabase project ref survives in prior
-  commits.
-- **Update the OG/social URL** in `index.html` (`og:url` / `twitter:url`) to
-  wherever SRF will host it — or remove those tags.
+**Already done:**
+- **The private daily-delivery pipeline was removed** — `api/`, `supabase/`,
+  `scripts/daily-pipeline.mjs`, `scripts/prerender-range.mjs`,
+  `scripts/seed-diary-entries.mjs`, `OPERATIONS.md`, plus the `@supabase/supabase-js`
+  and `@vercel/node` deps and the `pipeline:*` / `seed:*` npm scripts. `vercel.json`
+  is now a plain static build. The reader runs from bundled JSON with **no backend**.
+- **Dev/account config removed:** `.mcp.json`, `opencode.json`, the stale `_archive/`
+  snapshot, and `.vercel-trigger` (the last two are now git-ignored).
+- **Docs pruned** to: `README.md`, `NOTICE`, `LICENSE`, `docs/ATTRIBUTION.md`,
+  `docs/HAND_TRANSCRIPTION.md`, `docs/DATA_MERGE_2026-04-16.md`, `docs/FEATURES.md`,
+  and this file. The status/marketing/duplicate docs and the personal `COVENANT.md`
+  /`CHANGELOG.md`/`DEPLOY_LOG.md` were deleted.
+- **The `.env.example` reader section is empty** — the donated reader needs no secrets.
+
+**Recovering your private pipeline** (it is not lost — just no longer in the gift):
+it lives in this repo's git history, in the commit *before* the extraction. Find it
+with `git log --oneline` (the "reverent redesign…" commit), then in your private repo:
+`git checkout <that-commit> -- api scripts supabase` and re-add the pipeline deps.
+
+**Still yours to do:**
+- **Start a fresh git history** for the gift (a single clean initial commit) so no
+  personal name, email, deploy hash, or Supabase project ref survives in prior commits.
+- **Update the OG/social URL** in `index.html` (`og:url` / `twitter:url`) to wherever
+  SRF will host it — or remove those tags.
+- `.vercel/` still exists in your working tree (git-ignored) — don't include it in the
+  handoff tarball; it holds your Vercel project/org IDs.
 
 ## How SRF can deploy it
 

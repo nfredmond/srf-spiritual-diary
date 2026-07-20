@@ -1,29 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
-  "functions": {
-    "api/generate-image.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "api/today.ts": {
-      "memory": 512,
-      "maxDuration": 10
-    },
-    "api/run-daily.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "api/reflection-prompt.ts": {
-      "memory": 512,
-      "maxDuration": 15
-    }
-  },
-  "crons": [
-    {
-      "path": "/api/run-daily",
-      "schedule": "0 9 * * *"
-    }
-  ]
+  "framework": "vite"
 }

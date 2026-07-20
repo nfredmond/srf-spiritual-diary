@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Save, Sparkles, X } from 'lucide-react';
+import { BookOpen, Save, Feather, X } from 'lucide-react';
+import { Modal } from '../Modal/Modal';
 
 interface NotesPanelProps {
   dateKey: string;
@@ -14,53 +14,43 @@ interface NotesPanelProps {
   };
 }
 
+// Gentle, local reflection prompts. Nothing is sent anywhere — this honors the
+// app's promise that your reflections never leave your device.
+const REFLECTION_PROMPTS = [
+  'Where did you feel the truth of this today?',
+  'What is one small way you could live this reading?',
+  'What feeling arose as you read this? Sit with it a moment.',
+  'Is there someone you could hold in prayer as you reflect on this?',
+  'What would gently change if you truly believed these words?',
+  'What is this reading quietly asking you to release?',
+];
+
 export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: NotesPanelProps) {
   const [note, setNote] = useState(initialNote);
   const [lastSavedNote, setLastSavedNote] = useState(initialNote);
   const [isSaved, setIsSaved] = useState(false);
   const [suggestedPrompt, setSuggestedPrompt] = useState<string | null>(null);
-  const [promptLoading, setPromptLoading] = useState(false);
-  const [promptError, setPromptError] = useState<string | null>(null);
+  const promptIndexRef = useRef(0);
   const saveMessageTimeoutRef = useRef<number | null>(null);
 
   const hasUnsavedChanges = note !== lastSavedNote;
 
   const handleSave = () => {
-    if (!hasUnsavedChanges) {
-      return;
-    }
-
+    if (!hasUnsavedChanges) return;
     onSave(note);
     setLastSavedNote(note);
     setIsSaved(true);
-
-    if (saveMessageTimeoutRef.current) {
-      window.clearTimeout(saveMessageTimeoutRef.current);
-    }
-
+    if (saveMessageTimeoutRef.current) window.clearTimeout(saveMessageTimeoutRef.current);
     saveMessageTimeoutRef.current = window.setTimeout(() => setIsSaved(false), 2000);
   };
 
-  const handleSuggestPrompt = async () => {
-    if (!prompt || promptLoading) return;
-    setPromptLoading(true);
-    setPromptError(null);
-    try {
-      const response = await fetch('/api/reflection-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prompt),
-      });
-      const payload = await response.json();
-      if (!response.ok || !payload.prompt) {
-        throw new Error(payload.error || 'Could not generate a prompt right now.');
-      }
-      setSuggestedPrompt(payload.prompt);
-    } catch (err) {
-      setPromptError(err instanceof Error ? err.message : 'Could not generate a prompt right now.');
-    } finally {
-      setPromptLoading(false);
-    }
+  const handleSuggestPrompt = () => {
+    const topicPrompt = prompt?.topic
+      ? `How might "${prompt.topic.toLowerCase()}" live in your day?`
+      : null;
+    const pool = topicPrompt ? [topicPrompt, ...REFLECTION_PROMPTS] : REFLECTION_PROMPTS;
+    setSuggestedPrompt(pool[promptIndexRef.current % pool.length]);
+    promptIndexRef.current += 1;
   };
 
   const handleUsePrompt = () => {
@@ -72,168 +62,130 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
 
   const handleCloseRequest = () => {
     if (hasUnsavedChanges) {
-      const shouldDiscard = window.confirm(
-        'You have unsaved reflections. Close without saving?'
-      );
-
-      if (!shouldDiscard) {
-        return;
-      }
+      const shouldDiscard = window.confirm('You have unsaved reflections. Close without saving?');
+      if (!shouldDiscard) return;
     }
-
     onClose();
   };
 
+  // Ctrl/Cmd+S quick-save. (Escape and outside-click are handled by Modal, which
+  // routes them through handleCloseRequest so the unsaved-changes guard still fires.)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
         event.preventDefault();
         handleSave();
       }
-
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        handleCloseRequest();
-      }
     };
-
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (saveMessageTimeoutRef.current) {
-        window.clearTimeout(saveMessageTimeoutRef.current);
-      }
+      if (saveMessageTimeoutRef.current) window.clearTimeout(saveMessageTimeoutRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasUnsavedChanges, note, lastSavedNote]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={handleCloseRequest}
+    <Modal
+      onClose={handleCloseRequest}
+      ariaLabel="Personal reflections"
+      panelClassName="notes-modal w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"
     >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="notes-modal bg-white rounded-2xl p-6 max-w-2xl w-full"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="notes-dialog-title"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h3 id="notes-dialog-title" className="font-heading text-2xl text-srf-blue flex items-center gap-2">
-            <BookOpen className="w-6 h-6" />
-            Personal Reflections
-          </h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="flex items-center gap-2 font-heading text-2xl text-srf-blue">
+          <BookOpen className="h-6 w-6" />
+          Personal Reflections
+        </h3>
+        <button
+          onClick={handleCloseRequest}
+          className="notes-close-btn rounded-full p-2 transition-colors hover:bg-srf-lotus/40"
+          aria-label="Close"
+        >
+          <X className="h-5 w-5 text-gray-600" />
+        </button>
+      </div>
+
+      <p className="notes-helper-text mb-4 text-sm text-gray-600">
+        Write your thoughts, insights, or reflections on today&apos;s reading.
+      </p>
+
+      {prompt && (
+        <div className="mb-4">
           <button
-            onClick={handleCloseRequest}
-            className="notes-close-btn p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Close reflections panel"
+            type="button"
+            onClick={handleSuggestPrompt}
+            className="inline-flex items-center gap-2 rounded-full border border-srf-gold/40 bg-white px-4 py-2 text-sm font-medium text-srf-blue transition-colors hover:bg-srf-lotus/30"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <Feather className="h-4 w-4" />
+            {suggestedPrompt ? 'Another prompt' : 'Suggest a reflection'}
           </button>
-        </div>
-
-        <p className="notes-helper-text text-sm text-gray-600 mb-4">
-          Write your thoughts, insights, or personal reflections on today&apos;s wisdom.
-        </p>
-
-        {prompt && (
-          <div className="mb-4">
-            <button
-              type="button"
-              onClick={handleSuggestPrompt}
-              disabled={promptLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-srf-blue border border-srf-gold/40 bg-white rounded-full hover:bg-srf-lotus/30 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              <Sparkles className="w-4 h-4" />
-              {promptLoading ? 'Thinking…' : 'Suggest a prompt'}
-            </button>
-            {promptError && (
-              <p className="text-xs text-muted mt-2" role="status" aria-live="polite">
-                {promptError}
-              </p>
-            )}
-            {suggestedPrompt && (
-              <div className="mt-3 p-3 bg-srf-lotus/20 border border-srf-gold/30 rounded-lg">
-                <p className="text-sm text-srf-blue italic">{suggestedPrompt}</p>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handleUsePrompt}
-                    className="text-xs font-medium text-srf-blue hover:underline"
-                  >
-                    Use in my reflection
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSuggestedPrompt(null)}
-                    className="text-xs text-gray-500 hover:underline"
-                  >
-                    Dismiss
-                  </button>
-                </div>
+          {suggestedPrompt && (
+            <div className="mt-3 rounded-lg border border-srf-gold/30 bg-srf-lotus/20 p-3">
+              <p className="text-sm italic text-srf-blue">{suggestedPrompt}</p>
+              <div className="mt-2 flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleUsePrompt}
+                  className="text-xs font-medium text-srf-blue hover:underline"
+                >
+                  Use in my reflection
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSuggestedPrompt(null)}
+                  className="text-xs text-gray-500 hover:underline"
+                >
+                  Dismiss
+                </button>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
+      )}
 
-        <label htmlFor="reflection-note" className="sr-only">
-          Reflection notes for {dateKey}
-        </label>
-        <textarea
-          id="reflection-note"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="What does this quote mean to you? How can you apply it today?"
-          className="notes-textarea w-full h-64 p-4 border-2 border-srf-blue/20 rounded-xl focus:outline-none focus:border-srf-blue transition-colors resize-none"
-          autoFocus
-        />
+      <label htmlFor="reflection-note" className="sr-only">
+        Reflection notes for {dateKey}
+      </label>
+      <textarea
+        id="reflection-note"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="What does this reading mean to you? How might you live it today?"
+        className="notes-textarea h-64 w-full resize-none rounded-xl border-2 border-srf-blue/20 p-4 transition-colors focus:border-srf-blue focus:outline-none"
+        autoFocus
+      />
 
-        <div className="flex items-center justify-between mt-4 gap-4">
-          <div>
-            <p className="notes-meta-text text-sm text-gray-500">{note.length} characters</p>
-            <p className={`text-xs mt-1 ${hasUnsavedChanges ? 'text-muted' : 'text-gold-accent'}`}>
-              {hasUnsavedChanges ? 'Unsaved changes' : 'All changes saved'}
-            </p>
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={!hasUnsavedChanges}
-            className="flex items-center gap-2 px-6 py-3 bg-srf-blue text-white rounded-full font-medium hover:bg-srf-blue-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            <Save className="w-5 h-5" />
-            {isSaved ? 'Saved!' : 'Save Note'}
-          </button>
+      <div className="mt-4 flex items-center justify-between gap-4">
+        <div>
+          <p className="notes-meta-text text-sm text-gray-500">{note.length} characters</p>
+          <p className={`mt-1 text-xs ${hasUnsavedChanges ? 'text-muted' : 'text-gold-accent'}`}>
+            {hasUnsavedChanges ? 'Unsaved changes' : 'All changes saved'}
+          </p>
         </div>
 
-        <p className="notes-meta-text text-xs text-gray-500 mt-3" role="status" aria-live="polite">
-          Tip: Press Ctrl/Cmd + S to save quickly.
-        </p>
+        <button
+          onClick={handleSave}
+          disabled={!hasUnsavedChanges}
+          className="flex items-center gap-2 rounded-full bg-srf-blue px-6 py-3 font-medium text-white transition-all hover:bg-srf-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <Save className="h-5 w-5" />
+          {isSaved ? 'Saved!' : 'Save Note'}
+        </button>
+      </div>
 
-        <AnimatePresence>
-          {isSaved && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="notes-success mt-4 p-3 bg-srf-lotus/40 border border-srf-gold/30 rounded-lg text-center"
-              role="status"
-              aria-live="polite"
-            >
-              <p className="text-srf-blue text-sm font-medium">
-                Your reflection has been saved
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+      <p className="notes-meta-text mt-3 text-xs text-gray-500" role="status" aria-live="polite">
+        Tip: Press Ctrl/Cmd + S to save quickly.
+      </p>
+
+      {isSaved && (
+        <div
+          className="notes-success mt-4 rounded-lg border border-srf-gold/30 bg-srf-lotus/40 p-3 text-center"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="text-sm font-medium text-srf-blue">Your reflection has been saved</p>
+        </div>
+      )}
+    </Modal>
   );
 }
