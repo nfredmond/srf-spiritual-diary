@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react';
-import { ArrowLeft, ArrowRight, Check, Sparkles, Compass, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Sunrise, Compass, Wrench } from 'lucide-react';
 import { useState } from 'react';
 
 interface OnboardingTourProps {
@@ -7,26 +7,24 @@ interface OnboardingTourProps {
 }
 
 interface Panel {
-  icon: typeof Sparkles;
+  icon: typeof Sunrise;
   title: string;
   body: React.ReactNode;
 }
 
 const PANELS: Panel[] = [
   {
-    icon: Sparkles,
+    icon: Sunrise,
     title: 'Welcome',
     body: (
       <div className="space-y-3 text-sm leading-relaxed text-gray-700">
         <p>
-          This is a personal reading companion for{' '}
-          <em>The Spiritual Diary</em> by Paramahansa Yogananda. Each day it
-          shows a single topic and quote to sit with.
+          This is a quiet reading companion for <em>The Spiritual Diary</em> by Paramahansa Yogananda.
+          Each day it offers a single topic and reading to sit with.
         </p>
         <p>
-          It&apos;s an unofficial devotional reader — not affiliated with
-          Self-Realization Fellowship. Your favorites and notes stay in your
-          browser; nothing is sent anywhere.
+          It&apos;s an independent, unofficial devotional reader — not affiliated with Self-Realization
+          Fellowship. Your favorites and reflections stay in your browser; nothing is sent anywhere.
         </p>
       </div>
     ),
@@ -38,20 +36,20 @@ const PANELS: Panel[] = [
       <div className="space-y-3 text-sm leading-relaxed text-gray-700">
         <ul className="space-y-2">
           <li>
-            <kbd className="px-2 py-0.5 bg-gray-100 rounded border border-gray-200 text-xs">← →</kbd>{' '}
-            or swipe — previous / next day
+            <kbd className="rounded border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs">← →</kbd> or
+            swipe — previous / next day
           </li>
           <li>
-            <kbd className="px-2 py-0.5 bg-gray-100 rounded border border-gray-200 text-xs">T</kbd>{' '}
-            — jump back to today
+            <kbd className="rounded border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs">T</kbd> — jump
+            back to today
           </li>
           <li>
-            <kbd className="px-2 py-0.5 bg-gray-100 rounded border border-gray-200 text-xs">R</kbd>{' '}
-            — a random reading
+            <kbd className="rounded border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs">R</kbd> — let a
+            reading find you
           </li>
           <li>
-            <kbd className="px-2 py-0.5 bg-gray-100 rounded border border-gray-200 text-xs">W</kbd>{' '}
-            — browse readings grouped by weekly theme
+            <kbd className="rounded border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs">W</kbd> —
+            browse readings grouped by weekly theme
           </li>
         </ul>
       </div>
@@ -59,18 +57,20 @@ const PANELS: Panel[] = [
   },
   {
     icon: Wrench,
-    title: 'The toolbar, top-right',
+    title: 'The quiet toolbar',
     body: (
       <div className="space-y-3 text-sm leading-relaxed text-gray-700">
         <ul className="space-y-2">
           <li>Search the full year by keyword or topic</li>
-          <li>Save favorites and write private reflections</li>
-          <li>Meditation timer with gentle bells</li>
-          <li>Reading calendar, reflection overview, preserve-journal export</li>
+          <li>Save favorite readings and write private reflections</li>
+          <li>A meditation timer with a gentle bell</li>
+          <li>
+            The <span className="font-medium">⋯</span> menu holds the reading calendar, weekly themes,
+            and a backup of your journal
+          </li>
         </ul>
         <p className="pt-2 text-xs text-gray-600">
-          Press{' '}
-          <kbd className="px-1.5 py-0.5 bg-gray-100 rounded border border-gray-200 text-xs">?</kbd>{' '}
+          Press <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-xs">?</kbd>{' '}
           anytime to see every keyboard shortcut.
         </p>
       </div>
@@ -86,24 +86,22 @@ export function OnboardingTour({ onComplete }: OnboardingTourProps) {
 
   return (
     <Dialog open={true} onClose={onComplete} className="relative z-50">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
-          <div className="bg-gradient-to-r from-srf-blue to-srf-gold p-6 text-white">
+        <Dialog.Panel className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+          <div className="bg-srf-blue p-6 text-white">
             <div className="flex items-center gap-3">
-              <div className="bg-white/20 rounded-full p-2">
-                <Icon className="w-6 h-6" />
+              <div className="rounded-full bg-white/15 p-2">
+                <Icon className="h-6 w-6" />
               </div>
-              <Dialog.Title className="font-heading text-2xl">
-                {panel.title}
-              </Dialog.Title>
+              <Dialog.Title className="font-heading text-2xl">{panel.title}</Dialog.Title>
             </div>
           </div>
 
-          <div className="p-6 min-h-[180px]">{panel.body}</div>
+          <div className="min-h-[180px] p-6">{panel.body}</div>
 
-          <div className="flex items-center justify-between px-6 pb-6 pt-2 border-t border-srf-blue/10">
+          <div className="flex items-center justify-between border-t border-srf-blue/10 px-6 pb-6 pt-2">
             <div className="flex gap-1.5" role="tablist" aria-label="Tour progress">
               {PANELS.map((_, index) => (
                 <span
@@ -120,35 +118,35 @@ export function OnboardingTour({ onComplete }: OnboardingTourProps) {
               {step === 0 ? (
                 <button
                   onClick={onComplete}
-                  className="text-sm text-gray-600 hover:text-srf-blue transition-colors px-3 py-2"
+                  className="px-3 py-2 text-sm text-gray-600 transition-colors hover:text-srf-blue"
                 >
                   Skip
                 </button>
               ) : (
                 <button
                   onClick={() => setStep((s) => s - 1)}
-                  className="p-2 rounded-full hover:bg-white/60 transition-colors"
+                  className="rounded-full p-2 transition-colors hover:bg-srf-lotus/50"
                   aria-label="Previous"
                 >
-                  <ArrowLeft className="w-4 h-4 text-srf-blue" />
+                  <ArrowLeft className="h-4 w-4 text-srf-blue" />
                 </button>
               )}
 
               {isLast ? (
                 <button
                   onClick={onComplete}
-                  className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full hover:shadow-lg transition-all text-sm font-medium"
+                  className="flex items-center gap-2 rounded-full bg-srf-blue px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-srf-blue-700"
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className="h-4 w-4" />
                   Got it
                 </button>
               ) : (
                 <button
                   onClick={() => setStep((s) => s + 1)}
-                  className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full hover:shadow-lg transition-all text-sm font-medium"
+                  className="flex items-center gap-2 rounded-full bg-srf-blue px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-srf-blue-700"
                 >
                   Next
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </button>
               )}
             </div>

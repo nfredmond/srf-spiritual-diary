@@ -1,19 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="lotus-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1E4B87;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <!-- Lotus petals -->
-  <path d="M 50 80 Q 30 60 30 40 Q 30 20 50 10 Q 70 20 70 40 Q 70 60 50 80" 
-        fill="url(#lotus-gradient)" opacity="0.9"/>
-  <path d="M 50 80 Q 25 70 20 50 Q 20 30 50 20 Q 80 30 80 50 Q 75 70 50 80" 
-        fill="url(#lotus-gradient)" opacity="0.7"/>
-  <path d="M 50 80 Q 20 80 15 60 Q 15 40 50 30 Q 85 40 85 60 Q 80 80 50 80" 
-        fill="url(#lotus-gradient)" opacity="0.5"/>
-  
-  <!-- Center -->
-  <circle cx="50" cy="50" r="8" fill="#D4AF37"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Lotus">
+  <!-- A simple, generic lotus — deliberately NOT the SRF emblem (no star, no
+       letters). Navy petals with a thin gold trim read clearly on light. -->
+  <g fill="#052956" stroke="#DCBD23" stroke-width="1.1" stroke-linejoin="round">
+    <path d="M 50 82 Q 18 82 14 62 Q 14 42 50 32 Q 86 42 86 62 Q 82 82 50 82" opacity="0.82"/>
+    <path d="M 50 82 Q 24 72 19 52 Q 19 32 50 22 Q 81 32 81 52 Q 76 72 50 82" opacity="0.92"/>
+    <path d="M 50 82 Q 30 62 30 42 Q 30 22 50 12 Q 70 22 70 42 Q 70 62 50 82"/>
+  </g>
+  <circle cx="50" cy="50" r="6" fill="#DCBD23"/>
 </svg>

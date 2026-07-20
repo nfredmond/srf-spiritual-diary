@@ -32,7 +32,11 @@ dist-ssr
 .vercel
 
 # Generated pipeline artifacts
-artifacts/daily
+artifacts/
+
+# Stale local snapshots / deploy triggers (not for the donated repo)
+_archive/
+.vercel-trigger
 
 # Supabase CLI local state
 supabase/.temp/
@@ -42,3 +46,6 @@ supabase/.branches/
 # npm run patch-missing-dates, do not commit the unfiltered working copy —
 # save a cleaned audit copy to artifacts/hand-transcription-*.json instead).
 data/missing-dates-patch.json
+
+# Playwright test output
+.playwright-mcp/

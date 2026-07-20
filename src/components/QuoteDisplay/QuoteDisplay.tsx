@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Star, Share2, Copy, Check, Heart, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { Share2, Copy, Check, Heart, BookOpen, Volume2, VolumeX } from 'lucide-react';
 import { useState } from 'react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 import { useSpeech } from '../../hooks/useSpeech';
@@ -14,6 +14,9 @@ interface QuoteDisplayProps {
   onOpenNotes?: () => void;
 }
 
+const actionBtn =
+  'p-2.5 rounded-full text-muted transition-colors hover:bg-srf-lotus/60 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue';
+
 export function QuoteDisplay({
   entry,
   fontSize = 'medium',
@@ -25,29 +28,23 @@ export function QuoteDisplay({
   const [copied, setCopied] = useState(false);
   const { supported: speechSupported, speaking, toggle } = useSpeech();
 
+  // The quote is the hero — generous, unhurried sizes.
   const fontSizeClasses = {
-    small: 'text-lg',
-    medium: 'text-xl',
-    large: 'text-2xl',
-    xlarge: 'text-3xl',
+    small: 'text-xl md:text-2xl',
+    medium: 'text-2xl md:text-3xl',
+    large: 'text-3xl md:text-4xl',
+    xlarge: 'text-4xl md:text-5xl',
   };
 
   const handleShare = async () => {
-    const text = `"${entry.quote}"\n\n— ${entry.source}\n\nSRF Spiritual Diary`;
-    
+    const text = `"${entry.quote}"\n\n— ${entry.source}\n\nThe Spiritual Diary`;
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: entry.topic,
-          text: text,
-          url: window.location.href,
-        });
-      } catch (err) {
-        // User cancelled or error occurred
-        console.log('Share cancelled');
+        await navigator.share({ title: entry.topic, text, url: window.location.href });
+      } catch {
+        /* user cancelled */
       }
     } else {
-      // Fallback: copy to clipboard
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -55,8 +52,7 @@ export function QuoteDisplay({
   };
 
   const handleCopy = async () => {
-    const text = `"${entry.quote}"\n\n— ${entry.source}`;
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(`"${entry.quote}"\n\n— ${entry.source}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -66,137 +62,102 @@ export function QuoteDisplay({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="card max-w-4xl mx-auto relative"
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="card mx-auto max-w-3xl text-center"
+      aria-label={`Reading for ${entry.topic}`}
     >
-      {/* Action Buttons */}
-      <div className="absolute top-4 right-4 flex gap-2">
+      {/* One quiet meta line for the weekly theme */}
+      {entry.weeklyTheme && (
+        <p className="mb-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+          <span className="text-muted font-body text-[0.7rem] uppercase tracking-[0.22em]">
+            Weekly Theme
+          </span>
+          <span aria-hidden="true" className="text-gold-accent">·</span>
+          <span className="text-accent font-heading text-base font-semibold tracking-wide">
+            {entry.weeklyTheme}
+          </span>
+        </p>
+      )}
+
+      {/* Special observance — subtle and dignified, no decorative stars */}
+      {entry.specialDay && (
+        <p className="quote-special-pill-text text-gold-accent mb-5 font-heading text-lg">
+          {entry.specialDay.trim()}
+        </p>
+      )}
+
+      {/* The day's topic */}
+      <h2 className="quote-topic-pill-text text-accent font-heading text-sm font-semibold uppercase tracking-[0.2em]">
+        {entry.topic}
+      </h2>
+
+      <hr className="gold-rule my-7" />
+
+      {/* The reading — the focal point of the page */}
+      <blockquote
+        className={`quote-text mx-auto max-w-2xl transition-all ${fontSizeClasses[fontSize]}`}
+      >
+        {'“'}
+        {entry.quote}
+        {'”'}
+      </blockquote>
+
+      <hr className="gold-rule my-7" />
+
+      {/* Attribution — faithful to the entry's true source */}
+      <footer>
+        <p className="text-muted font-body italic">— {entry.source}</p>
+        {entry.book && <p className="text-muted mt-1 font-body text-sm not-italic opacity-80">{entry.book}</p>}
+      </footer>
+
+      {/* Understated, always-available actions */}
+      <div className="mt-7 flex items-center justify-center gap-1">
         {onToggleFavorite && (
           <button
             onClick={onToggleFavorite}
-            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
+            className={actionBtn}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            aria-pressed={isFavorite}
+            title={isFavorite ? 'Saved' : 'Save this reading'}
           >
-            <Heart className={`w-5 h-5 transition-all ${isFavorite ? 'text-red-500 fill-red-500' : 'text-srf-blue'}`} />
-            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-              {isFavorite ? 'Unfavorite' : 'Favorite'}
-            </span>
+            <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current text-gold-accent' : ''}`} />
           </button>
         )}
 
         {onOpenNotes && (
           <button
             onClick={onOpenNotes}
-            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
+            className={actionBtn}
             aria-label="Personal notes"
+            title={hasNote ? 'Edit your reflection' : 'Add a reflection'}
           >
-            <BookOpen className={`w-5 h-5 ${hasNote ? 'text-srf-gold fill-srf-gold/20' : 'text-srf-blue'}`} />
-            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-              {hasNote ? 'Edit note' : 'Add note'}
-            </span>
+            <BookOpen className={`h-5 w-5 ${hasNote ? 'text-gold-accent' : ''}`} />
           </button>
         )}
 
         {speechSupported && (
           <button
             onClick={handleListen}
-            className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
-            aria-label={speaking ? 'Stop reading aloud' : 'Listen to this quote'}
+            className={actionBtn}
+            aria-label={speaking ? 'Stop reading aloud' : 'Listen to this reading'}
             aria-pressed={speaking}
+            title={speaking ? 'Stop' : 'Listen'}
           >
-            {speaking ? (
-              <VolumeX className="w-5 h-5 text-srf-gold" />
-            ) : (
-              <Volume2 className="w-5 h-5 text-srf-blue" />
-            )}
-            <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-              {speaking ? 'Stop' : 'Listen'}
-            </span>
+            {speaking ? <VolumeX className="h-5 w-5 text-gold-accent" /> : <Volume2 className="h-5 w-5" />}
           </button>
         )}
 
-        <button
-          onClick={handleCopy}
-          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
-          aria-label="Copy quote"
-        >
-          {copied ? (
-            <Check className="w-5 h-5 text-green-600" />
-          ) : (
-            <Copy className="w-5 h-5 text-srf-blue" />
-          )}
-          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-            {copied ? 'Copied!' : 'Copy quote'}
-          </span>
+        <button onClick={handleCopy} className={actionBtn} aria-label="Copy this reading" title="Copy">
+          {copied ? <Check className="h-5 w-5 text-accent" /> : <Copy className="h-5 w-5" />}
         </button>
 
-        <button
-          onClick={handleShare}
-          className="p-2 rounded-full hover:bg-srf-lotus/30 transition-colors group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-srf-blue"
-          aria-label="Share quote"
-        >
-          <Share2 className="w-5 h-5 text-srf-blue" />
-          <span className="absolute top-full right-0 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-            Share quote
-          </span>
+        <button onClick={handleShare} className={actionBtn} aria-label="Share this reading" title="Share">
+          <Share2 className="h-5 w-5" />
         </button>
       </div>
-
-      {/* Weekly Theme (if present) */}
-      {entry.weeklyTheme && (
-        <div className="text-center mb-4">
-          <div className="quote-meta-pill inline-flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-srf-blue/10 to-srf-gold/10 rounded-full border border-srf-gold/30">
-            <span className="quote-meta-pill-label font-heading text-xs uppercase tracking-[0.15em] text-srf-blue/70">
-              Weekly Theme
-            </span>
-            <span className="quote-meta-pill-value font-heading text-sm font-semibold text-srf-blue">
-              {entry.weeklyTheme}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Special Day (if present) */}
-      {entry.specialDay && (
-        <div className="text-center mb-4">
-          <div className="quote-special-pill inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-srf-gold/20 to-srf-gold/10 rounded-lg border-2 border-srf-gold/50">
-            <Star className="quote-special-pill-icon w-5 h-5 text-srf-gold fill-srf-gold" />
-            <span className="quote-special-pill-text font-heading text-base font-semibold text-srf-blue">
-              {entry.specialDay}
-            </span>
-            <Star className="quote-special-pill-icon w-5 h-5 text-srf-gold fill-srf-gold" />
-          </div>
-        </div>
-      )}
-
-      {/* Daily Topic */}
-      <div className="text-center mb-6">
-        <span className="quote-topic-pill inline-block px-4 py-2 bg-srf-lotus/30 rounded-full">
-          <span className="quote-topic-pill-text font-heading text-sm uppercase tracking-[0.2em] text-srf-blue">
-            {entry.topic}
-          </span>
-        </span>
-      </div>
-
-      {/* Quote */}
-      <blockquote className={`quote-text text-center mb-8 px-4 transition-all ${fontSizeClasses[fontSize]}`}>
-        "{entry.quote}"
-      </blockquote>
-
-      {/* Attribution */}
-      <div className="text-center">
-        <p className="text-gray-700 italic">
-          — {entry.source}
-        </p>
-        {entry.book && (
-          <p className="text-sm text-gray-600 mt-2">
-            {entry.book}
-          </p>
-        )}
-      </div>
-    </motion.div>
+    </motion.article>
   );
 }

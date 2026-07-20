@@ -32,7 +32,7 @@ describe('OnboardingTour', () => {
 
     // Panel 2 → Panel 3
     await userEvent.click(screen.getByRole('button', { name: /Next/i }));
-    expect(screen.getByRole('heading', { name: /The toolbar/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /quiet toolbar/i })).toBeInTheDocument();
 
     // Panel 3 has Got it instead of Next
     expect(screen.queryByRole('button', { name: /^Next$/i })).not.toBeInTheDocument();

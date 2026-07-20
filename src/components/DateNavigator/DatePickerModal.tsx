@@ -28,32 +28,45 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
 
   return (
     <Dialog open={true} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
+
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full">
-          <div className="flex justify-between items-center mb-4">
-            <Dialog.Title className="font-heading text-2xl text-srf-blue">
+        <Dialog.Panel
+          className="rounded-2xl shadow-2xl p-6 max-w-md w-full border"
+          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
+        >
+          <div className="flex justify-between items-center mb-5">
+            <Dialog.Title
+              className="font-heading text-2xl"
+              style={{ color: 'var(--text-primary)' }}
+            >
               Select a Date
             </Dialog.Title>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-1.5 rounded-full transition-colors hover:bg-srf-lotus/30"
+              style={{ color: 'var(--text-secondary)' }}
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Month Selector */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-5">
             {months.map((month, index) => (
               <button
                 key={month}
                 onClick={() => setCurrentMonth(index)}
+                style={
+                  currentMonth === index
+                    ? undefined
+                    : { color: 'var(--text-primary)', borderColor: 'var(--border-color)' }
+                }
                 className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                   currentMonth === index
                     ? 'bg-srf-blue text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'border hover:bg-srf-lotus/30'
                 }`}
               >
                 {month.slice(0, 3)}
@@ -64,32 +77,38 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
           {/* Calendar Grid */}
           <div className="grid grid-cols-7 gap-1">
             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <div key={i} className="text-center text-xs font-semibold text-gray-500 py-2">
+              <div
+                key={i}
+                className="text-center text-xs font-semibold py-2"
+                style={{ color: 'var(--text-secondary)' }}
+              >
                 {day}
               </div>
             ))}
-            
+
             {/* Empty cells for days before month starts */}
             {Array.from({ length: firstDayOfMonth }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
-            
+
             {/* Days of the month */}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const isSelected = selectedDate.getMonth() === currentMonth && selectedDate.getDate() === day;
               const isToday = new Date().getMonth() === currentMonth && new Date().getDate() === day;
-              
+
               return (
                 <button
                   key={day}
                   onClick={() => handleDateSelect(day)}
-                  className={`
-                    py-2 rounded-lg text-sm font-medium transition-colors
-                    ${isSelected ? 'bg-srf-blue text-white' : ''}
-                    ${!isSelected && isToday ? 'bg-srf-gold/20 text-srf-blue' : ''}
-                    ${!isSelected && !isToday ? 'hover:bg-gray-100' : ''}
-                  `}
+                  style={isSelected ? undefined : { color: 'var(--text-primary)' }}
+                  className={`py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isSelected
+                      ? 'bg-srf-blue text-white'
+                      : isToday
+                      ? 'bg-srf-gold/10 border border-srf-gold/60 hover:bg-srf-gold/20'
+                      : 'hover:bg-srf-lotus/30'
+                  }`}
                 >
                   {day}
                 </button>

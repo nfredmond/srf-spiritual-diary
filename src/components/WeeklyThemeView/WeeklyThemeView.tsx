@@ -112,7 +112,7 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
 
         <div className="flex-1 overflow-y-auto">
           {error && (
-            <p className="p-6 text-sm text-red-600">{error}</p>
+            <p className="p-6 text-sm text-muted">{error}</p>
           )}
           {!data && !error && (
             <p className="p-6 text-sm text-gray-600">Loading themes…</p>

@@ -1,43 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+/* Fonts are loaded via <link> in index.html so the browser can discover them
+   immediately, rather than waiting for this stylesheet to parse. */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  SRF Spiritual Diary — a quiet reading room.
+  Palette anchored to Self-Realization Fellowship's own deep navy (#052956)
+  and emblem gold (#DCBD23), with warm-paper neutrals. Gold is used sparingly:
+  thin rules and small accents only, never as a decorative gradient fill.
+*/
 
 @layer base {
   :root {
     --bg-primary: #F8F6F1;
     --bg-secondary: #FFFFFF;
     --bg-gradient-start: #F8F6F1;
-    --bg-gradient-end: rgba(232, 213, 196, 0.2);
-    --text-primary: rgb(31, 41, 55);
-    --text-secondary: rgb(75, 85, 99);
-    --border-color: rgba(229, 231, 235, 1);
+    --bg-gradient-end: #F1E9D9;      /* warm ivory, not peach */
+    --text-primary: #2A2E33;         /* warm near-charcoal */
+    --text-secondary: #5b626b;
+    --border-color: rgba(5, 41, 86, 0.10);
+    --hairline: rgba(220, 189, 35, 0.55); /* thin gold rule */
+    --focus-ring: #052956;
+    --accent: #052956;
+    --gold-text: #8A6A12;  /* gold dark enough to read as text on light */
   }
 
   .theme-dark {
     --bg-primary: #09111d;
     --bg-secondary: #111a2c;
     --bg-gradient-start: #08101b;
-    --bg-gradient-end: rgba(45, 105, 179, 0.22);
+    --bg-gradient-end: #0c1a2e;
     --text-primary: rgb(233, 239, 248);
     --text-secondary: rgb(174, 186, 204);
     --border-color: rgba(148, 163, 184, 0.18);
+    --hairline: rgba(224, 196, 111, 0.5);
+    --focus-ring: #e0c46f;           /* gold ring reads clearly on dark */
+    --accent: #9db8dd;
+    --gold-text: #e0c46f;
   }
 
   .theme-sepia {
     --bg-primary: #f4ecd8;
     --bg-secondary: #f9f4e8;
     --bg-gradient-start: #f4ecd8;
-    --bg-gradient-end: rgba(212, 175, 55, 0.15);
-    --text-primary: #5c4a3a;
-    --text-secondary: #7a6a5a;
-    --border-color: rgba(212, 175, 55, 0.2);
+    --bg-gradient-end: #efe4cb;
+    --text-primary: #4a3f30;
+    --text-secondary: #6f6250;
+    --border-color: rgba(105, 108, 11, 0.18);
+    --hairline: rgba(138, 106, 18, 0.5);
+    --focus-ring: #6b5410;
+    --accent: #5c4a2a;
+    --gold-text: #8A6A12;
   }
 
   body {
     @apply font-body;
-    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+    background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end)) no-repeat;
+    background-color: var(--bg-gradient-end);
     color: var(--text-primary);
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -50,9 +71,9 @@
 
   .theme-dark body {
     background:
-      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 24%),
-      radial-gradient(circle at 20% 20%, rgba(45, 105, 179, 0.16), transparent 30%),
-      linear-gradient(135deg, #08101b 0%, #0c1524 46%, #111d33 100%);
+      radial-gradient(circle at 50% -10%, rgba(220, 189, 35, 0.07), transparent 45%),
+      radial-gradient(circle at 20% 15%, rgba(20, 80, 140, 0.16), transparent 40%),
+      linear-gradient(160deg, #08101b 0%, #0b1526 50%, #0e1a30 100%);
   }
 
   .theme-dark .card {
@@ -69,20 +90,9 @@
     color: var(--text-primary);
   }
 
-  .theme-dark header {
-    background: linear-gradient(180deg, rgba(13, 22, 36, 0.94), rgba(14, 24, 40, 0.9));
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 12px 30px rgba(2, 7, 18, 0.28);
-  }
-
-  .theme-dark footer {
-    background: linear-gradient(180deg, rgba(11, 18, 30, 0.96), rgba(8, 13, 22, 0.98));
-    border-top: 1px solid var(--border-color);
-  }
-
   .theme-sepia .card {
     background-color: var(--bg-secondary);
-    box-shadow: 0 4px 6px rgba(92, 74, 58, 0.1);
+    box-shadow: 0 4px 6px rgba(92, 74, 58, 0.10);
   }
 
   .theme-sepia .quote-text,
@@ -93,93 +103,107 @@
     color: var(--text-primary);
   }
 
-  .theme-sepia header {
-    background-color: var(--bg-secondary);
-  }
-
+  /* Theme-aware focus ring — guaranteed visible on light, sepia, and dark. */
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
   textarea:focus-visible,
-  select:focus-visible {
-    outline: 2px solid #1E4B87;
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Honor the reader's reduced-motion preference everywhere. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer components {
+  /* The sacred quote is the hero: large, calm, unhurried. Sizing is owned by
+     the component's font-size control; this sets voice, color, and rhythm. */
   .quote-text {
-    @apply font-quote text-2xl md:text-3xl leading-relaxed;
+    @apply font-quote leading-relaxed;
     color: var(--text-primary);
-  }
-  
-  .card {
-    @apply bg-white rounded-2xl shadow-lg p-8;
-    border: 1px solid rgba(30, 75, 135, 0.08);
+    letter-spacing: 0.005em;
   }
 
+  .card {
+    @apply bg-white rounded-2xl p-8 md:p-10;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(5, 41, 86, 0.06);
+  }
+
+  /* A thin gold hairline — the one place gold earns its keep. */
+  .gold-rule {
+    height: 1px;
+    width: 3.5rem;
+    margin-inline: auto;
+    background: var(--hairline);
+    border: 0;
+  }
+
+  /* Theme-aware text colors so every surface reads correctly in
+     light / sepia / dark without per-theme overrides. */
+  .text-accent { color: var(--accent); }
+  .text-gold-accent { color: var(--gold-text); }
+  .text-muted { color: var(--text-secondary); }
+
+  /* Calm, paper-like surfaces — no heavy imagery, so text paints instantly. */
   .app-shell {
-    background:
-      linear-gradient(135deg, rgba(248, 246, 241, 0.92), rgba(248, 246, 241, 0.88)),
-      url('/art/background-soft.png') center/cover fixed no-repeat;
+    background: transparent;
   }
 
   .app-header {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 241, 0.88)),
-      url('/art/hero-main.png') center 42%/cover no-repeat;
-    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(248, 246, 241, 0));
   }
 
   .app-footer {
-    background:
-      linear-gradient(180deg, rgba(30, 75, 135, 0.94), rgba(20, 54, 98, 0.96)),
-      url('/art/hero-secondary.png') center/cover no-repeat;
+    background: linear-gradient(180deg, #063062, #052956);
   }
 
   .brand-logo {
-    filter: drop-shadow(0 8px 20px rgba(30, 75, 135, 0.16));
+    filter: drop-shadow(0 6px 16px rgba(5, 41, 86, 0.14));
   }
 
   .theme-pill-group {
     background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(30, 75, 135, 0.12);
+    border: 1px solid rgba(5, 41, 86, 0.12);
   }
 
   .theme-pill-button {
-    color: rgb(75, 85, 99);
+    color: var(--text-secondary);
   }
 
   .theme-pill-button:hover {
-    color: rgb(17, 24, 39);
-    background: rgba(232, 213, 196, 0.28);
+    color: var(--text-primary);
+    background: rgba(233, 222, 200, 0.45);
   }
 
   .theme-pill-icon {
-    color: rgb(75, 85, 99);
+    color: var(--text-secondary);
   }
 
   .theme-pill-indicator {
-    background: linear-gradient(to right, #1E4B87, #D4AF37);
-    box-shadow: 0 6px 14px rgba(30, 75, 135, 0.22);
-  }
-
-  .theme-dark .app-shell {
-    background:
-      linear-gradient(135deg, rgba(8, 16, 27, 0.92), rgba(12, 21, 36, 0.9)),
-      url('/art/background-soft.png') center/cover fixed no-repeat;
+    background: #052956;
+    box-shadow: 0 4px 12px rgba(5, 41, 86, 0.20);
   }
 
   .theme-dark .app-header {
-    background:
-      linear-gradient(180deg, rgba(10, 19, 32, 0.88), rgba(12, 21, 36, 0.92)),
-      url('/art/hero-main.png') center 40%/cover no-repeat;
+    background: linear-gradient(180deg, rgba(12, 21, 36, 0.6), rgba(12, 21, 36, 0));
   }
 
   .theme-dark .app-footer {
-    background:
-      linear-gradient(180deg, rgba(8, 13, 22, 0.92), rgba(6, 10, 18, 0.96)),
-      url('/art/hero-secondary.png') center/cover no-repeat;
+    background: linear-gradient(180deg, #0a1526, #070d18);
     border-top: 1px solid rgba(148, 163, 184, 0.16);
   }
 
@@ -189,7 +213,7 @@
 
   .theme-dark .theme-pill-group {
     background: rgba(22, 33, 62, 0.88);
-    border: 1px solid rgba(212, 175, 55, 0.22);
+    border: 1px solid rgba(224, 196, 111, 0.22);
     box-shadow: 0 10px 24px rgba(5, 10, 24, 0.32);
   }
 
@@ -199,7 +223,7 @@
 
   .theme-dark .theme-pill-button:hover {
     color: rgb(255, 255, 255);
-    background: rgba(212, 175, 55, 0.12);
+    background: rgba(224, 196, 111, 0.12);
   }
 
   .theme-dark .theme-pill-icon {
@@ -207,26 +231,16 @@
   }
 
   .theme-dark .theme-pill-indicator {
-    background: linear-gradient(to right, #2D69B3, #D4AF37);
+    background: #14508C;
     box-shadow: 0 8px 18px rgba(5, 10, 24, 0.42);
   }
 
-  .theme-sepia .app-shell {
-    background:
-      linear-gradient(135deg, rgba(244, 236, 216, 0.92), rgba(249, 244, 232, 0.88)),
-      url('/art/background-soft.png') center/cover fixed no-repeat;
-  }
-
   .theme-sepia .app-header {
-    background:
-      linear-gradient(180deg, rgba(249, 244, 232, 0.9), rgba(244, 236, 216, 0.86)),
-      url('/art/hero-main.png') center 42%/cover no-repeat;
+    background: linear-gradient(180deg, rgba(249, 244, 232, 0.6), rgba(244, 236, 216, 0));
   }
 
   .theme-sepia .app-footer {
-    background:
-      linear-gradient(180deg, rgba(122, 106, 90, 0.86), rgba(92, 74, 58, 0.92)),
-      url('/art/hero-secondary.png') center/cover no-repeat;
+    background: linear-gradient(180deg, #6f6250, #5c4a2a);
   }
 
   .theme-sepia .brand-logo {
@@ -235,7 +249,7 @@
 
   .theme-sepia .theme-pill-group {
     background: rgba(249, 244, 232, 0.88);
-    border: 1px solid rgba(122, 106, 90, 0.18);
+    border: 1px solid rgba(105, 108, 11, 0.18);
   }
 
   .theme-sepia .theme-pill-button {
@@ -244,17 +258,18 @@
 
   .theme-sepia .theme-pill-button:hover {
     color: #4f4031;
-    background: rgba(212, 175, 55, 0.12);
+    background: rgba(138, 106, 18, 0.12);
   }
 
   .theme-sepia .theme-pill-icon {
     color: #6b5a49;
   }
 
-  .utility-toolbar {
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  .theme-sepia .theme-pill-indicator {
+    background: #5c4a2a;
   }
 
+  .utility-toolbar,
   .utility-popover {
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
@@ -268,12 +283,12 @@
 
   .theme-dark .utility-toolbar {
     background: rgba(14, 24, 40, 0.86) !important;
-    border-color: rgba(212, 175, 55, 0.18) !important;
+    border-color: rgba(224, 196, 111, 0.18) !important;
     box-shadow: 0 14px 28px rgba(3, 8, 20, 0.34);
   }
 
   .theme-dark .utility-toolbar button:hover {
-    background: rgba(212, 175, 55, 0.1) !important;
+    background: rgba(224, 196, 111, 0.10) !important;
   }
 
   .theme-dark .utility-toolbar .utility-toolbar-icon {
@@ -301,7 +316,7 @@
   .theme-dark .secondary-action-btn {
     background: rgba(17, 30, 50, 0.88) !important;
     color: rgb(230, 237, 246) !important;
-    border-color: rgba(212, 175, 55, 0.22) !important;
+    border-color: rgba(224, 196, 111, 0.22) !important;
     box-shadow: 0 10px 24px rgba(3, 8, 20, 0.28);
   }
 
@@ -332,12 +347,12 @@
   }
 
   .theme-dark .nav-today-btn {
-    background: linear-gradient(135deg, #2d69b3, #1e4b87) !important;
+    background: #14508C !important;
     box-shadow: 0 14px 28px rgba(7, 18, 38, 0.34);
   }
 
   .theme-dark .nav-today-btn:hover {
-    background: linear-gradient(135deg, #3a79c7, #24589e) !important;
+    background: #1c5ea3 !important;
   }
 
   .notes-modal {
@@ -359,7 +374,7 @@
   }
 
   .theme-dark .notes-close-btn:hover {
-    background: rgba(212, 175, 55, 0.1) !important;
+    background: rgba(224, 196, 111, 0.10) !important;
   }
 
   .theme-dark .notes-close-btn svg {
@@ -374,7 +389,7 @@
   .theme-dark .notes-textarea {
     background: rgba(8, 14, 24, 0.78);
     color: rgb(239, 244, 250);
-    border-color: rgba(212, 175, 55, 0.18);
+    border-color: rgba(224, 196, 111, 0.18);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
@@ -384,7 +399,7 @@
 
   .theme-dark .notes-textarea:focus {
     border-color: rgba(93, 156, 236, 0.82);
-    box-shadow: 0 0 0 3px rgba(45, 105, 179, 0.18);
+    box-shadow: 0 0 0 3px rgba(20, 80, 140, 0.22);
   }
 
   .theme-dark .notes-success {
@@ -407,12 +422,6 @@
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .theme-dark .quote-meta-pill {
-    background: linear-gradient(135deg, rgba(45, 105, 179, 0.18), rgba(212, 175, 55, 0.12)) !important;
-    border-color: rgba(212, 175, 55, 0.3) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 22px rgba(3, 8, 20, 0.24);
-  }
-
   .theme-dark .quote-meta-pill-label {
     color: rgb(188, 203, 224) !important;
   }
@@ -421,46 +430,15 @@
     color: rgb(239, 244, 250) !important;
   }
 
-  .theme-dark .quote-special-pill {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(212, 175, 55, 0.12)) !important;
-    border-color: rgba(224, 196, 111, 0.5) !important;
-    box-shadow: 0 12px 24px rgba(3, 8, 20, 0.24);
-  }
-
   .theme-dark .quote-special-pill-text {
     color: rgb(244, 234, 192) !important;
   }
 
   .theme-dark .quote-special-pill-icon {
     color: #e0c46f !important;
-    fill: rgba(224, 196, 111, 0.9) !important;
-  }
-
-  .theme-dark .quote-topic-pill {
-    background: rgba(45, 105, 179, 0.16) !important;
-    border: 1px solid rgba(93, 156, 236, 0.22);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .theme-dark .quote-topic-pill-text {
     color: rgb(223, 233, 246) !important;
   }
-
-  .generator-intro,
-  .generator-intro-copy,
-  .generator-provider-note {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .theme-dark .generator-intro {
-    background: linear-gradient(135deg, rgba(45, 105, 179, 0.12), rgba(212, 175, 55, 0.1)) !important;
-    border-color: rgba(212, 175, 55, 0.18) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  }
-
-  .theme-dark .generator-intro-copy,
-  .theme-dark .generator-provider-note {
-    color: rgb(186, 197, 214) !important;
-  }
 }
-

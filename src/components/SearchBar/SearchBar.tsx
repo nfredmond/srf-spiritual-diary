@@ -81,7 +81,8 @@ export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
 
         <button
           onClick={() => setSearchType(searchType === 'text' ? 'theme' : 'text')}
-          className="px-4 py-3 bg-srf-gold/10 text-srf-gold rounded-xl hover:bg-srf-gold/20 transition-colors font-medium flex items-center gap-2"
+          className="px-4 py-3 bg-srf-gold/10 text-gold-accent rounded-xl hover:bg-srf-gold/20 transition-colors font-medium flex items-center gap-2"
+          aria-label={searchType === 'text' ? 'Switch to theme search' : 'Switch to text search'}
         >
           <Sparkles className="w-4 h-4" />
           {searchType === 'text' ? 'Text' : 'Theme'}

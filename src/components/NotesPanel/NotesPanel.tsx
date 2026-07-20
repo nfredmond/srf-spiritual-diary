@@ -119,7 +119,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="notes-modal bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-6 max-w-2xl w-full"
+        className="notes-modal bg-white rounded-2xl p-6 max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -155,7 +155,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
               {promptLoading ? 'Thinking…' : 'Suggest a prompt'}
             </button>
             {promptError && (
-              <p className="text-xs text-red-600 mt-2" role="status" aria-live="polite">
+              <p className="text-xs text-muted mt-2" role="status" aria-live="polite">
                 {promptError}
               </p>
             )}
@@ -198,7 +198,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
         <div className="flex items-center justify-between mt-4 gap-4">
           <div>
             <p className="notes-meta-text text-sm text-gray-500">{note.length} characters</p>
-            <p className={`text-xs mt-1 ${hasUnsavedChanges ? 'text-amber-700' : 'text-emerald-700'}`}>
+            <p className={`text-xs mt-1 ${hasUnsavedChanges ? 'text-muted' : 'text-gold-accent'}`}>
               {hasUnsavedChanges ? 'Unsaved changes' : 'All changes saved'}
             </p>
           </div>
@@ -206,7 +206,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
           <button
             onClick={handleSave}
             disabled={!hasUnsavedChanges}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-srf-blue to-srf-gold text-white rounded-full font-medium hover:shadow-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-none"
+            className="flex items-center gap-2 px-6 py-3 bg-srf-blue text-white rounded-full font-medium hover:bg-srf-blue-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Save className="w-5 h-5" />
             {isSaved ? 'Saved!' : 'Save Note'}
@@ -223,11 +223,11 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="notes-success mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-center"
+              className="notes-success mt-4 p-3 bg-srf-lotus/40 border border-srf-gold/30 rounded-lg text-center"
               role="status"
               aria-live="polite"
             >
-              <p className="text-green-700 text-sm font-medium">
+              <p className="text-srf-blue text-sm font-medium">
                 Your reflection has been saved
               </p>
             </motion.div>

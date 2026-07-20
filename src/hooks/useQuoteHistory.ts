@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface HistoryEntry {
   dateKey: string;
   timestamp: number;
 }
 
+const STORAGE_KEY = 'srf-quote-history';
+
 export function useQuoteHistory() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('srf-quote-history');
+    const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
         setHistory(JSON.parse(stored));
@@ -19,24 +21,20 @@ export function useQuoteHistory() {
     }
   }, []);
 
-  const addToHistory = (dateKey: string) => {
-    const newEntry: HistoryEntry = {
-      dateKey,
-      timestamp: Date.now(),
-    };
-
-    setHistory(prev => {
-      // Remove duplicates and keep only last 50 entries
-      const filtered = prev.filter(e => e.dateKey !== dateKey);
-      const updated = [newEntry, ...filtered].slice(0, 50);
-      localStorage.setItem('srf-quote-history', JSON.stringify(updated));
+  // Stable identity so App's visit-tracking effect doesn't see a new function
+  // every render (which, combined with the state update below, produced an
+  // infinite render loop / "Maximum update depth exceeded").
+  const addToHistory = useCallback((dateKey: string) => {
+    setHistory((prev) => {
+      if (prev[0]?.dateKey === dateKey) return prev; // already the most recent — no change
+      const filtered = prev.filter((e) => e.dateKey !== dateKey);
+      const updated = [{ dateKey, timestamp: Date.now() }, ...filtered].slice(0, 50);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       return updated;
     });
-  };
+  }, []);
 
-  const getRecentHistory = (limit: number = 10) => {
-    return history.slice(0, limit);
-  };
+  const getRecentHistory = useCallback((limit: number = 10) => history.slice(0, limit), [history]);
 
   return {
     history,

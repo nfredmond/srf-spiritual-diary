@@ -249,7 +249,7 @@ export function ExportImport({ onClose }: ExportImportProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-6 max-w-2xl w-full"
+        className="bg-white rounded-2xl p-6 max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -260,6 +260,7 @@ export function ExportImport({ onClose }: ExportImportProps) {
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close"
           >
             <X className="w-5 h-5 text-gray-600" />
           </button>
@@ -276,7 +277,7 @@ export function ExportImport({ onClose }: ExportImportProps) {
               onClick={handleExportFavorites}
               className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl hover:shadow-md transition-all"
             >
-              <Heart className="w-8 h-8 text-red-500" />
+              <Heart className="w-8 h-8 text-gold-accent" />
               <span className="text-sm font-medium">Export Favorites</span>
             </button>
 
@@ -284,13 +285,13 @@ export function ExportImport({ onClose }: ExportImportProps) {
               onClick={handleExportNotes}
               className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl hover:shadow-md transition-all"
             >
-              <BookOpen className="w-8 h-8 text-srf-gold" />
+              <BookOpen className="w-8 h-8 text-gold-accent" />
               <span className="text-sm font-medium">Export Notes</span>
             </button>
 
             <button
               onClick={handleExportAll}
-              className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-srf-blue to-srf-gold text-white rounded-xl hover:shadow-lg transition-all"
+              className="flex flex-col items-center gap-2 p-4 bg-srf-blue text-white rounded-xl hover:bg-srf-blue-700 transition-all"
             >
               <Download className="w-8 h-8" />
               <span className="text-sm font-medium">Complete Backup</span>
@@ -326,8 +327,8 @@ export function ExportImport({ onClose }: ExportImportProps) {
               animate={{ opacity: 1, y: 0 }}
               className={`mt-4 p-3 rounded-lg text-center ${
                 statusType === 'error'
-                  ? 'bg-red-50 text-red-700'
-                  : 'bg-green-50 text-green-700'
+                  ? 'bg-srf-lotus/40 text-srf-blue'
+                  : 'bg-srf-lotus/40 text-gold-accent'
               }`}
               role={statusType === 'error' ? 'alert' : 'status'}
               aria-live={statusType === 'error' ? 'assertive' : 'polite'}
@@ -346,8 +347,8 @@ export function ExportImport({ onClose }: ExportImportProps) {
         </div>
 
         {/* Info */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="mt-6 p-4 bg-srf-lotus/30 rounded-lg">
+          <p className="text-sm text-srf-blue">
             <strong>Tip:</strong> Regular backups ensure you never lose your favorites, notes, and reading progress. Export your data periodically for safekeeping!
           </p>
         </div>

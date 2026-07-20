@@ -853,10 +853,10 @@
     "03-30": {
       "month": 3,
       "day": 30,
-      "topic": "necessary.",
-      "weeklyTheme": "necessary.",
+      "topic": "Habits",
+      "weeklyTheme": "Habits",
       "specialDay": null,
-      "quote": "Habits Do not continue to live in the same old way. Make up your mind to do something to improve your life, and then do it. Change your consciousness; that is all that is",
+      "quote": "Do not continue to live in the same old way. Make up your mind to do something to improve your life, and then do it. Change your consciousness; that is all that is necessary.",
       "source": "Paramahansa Yogananda",
       "book": null
     },
@@ -1795,7 +1795,7 @@
       "day": 4,
       "topic": "Freedom",
       "weeklyTheme": "Freedom",
-      "specialDay": "Birthday of Sri Gyanamata ",
+      "specialDay": "Birthday of Sri Gyanamata",
       "quote": "Birthday of Sri Gyanamata - The way to freedom is through service to others. The way to happiness is through meditation and being in tune with God....Break the barriers of your ego; shed selfishness; free yourself from the consciousness of the body; forget yourself; do away with this prison house of incarnations; melt your heart in all, be one with all creation.",
       "source": "Paramahansa Yogananda",
       "book": null
@@ -1853,10 +1853,10 @@
     "07-10": {
       "month": 7,
       "day": 10,
-      "topic": "a lark.",
-      "weeklyTheme": "a lark.",
+      "topic": "Freedom",
+      "weeklyTheme": "Freedom",
       "specialDay": null,
-      "quote": "Freedom Resolve that you are not going to be affected by troubles; you are not going to be finicky; you are not going to be a victim of habits and moods; you are going to be free as",
+      "quote": "Resolve that you are not going to be affected by troubles; you are not going to be finicky; you are not going to be a victim of habits and moods; you are going to be free as a lark.",
       "source": "Paramahansa Yogananda",
       "book": null
     },
@@ -2953,10 +2953,10 @@
     "11-10": {
       "month": 11,
       "day": 10,
-      "topic": "devotion.",
-      "weeklyTheme": "devotion.",
+      "topic": "Simplicity",
+      "weeklyTheme": "Simplicity",
       "specialDay": null,
-      "quote": "Simplicity It is so wonderful to be in tune with God and to trust in Him implicitly, being content wherever He places you and whatever He makes of you, accepting all with humility and",
+      "quote": "It is so wonderful to be in tune with God and to trust in Him implicitly, being content wherever He places you and whatever He makes of you, accepting all with humility and devotion.",
       "source": "Paramahansa Yogananda",
       "book": null
     },
@@ -3459,403 +3459,6 @@
       "quote": "Let us forget the sorrows of the past and make up our minds not to dwell on them in the New Year. With determination and unflinching will, let us renew our lives, our good habits, and our successes. If the last year has been hopelessly bad, the New Year must be hopefully good.",
       "source": "Paramahansa Yogananda",
       "book": null
-    }
-  },
-  "weeklyThemes": {
-    "week1": {
-      "startDate": "01-01",
-      "endDate": "01-03",
-      "theme": "The New Year"
-    },
-    "week2": {
-      "startDate": "01-04",
-      "endDate": "01-11",
-      "theme": "The Guru"
-    },
-    "week3": {
-      "startDate": "01-12",
-      "endDate": "01-19",
-      "theme": "Obedience"
-    },
-    "week4": {
-      "startDate": "01-20",
-      "endDate": "01-31",
-      "theme": "Introspection"
-    },
-    "week5": {
-      "startDate": "02-01",
-      "endDate": "02-09",
-      "theme": "Inner Renunciation"
-    },
-    "week6": {
-      "startDate": "02-10",
-      "endDate": "02-21",
-      "theme": "Divine Love"
-    },
-    "week7": {
-      "startDate": "02-22",
-      "endDate": "02-28",
-      "theme": "Humility"
-    },
-    "week8": {
-      "startDate": "03-01",
-      "endDate": "03-10",
-      "theme": "Guru-Disciple Relationship"
-    },
-    "week9": {
-      "startDate": "03-11",
-      "endDate": "03-20",
-      "theme": "Will Power"
-    },
-    "week10": {
-      "startDate": "03-21",
-      "endDate": "03-29",
-      "theme": "Habits"
-    },
-    "week11": {
-      "startDate": "03-30",
-      "endDate": "03-30",
-      "theme": "necessary."
-    },
-    "week12": {
-      "startDate": "03-31",
-      "endDate": "03-31",
-      "theme": "Habits"
-    },
-    "week13": {
-      "startDate": "04-01",
-      "endDate": "04-09",
-      "theme": "Compassion"
-    },
-    "week14": {
-      "startDate": "04-10",
-      "endDate": "04-20",
-      "theme": "Prayer"
-    },
-    "week15": {
-      "startDate": "04-21",
-      "endDate": "04-30",
-      "theme": "Happiness"
-    },
-    "week16": {
-      "startDate": "05-01",
-      "endDate": "05-10",
-      "theme": "Loyalty"
-    },
-    "week17": {
-      "startDate": "05-11",
-      "endDate": "05-20",
-      "theme": "Discrimination"
-    },
-    "week18": {
-      "startDate": "05-21",
-      "endDate": "05-31",
-      "theme": "Wisdom"
-    },
-    "week19": {
-      "startDate": "06-01",
-      "endDate": "06-10",
-      "theme": "Peace"
-    },
-    "week20": {
-      "startDate": "06-10",
-      "endDate": "06-10",
-      "theme": "peace."
-    },
-    "week21": {
-      "startDate": "06-11",
-      "endDate": "06-21",
-      "theme": "Expansion"
-    },
-    "week22": {
-      "startDate": "06-22",
-      "endDate": "06-30",
-      "theme": "Healing"
-    },
-    "week23": {
-      "startDate": "07-01",
-      "endDate": "07-01",
-      "theme": "Freedom"
-    },
-    "week24": {
-      "startDate": "07-01",
-      "endDate": "07-01",
-      "theme": "liberation."
-    },
-    "week25": {
-      "startDate": "07-02",
-      "endDate": "07-09",
-      "theme": "Freedom"
-    },
-    "week26": {
-      "startDate": "07-10",
-      "endDate": "07-10",
-      "theme": "a lark."
-    },
-    "week27": {
-      "startDate": "07-11",
-      "endDate": "07-11",
-      "theme": "Freedom"
-    },
-    "week28": {
-      "startDate": "07-12",
-      "endDate": "07-20",
-      "theme": "Right Attitude"
-    },
-    "week29": {
-      "startDate": "07-21",
-      "endDate": "07-21",
-      "theme": "Practicing the Presence of"
-    },
-    "week30": {
-      "startDate": "07-21",
-      "endDate": "07-21",
-      "theme": "Practicing the Presence of God"
-    },
-    "week31": {
-      "startDate": "07-22",
-      "endDate": "07-22",
-      "theme": "Practicing the Presence of"
-    },
-    "week32": {
-      "startDate": "07-22",
-      "endDate": "07-22",
-      "theme": "Practicing the Presence of God"
-    },
-    "week33": {
-      "startDate": "07-23",
-      "endDate": "07-23",
-      "theme": "Practicing the Presence of"
-    },
-    "week34": {
-      "startDate": "07-23",
-      "endDate": "07-23",
-      "theme": "Practicing the Presence of God"
-    },
-    "week35": {
-      "startDate": "07-24",
-      "endDate": "07-24",
-      "theme": "Practicing the Presence of"
-    },
-    "week36": {
-      "startDate": "07-24",
-      "endDate": "07-24",
-      "theme": "Practicing the Presence of God"
-    },
-    "week37": {
-      "startDate": "07-25",
-      "endDate": "07-25",
-      "theme": "Practicing the Presence of"
-    },
-    "week38": {
-      "startDate": "07-25",
-      "endDate": "07-25",
-      "theme": "Practicing the Presence of God"
-    },
-    "week39": {
-      "startDate": "07-26",
-      "endDate": "07-26",
-      "theme": "Practicing the Presence of"
-    },
-    "week40": {
-      "startDate": "07-26",
-      "endDate": "07-27",
-      "theme": "Practicing the Presence of God"
-    },
-    "week41": {
-      "startDate": "07-28",
-      "endDate": "07-28",
-      "theme": "Practicing the Presence of"
-    },
-    "week42": {
-      "startDate": "07-28",
-      "endDate": "07-28",
-      "theme": "without You. II"
-    },
-    "week43": {
-      "startDate": "07-29",
-      "endDate": "07-29",
-      "theme": "Practicing the Presence of"
-    },
-    "week44": {
-      "startDate": "07-29",
-      "endDate": "07-29",
-      "theme": "Practicing the Presence of God"
-    },
-    "week45": {
-      "startDate": "07-30",
-      "endDate": "07-30",
-      "theme": "Practicing the Presence of"
-    },
-    "week46": {
-      "startDate": "07-30",
-      "endDate": "07-30",
-      "theme": "Practicing the Presence of God"
-    },
-    "week47": {
-      "startDate": "07-31",
-      "endDate": "07-31",
-      "theme": "Practicing the Presence of"
-    },
-    "week48": {
-      "startDate": "07-31",
-      "endDate": "07-31",
-      "theme": "Practicing the Presence of God"
-    },
-    "week49": {
-      "startDate": "08-01",
-      "endDate": "08-10",
-      "theme": "Surrender to God"
-    },
-    "week50": {
-      "startDate": "08-11",
-      "endDate": "08-19",
-      "theme": "Purification"
-    },
-    "week51": {
-      "startDate": "08-20",
-      "endDate": "08-29",
-      "theme": "Meditation"
-    },
-    "week52": {
-      "startDate": "08-29",
-      "endDate": "08-29",
-      "theme": "Whole."
-    },
-    "week53": {
-      "startDate": "08-30",
-      "endDate": "08-31",
-      "theme": "Meditation"
-    },
-    "week54": {
-      "startDate": "09-01",
-      "endDate": "09-11",
-      "theme": "Effort"
-    },
-    "week55": {
-      "startDate": "09-12",
-      "endDate": "09-21",
-      "theme": "Right Activity"
-    },
-    "week56": {
-      "startDate": "09-24",
-      "endDate": "09-30",
-      "theme": "Perfection"
-    },
-    "week57": {
-      "startDate": "10-01",
-      "endDate": "10-08",
-      "theme": "Balance"
-    },
-    "week58": {
-      "startDate": "10-09",
-      "endDate": "10-09",
-      "theme": "rapt in God."
-    },
-    "week59": {
-      "startDate": "10-09",
-      "endDate": "10-10",
-      "theme": "Balance"
-    },
-    "week60": {
-      "startDate": "10-11",
-      "endDate": "10-11",
-      "theme": "Yogi \""
-    },
-    "week61": {
-      "startDate": "10-11",
-      "endDate": "10-17",
-      "theme": "Courage"
-    },
-    "week62": {
-      "startDate": "10-17",
-      "endDate": "10-17",
-      "theme": "fearless."
-    },
-    "week63": {
-      "startDate": "10-18",
-      "endDate": "10-20",
-      "theme": "Courage"
-    },
-    "week64": {
-      "startDate": "10-21",
-      "endDate": "10-28",
-      "theme": "Overcoming Temptation"
-    },
-    "week65": {
-      "startDate": "10-29",
-      "endDate": "10-29",
-      "theme": "send you."
-    },
-    "week66": {
-      "startDate": "10-29",
-      "endDate": "10-31",
-      "theme": "Overcoming Temptation"
-    },
-    "week67": {
-      "startDate": "11-01",
-      "endDate": "11-07",
-      "theme": "Simplicity"
-    },
-    "week68": {
-      "startDate": "11-07",
-      "endDate": "11-07",
-      "theme": "God has proven that when He is"
-    },
-    "week69": {
-      "startDate": "11-08",
-      "endDate": "11-09",
-      "theme": "Simplicity"
-    },
-    "week70": {
-      "startDate": "11-10",
-      "endDate": "11-10",
-      "theme": "devotion."
-    },
-    "week71": {
-      "startDate": "11-11",
-      "endDate": "11-20",
-      "theme": "Devotion"
-    },
-    "week72": {
-      "startDate": "11-21",
-      "endDate": "11-30",
-      "theme": "Gratitude"
-    },
-    "week73": {
-      "startDate": "12-01",
-      "endDate": "12-07",
-      "theme": "Solitude"
-    },
-    "week74": {
-      "startDate": "12-08",
-      "endDate": "12-13",
-      "theme": "Silence"
-    },
-    "week75": {
-      "startDate": "12-15",
-      "endDate": "12-23",
-      "theme": "Christmas"
-    },
-    "week76": {
-      "startDate": "12-24",
-      "endDate": "12-24",
-      "theme": "Christmas Eve"
-    },
-    "week77": {
-      "startDate": "12-25",
-      "endDate": "12-25",
-      "theme": "Christmas Day"
-    },
-    "week78": {
-      "startDate": "12-26",
-      "endDate": "12-26",
-      "theme": "Christmas"
-    },
-    "week79": {
-      "startDate": "12-27",
-      "endDate": "12-31",
-      "theme": "Patience"
     }
   }
 }

@@ -3,7 +3,7 @@
  * merge-diary-json.mjs
  *
  * Merge the cleaned raw array-form diary export
- *   (default: /home/narford/Downloads/SRF_Spiritual_Diary_cleaned_raw.json)
+ *   (default: data/diary-raw.json)
  * into the app's MM-DD-keyed data file
  *   (default: public/data/diary-entries.json),
  * producing a merged output plus a diff report.
@@ -49,7 +49,7 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 const DEFAULTS = {
-  in: '/home/narford/Downloads/SRF_Spiritual_Diary_cleaned_raw.json',
+  in: 'data/diary-raw.json',
   current: path.join(PROJECT_ROOT, 'public/data/diary-entries.json'),
   out: path.join(PROJECT_ROOT, 'public/data/diary-entries.json'),
   report: path.join(PROJECT_ROOT, 'artifacts/data-merge-report.json'),
