@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Bell, X, Wind } from 'lucide-react';
 import { Modal } from '../Modal/Modal';
 
-interface EnhancedMeditationTimerProps {
+interface MeditationTimerProps {
   onClose: () => void;
 }
 
-export function EnhancedMeditationTimer({ onClose }: EnhancedMeditationTimerProps) {
+export function MeditationTimer({ onClose }: MeditationTimerProps) {
   const [duration, setDuration] = useState(10);
   const [timeLeft, setTimeLeft] = useState(600);
   const [isRunning, setIsRunning] = useState(false);

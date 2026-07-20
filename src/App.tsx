@@ -28,14 +28,14 @@ import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 const FavoritesPanel = lazy(() =>
   import('./components/FavoritesPanel/FavoritesPanel').then((m) => ({ default: m.FavoritesPanel })),
 );
-const EnhancedMeditationTimer = lazy(() =>
-  import('./components/EnhancedMeditationTimer/EnhancedMeditationTimer').then((m) => ({
-    default: m.EnhancedMeditationTimer,
+const MeditationTimer = lazy(() =>
+  import('./components/MeditationTimer/MeditationTimer').then((m) => ({
+    default: m.MeditationTimer,
   })),
 );
-const EnhancedQuoteCard = lazy(() =>
-  import('./components/EnhancedQuoteCard/EnhancedQuoteCard').then((m) => ({
-    default: m.EnhancedQuoteCard,
+const QuoteImage = lazy(() =>
+  import('./components/QuoteImage/QuoteImage').then((m) => ({
+    default: m.QuoteImage,
   })),
 );
 const NotesPanel = lazy(() =>
@@ -471,11 +471,11 @@ function App() {
             )}
 
             {showMeditationTimer && (
-              <EnhancedMeditationTimer onClose={() => setShowMeditationTimer(false)} />
+              <MeditationTimer onClose={() => setShowMeditationTimer(false)} />
             )}
 
             {showQuoteCard && entry && (
-              <EnhancedQuoteCard entry={entry} dateKey={dateKey} onClose={() => setShowQuoteCard(false)} />
+              <QuoteImage entry={entry} dateKey={dateKey} onClose={() => setShowQuoteCard(false)} />
             )}
 
             {showExportImport && <ExportImport onClose={() => setShowExportImport(false)} />}

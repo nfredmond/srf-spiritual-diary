@@ -3,7 +3,7 @@ import { Download, X } from 'lucide-react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
 import { Modal } from '../Modal/Modal';
 
-interface EnhancedQuoteCardProps {
+interface QuoteImageProps {
   entry: DiaryEntry;
   dateKey: string;
   onClose: () => void;
@@ -19,7 +19,7 @@ const THEMES: Record<
   night: { label: 'Deep night', bg: '#052956', ink: '#F3EFE6', sub: '#B9C7DA', gold: '#DCBD23' },
 };
 
-export function EnhancedQuoteCard({ entry, dateKey, onClose }: EnhancedQuoteCardProps) {
+export function QuoteImage({ entry, dateKey, onClose }: QuoteImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [imageUrl, setImageUrl] = useState('');
   const [template, setTemplate] = useState<Template>('paper');
