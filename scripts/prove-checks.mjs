@@ -3,7 +3,7 @@ import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const root=resolve('.'),scratch=await mkdtemp(join(tmpdir(),'diary-mutations-'));
-for(const path of ['src','companion','public','scripts','package.json','vite.config.ts','vitest.config.ts','tsconfig.json','tailwind.config.js','postcss.config.js'])await cp(join(root,path),join(scratch,path),{recursive:true});
+for(const path of ['src','companion','public','scripts','docs/verification','package.json','vite.config.ts','vitest.config.ts','tsconfig.json','tailwind.config.js','postcss.config.js'])await cp(join(root,path),join(scratch,path),{recursive:true});
 await symlink(join(root,'node_modules'),join(scratch,'node_modules'),'dir');await symlink(join(root,'dist'),join(scratch,'dist'),'dir');
 const cases=[
  ['no-op','src/lib/diaryData.ts','let pending:', '// harmless comment\nlet pending:','lib',false],
@@ -40,6 +40,7 @@ const cases=[
  ['artwork reconnect retries preview','src/components/ArtworkPanel.tsx','setConnection((value) => value + 1);','/* reconnect ignored */','components',true],
  ['artwork disconnect readiness','src/components/ArtworkPanel.tsx','setReady(false);','/* retain stale readiness */','components',true],
  ['failed save feedback','src/components/NotesPanel/NotesPanel.tsx','setStorageError(draftSafe','setStorageError(true','components',true],
+ ['source wording custody','public/data/diary-entries.json','Therefore whosoever heareth these sayings of mine','Whoever hears these sayings','lib',true],
 ];
 const run=suite=>spawnSync('npm',['run',`test:${suite}`],{cwd:scratch,encoding:'utf8',timeout:45000});
 for(const suite of ['lib','components','companion']){const result=run(suite);if(result.status!==0)throw new Error(`Baseline ${suite} failed: ${result.stdout}\n${result.stderr}`);}

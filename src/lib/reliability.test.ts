@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import {
   auditCalendar,
   loadDiaryData,
@@ -53,9 +54,18 @@ class MemoryStorage implements Storage {
   }
 }
 const note = (content: string) => ({ dateKey: '01-01', content, timestamp: 1 });
+test('source additions retain their reviewed wording and attribution', () => {
+  const evidence = JSON.parse(readFileSync(new URL('../../docs/verification/source-additions-2026-09-06.json', import.meta.url), 'utf8'));
+  assert.deepEqual(evidence.entries.map((entry: { dateKey: string }) => entry.dateKey), ['05-29', '09-25', '09-26', '09-29']);
+  for (const entry of evidence.entries) {
+    const reading = real.entries[entry.dateKey];
+    for (const field of ['source', 'book', 'topic', 'weeklyTheme']) assert.equal(reading[field], entry[field]);
+    assert.equal(createHash('sha256').update(reading.quote).digest('hex'), entry.quoteSha256);
+  }
+});
 test('calendar census rejects unexplained gaps, invalid fields and missing attribution', () => {
-  assert.equal(auditCalendar(real).present, 346);
-  assert.equal(auditCalendar(real).missing.length, 20);
+  assert.equal(auditCalendar(real).present, 350);
+  assert.equal(auditCalendar(real).missing.length, 16);
   const gap = structuredClone(real);
   delete gap.entries['01-01'];
   assert.throws(() => auditCalendar(gap), /Unexplained/);
@@ -107,7 +117,7 @@ test('loader deduplicates requests and retries failed HTTP or malformed data', a
     await assert.rejects(loadDiaryData(), /offline/);
     globalThis.fetch = async () =>
       ({ ok: true, json: async () => real }) as Response;
-    assert.equal(Object.keys((await loadDiaryData()).entries).length, 346);
+    assert.equal(Object.keys((await loadDiaryData()).entries).length, 350);
   } finally {
     globalThis.fetch = original;
     resetDiaryCache();

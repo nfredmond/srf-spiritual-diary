@@ -4,7 +4,7 @@ An independent, unofficial devotional reader for readings from *The Spiritual
 Diary of Paramahansa Yogananda*. It is not affiliated with or endorsed by
 Self-Realization Fellowship. See [NOTICE](NOTICE) and [attribution](docs/ATTRIBUTION.md).
 
-The reader contains 346 readings. Twenty annual date keys remain unresolved,
+The reader contains 350 readings. Sixteen annual date keys remain unresolved,
 including February 29. Missing dates are marked and offer a nearby reading through
 an explicit button. [Source gaps and pages needed](docs/SOURCE_GAPS.md).
 

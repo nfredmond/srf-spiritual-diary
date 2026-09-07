@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: false,
       injectRegister: false,
       workbox: {
-        // Precache the full app shell + the 346-entry diary JSON so an offline
+        // Precache the full app shell + the bundled diary JSON so an offline
         // user still gets any day's reading. JSON added via globPatterns so
         // Workbox fingerprints it with a content hash at build time.
         globPatterns: ['**/*.{js,css,html,ico,svg,webmanifest,json}', 'branding/**/*.png'],

@@ -1,10 +1,36 @@
 # Reading source gaps
 
-Checked 2026-09-06 against the dataset inherited from commit 965d669. There are
-346 readings and 20 unresolved annual date keys. The automated census is
-`npm run audit:calendar`. It checks actual calendar dates and required fields,
-including nonempty attribution. It does not establish transcription accuracy
-or permission to redistribute the writings.
+Current census after the 2026-09-06 takeover: **350 readings, 16 unresolved
+annual date keys**. Four entries were added using public-domain underlying text
+and visually inspected dated cards: May 29 and September 25, 26, and 29.
+The other 16 remain unavailable. `npm run audit:calendar` checks the dates and
+required fields, including attribution. It does not authenticate a printed diary
+edition or establish reuse permission for the inherited collection.
+
+## Four additions and their limits
+
+The [King James Bible](https://www.gutenberg.org/ebooks/10) and the
+[1946 Autobiography of a Yogi](https://www.gutenberg.org/ebooks/7452) are listed
+as public domain in the USA by their distributor. Their source text was compared
+with the expanded date cards below. No portraits or card graphics were bundled.
+Only these four readings were added; the public-domain status of an early edition
+does not establish the status of later revisions or other books.
+
+| Date | Underlying text | Comparison with the dated card |
+| --- | --- | --- |
+| 05-29 | King James Bible, Matthew 7:24-25 | Same wording and punctuation after removing verse numbers and joining line wraps. The card says Jesus Christ, in the New Testament; the verse/translation identification comes from the independent comparison. |
+| 09-25 | Autobiography, 1946, chapter 35, final paragraph | Card adds `the` in `Through the use` and prints Kriya in title case. Those card forms are retained. |
+| 09-26 | Autobiography, 1946, chapter 36, final narrative paragraph and following Bible quotation | Card begins at the morning hour, uses `one day after` instead of `on the day after`, and `each of whom was` instead of `each one`. It changes punctuation and puts the I Corinthians 15:54-55 citation inline. Those minor card variants are retained. |
+| 09-29 | Autobiography, 1946, chapter 35, Lahiri Mahasaya's instruction | Card omits `may` before `quickly behold` and prints Kriya in title case. Those card forms are retained. |
+
+The four additions are card transcriptions with a public-domain textual basis,
+**not verified transcriptions of an identified printed Spiritual Diary edition**.
+The three Autobiography readings are not represented as verbatim 1946 excerpts.
+The table records all wording differences found in that comparison; paragraph
+layout and quotation-mark typography are not reproduced as book facsimiles.
+Date, topic, author, book, links, and quotation digests are retained in
+[the source evidence record](verification/source-additions-2026-09-06.json).
+No special-day label was inferred from a calendar anniversary.
 
 ## Pages needed
 
@@ -16,8 +42,8 @@ Exact page numbers cannot be identified without the book edition.
 | --- | --- |
 | February | 17, 25, and the book's treatment of 29 |
 | March | 5 |
-| May | 14, 29 |
-| September | 5, 7, 15, 16, 17, 22, 23, 25, 26, 27, 28, 29 |
+| May | 14 |
+| September | 5, 7, 15, 16, 17, 22, 23, 27, 28 |
 | October | 4 |
 | December | 14 |
 
@@ -29,23 +55,25 @@ No replacement reading is inferred for February 29. The reader offers February
 ## Previously flagged topics
 
 Current JSON has March 30: Habits; July 10: Freedom; November 10: Simplicity.
-These labels contain no visible corruption and match their stored weekly themes.
-They have been retained, not reconstructed. Exact printed wording still needs
-source-page comparison. Include those three pages in the source batch.
+The [March 30, 2024 card](https://x.com/SpiritualDiary_/status/1774109997808640358/photo/1)
+was expanded and visually checked during takeover. Its printed heading is Habits,
+matching the existing entry. July 10, 2024 returned no result in the focused X
+search; that is not proof of absence from the archive. July 10 and November 10
+remain unverified against a dated card. All three remain unchecked against an
+identified printed Spiritual Diary edition. Their existing labels were retained.
 
-## All 20 dated cards located on X
+## Original 20-card source index
 
 On 2026-09-06, the signed-in Chrome search of
 [Spiritual Diary](https://x.com/SpiritualDiary_) located cards for **all 20**
-unresolved date keys. Each date below was read from the expanded image itself.
+originally unresolved date keys. Each date below was read from the expanded image itself.
 The table records the attribution printed on the card. It does not establish
 that the account is official SRF, that its transcription matches a particular
 book edition, or that it grants permission to reproduce the text.
 
-The app still contains 346 readings. No quotations were added from these cards.
-Locating the sources is complete; checking the edition and preparing permitted
-transcriptions remain separate work. The links let a reviewer inspect every
-reading without repeating the archive search.
+The original source-location pass added no quotations. The takeover added the
+four readings documented above. The table retains all 20 original links so a
+reviewer can inspect the cards without repeating the archive search.
 
 | Date key on card | Topic on card | Attribution on card | Card source |
 | --- | --- | --- | --- |

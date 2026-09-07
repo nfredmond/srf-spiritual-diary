@@ -12,7 +12,7 @@ posture so any future maintainer inherits the same reverence.
   redistribution of SRF material beyond the daily-reading model, a commercial
   product, or a replacement for SRF's own publications and programs.
 - **Source material:** *The Spiritual Diary* (Self-Realization Fellowship, Los
-  Angeles, CA). All quoted writings remain © Self-Realization Fellowship.
+  Angeles, CA). Copyrighted SRF writings remain © Self-Realization Fellowship. The four additions in [SOURCE_GAPS.md](SOURCE_GAPS.md) have a public-domain textual basis and recorded card variants; no SRF copyright is asserted here over the underlying public-domain passages.
 
 ## The disciplines (please keep these)
 

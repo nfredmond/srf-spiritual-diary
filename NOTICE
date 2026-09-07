@@ -12,12 +12,15 @@ The application source code is © 2026 the contributors to this project and is
 released under the MIT License (see the LICENSE file).
 
 
-2. The diary readings — © Self-Realization Fellowship
+2. The diary readings and source rights
 -----------------------------------------------------
 The daily readings, topics, and weekly themes in public/data/diary-entries.json
 are drawn from *The Spiritual Diary of Paramahansa Yogananda*, published by
-Self-Realization Fellowship (Los Angeles, CA). These writings are
-© Self-Realization Fellowship. ALL RIGHTS RESERVED.
+Self-Realization Fellowship (Los Angeles, CA). Copyrighted SRF writings remain
+© Self-Realization Fellowship. ALL RIGHTS RESERVED. The four additions documented
+in docs/SOURCE_GAPS.md use underlying public-domain Bible and 1946 Autobiography
+text, with explicitly recorded card variants. This notice does not claim a new
+copyright over those public-domain passages.
 
 This text is NOT covered by the MIT License and is NOT dedicated to the public
 domain. It is reproduced here with reverence, for personal, non-commercial,
@@ -27,8 +30,8 @@ diary text and its presentation are governed entirely by SRF.
 
 The reader has been built with these disciplines (see docs/ATTRIBUTION.md):
   • No Yogananda content is ever scraped, OCR'd from unauthorized scans, or
-    generated/paraphrased by an AI model. Missing days are filled only by
-    faithful hand-transcription from the printed book.
+    generated/paraphrased by an AI model. Missing days are filled from
+    supplied pages or permitted sources, with source and edition limits recorded.
   • The application is never sold, monetized, or ad-supported.
 
 
