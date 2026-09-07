@@ -30,7 +30,7 @@ export function SearchResults({ results, onSelectDate }: SearchResultsProps) {
             <button
               key={dateKey}
               onClick={() => onSelectDate(dateKey)}
-              className="w-full text-left p-4 bg-srf-white rounded-lg hover:bg-srf-lotus/30 transition-all group"
+              className="paper-surface w-full text-left p-4 bg-srf-white rounded-lg hover:bg-srf-lotus/30 transition-all group"
             >
               <div className="flex items-start gap-3">
                 <Calendar className="w-5 h-5 text-gold-accent mt-1 flex-shrink-0" />

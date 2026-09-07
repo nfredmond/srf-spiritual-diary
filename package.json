@@ -15,7 +15,8 @@
     "patch-missing-dates": "node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json",
     "audit:calendar": "node scripts/audit-calendar.mjs",
     "companion": "npm run build && node companion/server.mjs",
-    "test:companion": "node --test companion/*.test.mjs"
+    "test:companion": "node --test companion/*.test.mjs",
+    "test:browser": "node scripts/browser-acceptance.mjs && node scripts/browser-resilience.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -27,6 +28,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "jsdom": "^29.0.2",
+    "playwright-core": "^1.61.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.3",

@@ -89,13 +89,13 @@ export function OnboardingTour({ onComplete }: OnboardingTourProps) {
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <Dialog.Panel className="reader-modal w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
           <div className="bg-srf-blue p-6 text-white">
             <div className="flex items-center gap-3">
               <div className="rounded-full bg-white/15 p-2">
                 <Icon className="h-6 w-6" />
               </div>
-              <Dialog.Title className="font-heading text-2xl">{panel.title}</Dialog.Title>
+              <Dialog.Title className="font-heading text-2xl" style={{ color: 'white' }}>{panel.title}</Dialog.Title>
             </div>
           </div>
 

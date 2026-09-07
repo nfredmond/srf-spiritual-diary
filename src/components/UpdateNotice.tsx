@@ -7,7 +7,7 @@ export function UpdateNotice({ paused }: { paused: boolean }) {
   if (!needRefresh) return null;
   return (
     <aside
-      className="fixed bottom-3 left-3 right-3 z-40 rounded-xl border bg-white p-4 shadow-lg"
+      className="paper-surface fixed bottom-3 left-3 right-3 z-40 rounded-xl border bg-white p-4 shadow-lg"
       role="status"
     >
       <p>

@@ -12,7 +12,9 @@ interface DatePickerModalProps {
 
 export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerModalProps) {
   const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
-  const [currentYear,setCurrentYear] = useState(selectedDate.getFullYear());
+  const [yearText, setYearText] = useState(String(selectedDate.getFullYear()));
+  const validYear = /^\d{4}$/.test(yearText) && Number(yearText) >= 1900 && Number(yearText) <= 2200;
+  const currentYear = validYear ? Number(yearText) : selectedDate.getFullYear();
   
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -33,7 +35,7 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel
-          className="rounded-2xl shadow-2xl p-6 max-w-md w-full border"
+          className="max-h-[90dvh] overflow-y-auto rounded-2xl shadow-2xl p-6 max-w-md w-full border"
           style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
         >
           <div className="flex justify-between items-center mb-5">
@@ -53,7 +55,8 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
             </button>
           </div>
 
-          <label className="block mb-3">Year <input aria-label="Year" className="border rounded px-2 w-24" type="number" min="1900" max="2200" value={currentYear} onChange={e=>{const y=Number(e.target.value);if(y>=1900&&y<=2200)setCurrentYear(y);}} /></label>
+          <label className="block mb-3">Year <input aria-label="Year" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }} className="border rounded px-2 w-24" type="number" min="1900" max="2200" value={yearText} onChange={e => setYearText(e.target.value)} /></label>
+          {!validYear && <p role="alert">Enter a year from 1900 to 2200.</p>}
           <p className="text-sm mb-3">A dot marks an unavailable reading.</p>
           {/* Month Selector */}
           <div className="grid grid-cols-3 gap-2 mb-5">
@@ -98,12 +101,13 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const missing = unresolvedDates.includes(`${String(currentMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`);
-              const isSelected = selectedDate.getMonth() === currentMonth && selectedDate.getDate() === day;
-              const isToday = new Date().getMonth() === currentMonth && new Date().getDate() === day;
+              const isSelected = selectedDate.getFullYear() === currentYear && selectedDate.getMonth() === currentMonth && selectedDate.getDate() === day;
+              const isToday = new Date().getFullYear() === currentYear && new Date().getMonth() === currentMonth && new Date().getDate() === day;
 
               return (
                 <button
                   key={day}
+                  disabled={!validYear}
                   aria-label={`${months[currentMonth]} ${day}${missing ? ", reading unavailable" : ""}`}
                   onClick={() => handleDateSelect(day)}
                   style={isSelected ? undefined : { color: 'var(--text-primary)' }}

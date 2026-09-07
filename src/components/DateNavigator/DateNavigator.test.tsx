@@ -81,3 +81,15 @@ describe('DateNavigator', () => {
     expect(await screen.findByRole('dialog')).toBeInTheDocument();
   });
 });
+
+it('allows typing a replacement year and prevents selecting from an incomplete year', async () => {
+  const onDateChange = vi.fn();
+  render(<DateNavigator selectedDate={new Date(2026, 1, 28)} onDateChange={onDateChange} />);
+  await userEvent.click(screen.getByTitle('Choose a date'));
+  const year = screen.getByRole('spinbutton', { name: 'Year' });
+  await userEvent.clear(year);
+  expect(screen.getByLabelText('February 28', { exact: true })).toBeDisabled();
+  await userEvent.type(year, '2024');
+  await userEvent.click(screen.getByRole('button', { name: 'February 29, reading unavailable' }));
+  expect(onDateChange).toHaveBeenCalledWith(new Date(2024, 1, 29));
+});

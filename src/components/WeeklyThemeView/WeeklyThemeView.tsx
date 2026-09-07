@@ -129,7 +129,7 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
 
         <footer className="px-6 py-3 border-t border-srf-blue/10 text-xs text-gray-500">
           Press <kbd className="px-1 py-0.5 bg-gray-100 rounded">Esc</kbd> to close ·
-          <kbd className="px-1 py-0.5 bg-gray-100 rounded ml-1">W</kbd> toggles this panel
+          <kbd className="px-1 py-0.5 bg-gray-100 rounded ml-1">W</kbd> opens this panel
         </footer>
     </Modal>
   );

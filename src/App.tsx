@@ -12,6 +12,7 @@ import {
   MoreHorizontal,
   BookImage,
 } from 'lucide-react';
+import { Modal } from './components/Modal/Modal';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 import { addDays, subDays, format } from 'date-fns';
 import { DateNavigator } from './components/DateNavigator/DateNavigator';
@@ -100,6 +101,7 @@ function App() {
 
   // Any full-screen overlay is open — used to suppress global shortcuts.
   const isOverlayOpen =
+    showKeyboardHelp ||
     showFavorites ||
     showMeditationTimer ||
     showQuoteCard ||
@@ -342,15 +344,10 @@ function App() {
           </div>
         </div>
 
-        {/* Keyboard help popover */}
+        {/* Keyboard help dialog */}
         {showKeyboardHelp && (
-          <div
-            id="keyboard-help-popover"
-            role="dialog"
-            aria-label="Reading shortcuts"
-            className="utility-popover absolute right-4 top-full z-50 mt-2 w-72 rounded-xl border p-4 shadow-xl"
-            style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
-          >
+          <Modal onClose={() => setShowKeyboardHelp(false)} ariaLabel="Reading shortcuts" panelClassName="w-full max-w-sm rounded-xl border bg-white p-5 shadow-xl">
+            <button className="float-right rounded px-2 py-1 text-sm" onClick={() => setShowKeyboardHelp(false)}>Close shortcuts</button>
             <h3 className="mb-3 font-heading text-lg text-srf-blue">Reading Shortcuts</h3>
             <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
               {[
@@ -373,7 +370,7 @@ function App() {
             <p className="mt-3 border-t border-black/5 pt-3 text-xs" style={{ color: 'var(--text-secondary)' }}>
               Swipe left or right on a touch screen to move through the days.
             </p>
-          </div>
+          </Modal>
         )}
       </header>
 
@@ -381,7 +378,7 @@ function App() {
       <main id="main-content" tabIndex={-1} aria-busy={loading} className="container mx-auto px-4 py-10">
         {/* Reading-comfort controls + gentle secondary actions */}
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <ThemeSwitcher currentTheme={theme} onThemeChange={setTheme} />
             <ReadingControls fontSize={fontSize} onFontSizeChange={setFontSize} />
           </div>

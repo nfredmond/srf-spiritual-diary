@@ -55,6 +55,17 @@ describe('App (integration)', () => {
     expect(screen.getAllByText(/not affiliated with/i).length).toBeGreaterThan(0);
   });
 
+
+  it('opens keyboard help with a reachable close control and suppresses day navigation', async () => {
+    render(<App />);
+    await screen.findByText(/Quote number 0 about the divine/);
+    fireEvent.keyDown(document.body, { key: '?' });
+    const close = await screen.findByRole('button', { name: 'Close shortcuts' });
+    fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+    expect(screen.getByText(/Quote number 0 about the divine/)).toBeInTheDocument();
+    fireEvent.click(close);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
   it('advances a day on ArrowRight and announces the new reading to screen readers', async () => {
     render(<App />);
     await screen.findByText(/Quote number 0 about the divine/);

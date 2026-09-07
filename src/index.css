@@ -470,3 +470,24 @@
     color: rgb(223, 233, 246) !important;
   }
 }
+
+/* Utility panels retain a readable paper surface in every reader theme.
+   Reflections retain their own theme-aware surface. */
+.paper-surface,
+.reader-modal:not(.notes-modal) {
+  --gold-text: #8a6a12;
+  --text-primary: #2a2e33;
+  --text-secondary: #5b626b;
+  --accent: #052956;
+  --bg-secondary: #fff;
+  --border-color: rgba(5, 41, 86, 0.15);
+  --focus-ring: #052956;
+  color: #2a2e33;
+  background-color: #fff;
+  color-scheme: light;
+}
+
+.app-footer {
+  --text-primary: #e9eff8;
+  --text-secondary: #c5d1e1;
+}

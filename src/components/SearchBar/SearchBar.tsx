@@ -53,14 +53,16 @@ export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
 
   return (
     <div className="anim-fade-in card max-w-4xl mx-auto mb-6">
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative w-full sm:w-auto sm:flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={searchType === 'text' ? "Search quotes, topics, themes..." : "Search by theme or topic..."}
+            aria-label="Search readings"
+            style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
             className="w-full pl-10 pr-4 py-3 border-2 border-srf-blue/20 rounded-xl focus:outline-none focus:border-srf-blue transition-colors"
             autoFocus
           />

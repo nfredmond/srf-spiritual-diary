@@ -40,6 +40,8 @@ const cases=[
  ['artwork reconnect retries preview','src/components/ArtworkPanel.tsx','setConnection((value) => value + 1);','/* reconnect ignored */','components',true],
  ['artwork disconnect readiness','src/components/ArtworkPanel.tsx','setReady(false);','/* retain stale readiness */','components',true],
  ['failed save feedback','src/components/NotesPanel/NotesPanel.tsx','setStorageError(draftSafe','setStorageError(true','components',true],
+ ['year editing','src/components/DateNavigator/DatePickerModal.tsx','setYearText(e.target.value)', 'setYearText(String(selectedDate.getFullYear()))','components',true],
+ ['keyboard help close','src/App.tsx','onClick={() => setShowKeyboardHelp(false)}>Close shortcuts', 'onClick={() => {}}>Close shortcuts','components',true],
  ['source wording custody','public/data/diary-entries.json','Therefore whosoever heareth these sayings of mine','Whoever hears these sayings','lib',true],
 ];
 const run=suite=>spawnSync('npm',['run',`test:${suite}`],{cwd:scratch,encoding:'utf8',timeout:45000});
