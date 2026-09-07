@@ -2,8 +2,18 @@
 
 Implementation is ready for browser acceptance. **The full acceptance plan is
 not complete.** Chrome blocked `http://127.0.0.1:4317` with
-`ERR_BLOCKED_BY_CLIENT`. Nathaniel has been asked to allow that page. No browser
-security setting was changed or bypassed.
+`ERR_BLOCKED_BY_CLIENT`. The earlier request that Nathaniel "allow" the page was
+premature and did not identify an available setting. Nathaniel has explicitly
+authorized opening the local reader; another permission request is unnecessary.
+
+Follow-up diagnostics on 2026-09-06 confirmed HTTP 200 from the local server.
+Chrome's `Network.loadingFailed` event reported `blockedReason: inspector`,
+`errorText: net::ERR_BLOCKED_BY_CLIENT`, and `type: Document`. Reloading the
+existing test tab and opening the same URL in a fresh Chrome tab both failed.
+The Chrome connection itself works, including X source research. The exposed
+browser capabilities provide no site-allow control. This identifies a block in
+the debugging layer; it does not identify which component installed the block.
+No browser security setting was changed or bypassed.
 
 ## Automated evidence
 
@@ -84,7 +94,9 @@ claimed as browser-verified:
    authenticated preview/download, reconnect, and failure messages.
 
 Do not replace these checks with green unit tests. This browser barrier and the
-20 source-dependent gaps remain separate from implemented reliability work.
+20 untranscribed readings remain separate from implemented reliability work.
+All 20 now have dated X cards in [SOURCE_GAPS.md](SOURCE_GAPS.md). This completes
+source location, not transcription, edition verification, or browser acceptance.
 
 ## Resume
 
