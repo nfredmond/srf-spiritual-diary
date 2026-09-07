@@ -50,7 +50,12 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
 
   const handleSave = () => {
     if (!hasUnsavedChanges) return;
-    try { onSave(note,lastSavedNote); } catch { setStorageError('Could not save reflection. Your draft remains available.'); return; }
+    try { onSave(note,lastSavedNote); } catch {
+      setStorageError(draftSafe
+        ? 'Could not save reflection. Your saved draft remains available.'
+        : 'Could not save reflection or draft. Keep this window open and copy your text before leaving.');
+      return;
+    }
     setStorageError(''); setDraftSafe(true);
     setLastSavedNote(note);
     setIsSaved(true);

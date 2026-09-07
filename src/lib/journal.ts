@@ -234,7 +234,12 @@ export function saveReflection(
   content: string,
   original: string
 ) {
+  const saved = { dateKey: key, content, timestamp: Date.now() };
+  validateNotes({ [key]: saved });
   const notes = validateNotes(JSON.parse(storage.getItem('srf-notes') ?? '{}'));
+  const drafts = validateNotes(
+    JSON.parse(storage.getItem('srf-note-drafts') ?? '{}')
+  );
   const current = notes[key];
   if (current && current.content !== original && current.content !== content) {
     const conflicts = validateJournal({
@@ -250,16 +255,18 @@ export function saveReflection(
     'srf-notes',
     JSON.stringify({
       ...notes,
-      [key]: { dateKey: key, content, timestamp: Date.now() }
+      [key]: saved
     })
   );
-  const drafts = validateNotes(
-    JSON.parse(storage.getItem('srf-note-drafts') ?? '{}')
-  );
-  delete drafts[key];
-  storage.setItem('srf-note-drafts', JSON.stringify(drafts));
+  // Another tab may have written a different draft since this editor last typed.
+  // Clear only the version that this save has actually committed to notes.
+  if (drafts[key]?.content === content) {
+    delete drafts[key];
+    storage.setItem('srf-note-drafts', JSON.stringify(drafts));
+  }
 }
 export function saveDraft(storage: Storage, key: string, content: string, original?: string) {
+  validateNotes({ [key]: { dateKey: key, content, timestamp: Date.now() } });
   const drafts = validateNotes(
     JSON.parse(storage.getItem('srf-note-drafts') ?? '{}')
   );

@@ -253,3 +253,34 @@ test('patch import refuses invented attribution and requires a verified theme', 
 });
 
 test('simultaneous draft editors retain the replaced draft as a conflict',()=>{const storage=new MemoryStorage();saveDraft(storage,'01-01','other editor');saveDraft(storage,'01-01','my draft','my earlier draft');assert.equal(readJournal(storage).drafts['01-01'].content,'my draft');assert.equal(readJournal(storage).conflicts[0].content,'other editor');});
+
+test('saving an older editor preserves a newer draft and other dates', () => {
+  const storage = new MemoryStorage();
+  saveDraft(storage, '01-01', 'first editor');
+  saveDraft(storage, '01-01', 'second editor', 'first editor');
+  saveDraft(storage, '01-02', 'another day');
+  saveReflection(storage, '01-01', 'first editor', '');
+  const journal = readJournal(storage);
+  assert.equal(journal.notes['01-01'].content, 'first editor');
+  assert.equal(journal.drafts['01-01'].content, 'second editor');
+  assert.equal(journal.drafts['01-02'].content, 'another day');
+  saveReflection(storage, '01-01', 'second editor', 'first editor');
+  assert.equal(readJournal(storage).drafts['01-01'], undefined);
+  assert.equal(readJournal(storage).drafts['01-02'].content, 'another day');
+});
+
+test('invalid reflections and damaged drafts cannot partially overwrite a saved note', () => {
+  const storage = new MemoryStorage();
+  storage.setItem('srf-notes', JSON.stringify({ '01-01': note('keep original') }));
+  const before = storage.getItem('srf-notes');
+  storage.setItem('srf-note-drafts', '{broken');
+  assert.throws(() => saveReflection(storage, '01-01', 'replacement', 'keep original'));
+  assert.equal(storage.getItem('srf-notes'), before);
+  storage.removeItem('srf-note-drafts');
+  for (const save of [saveDraft, saveReflection]) {
+    assert.throws(() => save(storage, '02-30', 'invalid day', ''));
+    assert.throws(() => save(storage, '01-01', 'x'.repeat(1_000_001), 'keep original'));
+    assert.equal(storage.getItem('srf-notes'), before);
+    assert.equal(storage.getItem('srf-note-drafts'), null);
+  }
+});

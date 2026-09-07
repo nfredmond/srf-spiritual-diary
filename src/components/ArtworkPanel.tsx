@@ -7,6 +7,7 @@ interface Job {
 }
 export function ArtworkPanel({ dateKey }: { dateKey: string }) {
   const [imageUrl, setImageUrl] = useState('');
+  const [connection, setConnection] = useState(0);
   const [connected, setConnected] = useState(false),
     [ready, setReady] = useState(false),
     [token, setToken] = useState(''),
@@ -40,7 +41,9 @@ export function ArtworkPanel({ dateKey }: { dateKey: string }) {
       setReady(data.ready);
       setMessage(data.message);
       setJob(data.jobs.find((j: Job) => j.dateKey === dateKey) ?? null);
+      setConnection((value) => value + 1);
     } catch {
+      setReady(false);
       setMessage(
         'To use artwork, run npm run companion on your computer and open http://127.0.0.1:4317. The public reader works without it.'
       );
@@ -78,6 +81,7 @@ export function ArtworkPanel({ dateKey }: { dateKey: string }) {
     }
     let active = true,
       url = '';
+    setImageUrl('');
     void fetch(`/api/jobs/${job.id}/image`, {
       headers: { 'X-Diary-Client': 'reader', 'X-Diary-Session': token }
     })
@@ -101,7 +105,7 @@ export function ArtworkPanel({ dateKey }: { dateKey: string }) {
       active = false;
       if (url) URL.revokeObjectURL(url);
     };
-  }, [job?.id, job?.state, token]);
+  }, [job?.id, job?.state, token, connection]);
   const action = async (fn: () => Promise<void>) => {
     setBusy(true);
     try {

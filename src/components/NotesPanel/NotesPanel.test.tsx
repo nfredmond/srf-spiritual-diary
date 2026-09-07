@@ -11,6 +11,6 @@ describe('reflection recovery',()=>{
   it('blocks closure and reports an error when draft persistence fails',()=>{
     const close=vi.fn();render(<NotesPanel dateKey="01-01" initialNote="" onSave={()=>{throw new Error('full');}} onClose={close}/>);
     const write=vi.spyOn(Storage.prototype,'setItem').mockImplementation(()=>{throw new Error('full');});
-    fireEvent.change(screen.getByRole('textbox'),{target:{value:'keep me'}});expect(screen.getByRole('alert')).toHaveTextContent('could not be saved');fireEvent.click(screen.getByRole('button',{name:'Close'}));expect(close).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Save Note'}));expect(screen.getByRole('alert')).toHaveTextContent('Could not save');expect(screen.getByRole('textbox')).toHaveValue('keep me');write.mockRestore();
+    fireEvent.change(screen.getByRole('textbox'),{target:{value:'keep me'}});expect(screen.getByRole('alert')).toHaveTextContent('could not be saved');fireEvent.click(screen.getByRole('button',{name:'Close'}));expect(close).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Save Note'}));expect(screen.getByRole('alert')).toHaveTextContent('Could not save reflection or draft');expect(screen.getByRole('alert')).not.toHaveTextContent('draft remains available');expect(screen.getByRole('textbox')).toHaveValue('keep me');write.mockRestore();
   });
 });

@@ -34,6 +34,12 @@ const cases=[
  ['leap substitution','src/hooks/useDiaryEntry.ts','data?.entries[toMMDD(selectedDate)] ?? null',"data?.entries[toMMDD(selectedDate)] ?? data?.entries['02-28'] ?? null",'components',true],
  ['concurrent drafts','src/lib/journal.ts','original!==undefined && existing && existing.content!==original && existing.content!==content','false','lib',true],
  ['rollover','src/App.tsx','today.toDateString() !== lastToday.current','false','components',true],
+ ['save preserves newer draft','src/lib/journal.ts','if (drafts[key]?.content === content)','if (true)','lib',true],
+ ['reflection input validation','src/lib/journal.ts','validateNotes({ [key]: saved });','/* validation removed */','lib',true],
+ ['draft input validation','src/lib/journal.ts','validateNotes({ [key]: { dateKey: key, content, timestamp: Date.now() } });','/* validation removed */','lib',true],
+ ['artwork reconnect retries preview','src/components/ArtworkPanel.tsx','setConnection((value) => value + 1);','/* reconnect ignored */','components',true],
+ ['artwork disconnect readiness','src/components/ArtworkPanel.tsx','setReady(false);','/* retain stale readiness */','components',true],
+ ['failed save feedback','src/components/NotesPanel/NotesPanel.tsx','setStorageError(draftSafe','setStorageError(true','components',true],
 ];
 const run=suite=>spawnSync('npm',['run',`test:${suite}`],{cwd:scratch,encoding:'utf8',timeout:45000});
 for(const suite of ['lib','components','companion']){const result=run(suite);if(result.status!==0)throw new Error(`Baseline ${suite} failed: ${result.stdout}\n${result.stderr}`);}
