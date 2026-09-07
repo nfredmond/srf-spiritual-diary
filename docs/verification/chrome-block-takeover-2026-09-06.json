@@ -1,0 +1,40 @@
+{
+  "cursor": 75,
+  "events": [
+    {
+      "sequence": 50,
+      "source": {
+        "tabId": 1406499864
+      },
+      "method": "Network.loadingFailed",
+      "params": {
+        "blockedReason": "inspector",
+        "canceled": false,
+        "errorText": "net::ERR_BLOCKED_BY_CLIENT",
+        "requestId": "0997D75F57AA2ABAB7E138DD78A38753",
+        "timestamp": 123463.071685,
+        "type": "Document"
+      }
+    }
+  ],
+  "hasMore": false,
+  "truncated": false,
+  "scope": "New agent-owned Chrome tab only. No journal storage, user tabs, extensions, or security settings changed.",
+  "localOrigin": "http://127.0.0.1:4317/",
+  "serverCwd": "/home/nathaniel/Computer Use Projects/srf-spiritual-diary",
+  "serverPidAtCheck": 3878475,
+  "connectedBrowser": {
+    "family": "chrome",
+    "transport": "extension",
+    "extensionId": "hehggadaopoacecdllhhajmbjkdcmajg"
+  },
+  "inspectionRestriction": {
+    "requestedUrl": "chrome://extensions/?id=hehggadaopoacecdllhhajmbjkdcmajg",
+    "result": "Browser Use rejected this action due to browser security policy. Reason: The browser URL policy blocks this action.",
+    "scope": "Extension details inspection only. Does not establish which component installed the earlier local navigation block."
+  },
+  "responsibleComponent": "unknown",
+  "browserJourneysVerified": false,
+  "eventLimit": "Final targeted reload capture is complete: hasMore=false, truncated=false. No Inspector.detached event in this capture.",
+  "checked": "2026-09-07T03:28:19.652Z"
+}

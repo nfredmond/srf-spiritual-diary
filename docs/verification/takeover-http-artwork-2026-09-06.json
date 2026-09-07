@@ -1,0 +1,27 @@
+{
+  "checked": "2026-09-07T03:28:19.854Z",
+  "origin": "http://127.0.0.1:4317",
+  "httpStatus": 200,
+  "indexSha256": "c0a975d902f898dac5c9a7306461fae920d91137e9e11a164a477f65c86d9f06",
+  "deniedMissingClientHeader": 403,
+  "model": "gpt-6-astra",
+  "authenticationReady": true,
+  "job": {
+    "id": "f8ef5e03-da9f-420c-9049-d7406cf09f5a",
+    "dateKey": "09-06",
+    "state": "completed",
+    "message": "Artwork saved on this computer.",
+    "created": "2026-09-07T01:39:51.015Z",
+    "model": "gpt-6-astra"
+  },
+  "download": {
+    "status": 200,
+    "bytes": 2742724,
+    "sha256": "0f6b9cbff83edfb53fe02bd493c084288c5fd2234c9b1e47d154ac01d3767844",
+    "width": 1402,
+    "height": 1122
+  },
+  "browserVerified": false,
+  "afterCompanionRestart": true,
+  "readings": 350
+}

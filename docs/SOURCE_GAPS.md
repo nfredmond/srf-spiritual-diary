@@ -57,10 +57,11 @@ No replacement reading is inferred for February 29. The reader offers February
 Current JSON has March 30: Habits; July 10: Freedom; November 10: Simplicity.
 The [March 30, 2024 card](https://x.com/SpiritualDiary_/status/1774109997808640358/photo/1)
 was expanded and visually checked during takeover. Its printed heading is Habits,
-matching the existing entry. July 10, 2024 returned no result in the focused X
-search; that is not proof of absence from the archive. July 10 and November 10
-remain unverified against a dated card. All three remain unchecked against an
-identified printed Spiritual Diary edition. Their existing labels were retained.
+matching the existing entry. The [November 10, 2024 card](https://x.com/SpiritualDiary_/status/1855779162252030009/photo/1)
+was also expanded and shows Simplicity. July 10, 2024 returned no result in the
+focused X search; that is not proof of absence from the archive. July 10 remains
+unverified against a dated card. All three remain unchecked against an identified
+printed Spiritual Diary edition. Their existing labels were retained.
 
 ## Original 20-card source index
 

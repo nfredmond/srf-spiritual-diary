@@ -6,6 +6,37 @@ work through. Read this handoff, inspect current state, and proceed without aski
 him to repeat authorization for routine local work, browser testing, commits, or
 pushes. Bring him actual product decisions, paid services, or destructive actions.
 
+## Takeover checkpoint, 2026-09-06 evening
+
+The app is still unfinished. Current acceptance and exact tool limits are in
+[ACCEPTANCE.md](ACCEPTANCE.md). Read that current record before using the original
+implementation history below.
+
+- `1c02f03` fixes saving over a newer draft, validates journal writes before
+  changing storage, corrects failed-save feedback, and retries artwork previews
+  on reconnect. Focused tests and deliberate mutations cover these behaviors.
+- `d36aa31` adds May 29 and September 25, 26, and 29 using public-domain underlying
+  text and visually checked cards. Three have minor card variants, documented in
+  SOURCE_GAPS.md; no printed diary edition is claimed verified. Census is now
+  **350 readings and 16 missing dates**.
+- Current verification: 16 library, 36 component/app, and 6 companion tests;
+  production build; 34 rejected behavior mutations and one surviving no-op.
+- Chrome still returns `ERR_BLOCKED_BY_CLIENT`, `blockedReason: inspector` for
+  the identified local production reader. The Browser Use URL policy also
+  explicitly denied opening the connected extension's details page. The
+  responsible component remains unknown. Do not bypass that denied inspection,
+  change security controls, or ask Nathaniel to "allow" an unidentified setting.
+- Only the Chrome extension was exposed in supported browser discovery. No
+  desktop, 390px, keyboard, quotation-download, offline/update, or artwork UI
+  acceptance is claimed. The existing artwork was fetched again through the
+  authenticated HTTP endpoint, hash-checked, decoded and visually inspected.
+- A new companion was started by this takeover at port 4317, using the isolated
+  CLI. It was restarted after rebuilding so its in-memory readings match the
+  350-entry build. No running generation existed at that restart. Recheck its
+  process cwd and current job state before touching it.
+- Local evidence is under `artifacts/acceptance/`; portable JSON records are in
+  `docs/verification/`. No journal data or another agent's tabs were used.
+
 ## Checkout and authorities
 
 - Repository: `/home/nathaniel/Computer Use Projects/srf-spiritual-diary`.
@@ -49,9 +80,9 @@ the exact quotation is rendered separately. Never send private journals to Codex
 
 ## Finish the missing readings
 
-The dataset at `public/data/diary-entries.json` still contains **346 readings and
-20 untranscribed dates**. All 20 now have expanded, visually inspected X cards
-with matching printed dates. **None of their quotations has been added.**
+The original implementation had 346 readings and 20 gaps. The takeover added
+four, as detailed above. The remaining 16 have visually inspected dated X cards
+but lack completed permitted transcriptions.
 
 `docs/SOURCE_GAPS.md` contains every direct image/post link, topic, and attribution.
 Start there; do not repeat a broad source search or ask Nathaniel for the links.
@@ -59,8 +90,8 @@ The account is `https://x.com/SpiritualDiary_`, accessible in signed-in Chrome.
 Older 2020-2024 posts supplied the gaps. A post's timestamp is not its card date;
 several adjacent-date candidates were excluded after inspecting their images.
 
-Dates: February 17, 25, 29; March 5; May 14, 29; September 5, 7, 15, 16, 17, 22,
-23, 25, 26, 27, 28, 29; October 4; December 14.
+Remaining dates: February 17, 25, 29; March 5; May 14; September 5, 7, 15, 16,
+17, 22, 23, 27, 28; October 4; December 14.
 
 The February 29 card explicitly says Humility and cites Whispers From Eternity.
 This is evidence of a separately dated card, not proof of a particular printed
