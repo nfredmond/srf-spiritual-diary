@@ -316,6 +316,59 @@ try {
     "Artwork browser fixtures: auth, model, quota, timeout, invalid output, progress, cancel, reconnect and failed download",
     { liveGeneration: false, privateFieldsSent: false },
   );
+  // No timer/calendar/backup chunk has been opened in this fresh context.
+  const freshOffline = await page({ worker: "allow" });
+  await freshOffline.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await freshOffline.reload();
+  assert(
+    await freshOffline.evaluate(() => !!navigator.serviceWorker.controller),
+  );
+  const cacheControl = await freshOffline.context().newCDPSession(freshOffline);
+  await cacheControl.send("Network.enable");
+  await cacheControl.send("Network.setCacheDisabled", { cacheDisabled: true });
+  await freshOffline.context().setOffline(true);
+  await freshOffline.reload();
+  await btn(freshOffline, "Meditation timer").click();
+  await btn(freshOffline, "Start").waitFor();
+  await freshOffline.keyboard.press("Escape");
+  await freshOffline
+    .getByRole("navigation", { name: "Daily practice" })
+    .getByRole("button", { name: "Reading calendar", exact: true })
+    .click();
+  await btn(freshOffline, "Next month").waitFor();
+  await freshOffline.keyboard.press("Escape");
+  await btn(freshOffline, "More").click();
+  await freshOffline
+    .getByRole("menuitem", { name: "Preserve your journal", exact: true })
+    .click();
+  await btn(freshOffline, "Complete Backup").waitFor();
+  await shot(freshOffline, "offline-unvisited-panels");
+  assert.deepEqual(freshOffline.errors, []);
+  await freshOffline.context().setOffline(false);
+  record(
+    "Fresh production worker opens previously unvisited lazy panels offline with HTTP cache disabled",
+  );
+  const noWorker = await page();
+  const negativeCache = await noWorker.context().newCDPSession(noWorker);
+  await negativeCache.send("Network.enable");
+  await negativeCache.send("Network.setCacheDisabled", { cacheDisabled: true });
+  await noWorker.context().setOffline(true);
+  let offlineRejected = false;
+  try {
+    await noWorker.reload();
+  } catch (error) {
+    offlineRejected = /ERR_INTERNET_DISCONNECTED/.test(error.message);
+  }
+  assert(
+    offlineRejected,
+    "Without a worker or HTTP cache, offline reload must fail",
+  );
+  record(
+    "Offline negative control fails when service workers and HTTP cache are disabled",
+  );
+
   // Serve an isolated copy of the production files; change the shell revision to exercise a real waiting worker.
   const fixture = join(out, "update-dist");
   await cp(resolve("dist"), fixture, { recursive: true });

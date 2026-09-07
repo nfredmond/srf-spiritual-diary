@@ -22,12 +22,14 @@
     --text-secondary: #5b626b;
     --border-color: rgba(5, 41, 86, 0.10);
     --hairline: rgba(220, 189, 35, 0.55); /* thin gold rule */
+    --selected-pill-bg: #052956;
     --focus-ring: #052956;
     --accent: #052956;
     --gold-text: #8A6A12;  /* gold dark enough to read as text on light */
   }
 
   .theme-dark {
+    --selected-pill-bg: #14508c;
     --bg-primary: #09111d;
     --bg-secondary: #111a2c;
     --bg-gradient-start: #08101b;
@@ -42,6 +44,7 @@
   }
 
   .theme-sepia {
+    --selected-pill-bg: #5c4a2a;
     --bg-primary: #f4ecd8;
     --bg-secondary: #f9f4e8;
     --bg-gradient-start: #f4ecd8;
@@ -490,4 +493,10 @@
 .app-footer {
   --text-primary: #e9eff8;
   --text-secondary: #c5d1e1;
+}
+
+.theme-pill-button.theme-pill-indicator,
+.theme-pill-button.theme-pill-indicator:hover {
+  color: #fff;
+  background: var(--selected-pill-bg, #052956);
 }

@@ -163,6 +163,23 @@ try {
     for (const theme of ["Light", "Dark", "Sepia"]) {
       await btn(p, `Switch to ${theme} theme`).click();
       await btn(p, "XL font size").click();
+      for (const name of [`Switch to ${theme} theme`, "XL font size"]) {
+        assert.equal(await btn(p, name).getAttribute("aria-pressed"), "true");
+        await p.waitForFunction(
+          (label) => {
+            const element = [...document.querySelectorAll("button")].find(
+              (e) => e.getAttribute("aria-label") === label,
+            );
+            return (
+              element &&
+              getComputedStyle(element).color === "rgb(255, 255, 255)"
+            );
+          },
+          name,
+          { timeout: 3000 },
+        );
+      }
+
       await noOverflow(p);
       await shot(p, `${width}-${theme}-reading`);
       await btn(p, "Search readings").click();
@@ -254,13 +271,11 @@ try {
         },
       },
     };
-    await p
-      .getByLabel("Choose a backup to preview")
-      .setInputFiles({
-        name: "legacy.json",
-        mimeType: "application/json",
-        buffer: Buffer.from(JSON.stringify(legacy)),
-      });
+    await p.getByLabel("Choose a backup to preview").setInputFiles({
+      name: "legacy.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(legacy)),
+    });
     await btn(p, "Merge into journal").waitFor();
     assert.equal(
       await p.evaluate(
@@ -291,13 +306,11 @@ try {
         (n) => n.content === legacy.data["09-06"].content,
       ),
     );
-    await p
-      .getByLabel("Choose a backup to preview")
-      .setInputFiles({
-        name: "invalid.json",
-        mimeType: "application/json",
-        buffer: Buffer.from('{"version":"999"}'),
-      });
+    await p.getByLabel("Choose a backup to preview").setInputFiles({
+      name: "invalid.json",
+      mimeType: "application/json",
+      buffer: Buffer.from('{"version":"999"}'),
+    });
     await expectText(p, "Unsupported backup version");
     assert.equal(await btn(p, "Merge into journal").count(), 0);
     await btn(p, "Close").click();

@@ -22,6 +22,7 @@ export function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwitcherProp
           className={`theme-pill-button relative px-4 py-2 rounded-full transition-all ${
             currentTheme === value ? 'theme-pill-indicator text-white' : ''
           }`}
+          aria-pressed={currentTheme === value}
           aria-label={`Switch to ${label} theme`}
           title={`${label} theme`}
         >

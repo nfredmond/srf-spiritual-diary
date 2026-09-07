@@ -23,6 +23,7 @@ export function ReadingControls({ fontSize, onFontSizeChange }: ReadingControlsP
           className={`theme-pill-button relative px-3 py-1.5 rounded-full transition-all text-sm font-medium ${
             fontSize === value ? 'theme-pill-indicator text-white' : ''
           }`}
+          aria-pressed={fontSize === value}
           aria-label={`${label} font size`}
         >
           <span className="relative z-10">{label}</span>
