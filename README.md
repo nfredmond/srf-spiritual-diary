@@ -1,78 +1,83 @@
-# The Spiritual Diary — a devotional reader
+# The Spiritual Diary
 
-A quiet, contemplative web app that offers one reading each day from
-*The Spiritual Diary of Paramahansa Yogananda* — a topic, a passage, its weekly
-theme, and its source — with gentle space for reflection, private notes, saved
-readings, and meditation.
+An independent, unofficial devotional reader for readings from *The Spiritual
+Diary of Paramahansa Yogananda*. It is not affiliated with or endorsed by
+Self-Realization Fellowship. See [NOTICE](NOTICE) and [attribution](docs/ATTRIBUTION.md).
 
-> **An independent, unofficial devotional reader.** It is not affiliated with,
-> endorsed by, or sponsored by Self-Realization Fellowship. The writings of
-> Paramahansa Yogananda are © Self-Realization Fellowship. See
-> [`NOTICE`](./NOTICE) and [`docs/ATTRIBUTION.md`](./docs/ATTRIBUTION.md).
+The reader contains 346 readings. Twenty annual date keys remain unresolved,
+including February 29. Missing dates are marked and offer a nearby reading through
+an explicit button. [Source gaps and pages needed](docs/SOURCE_GAPS.md).
 
-It is offered freely, as a gift, in the hope it may be of service.
+## Run locally
 
-## What it offers
+Use Node 24 or newer and npm.
 
-- **A reading for each day of the year**, with its topic, weekly theme, and true
-  source attribution (Paramahansa Yogananda, and — where the book does — Sri
-  Gyanamata, Sri Yukteswar, Lahiri Mahasaya, Mahavatar Babaji, Rajarsi
-  Janakananda).
-- **Move gently through the year** — arrow keys, swipe, a date picker, a
-  reading calendar, a week-rhythm strip, weekly-theme browsing, or "let a
-  reading find you."
-- **A quiet place to sit** — save favorite readings, write private reflections,
-  and use a simple meditation timer with a gentle bell.
-- **Yours, and private** — favorites, notes, and history live only in your
-  browser's local storage. Nothing is sent to any server. A "Preserve your
-  journal" export makes a backup you control.
-- **Calm by design** — three restful reading themes (light, sepia paper, and
-  night), adjustable text size, full keyboard access, screen-reader support,
-  reduced-motion support, and offline reading as an installable app (PWA).
-
-## Running it locally
-
-```bash
-npm install
-npm run dev        # start the dev server
+```sh
+npm ci
+npm run dev
+npm run verify
 ```
 
-That's all it needs — the full year of readings is bundled as static JSON, so
-the reader runs entirely in the browser with **no backend and no configuration**.
+`npm run build` produces `dist/`, served from the root of a static host. No database
+or environment variables are required. Offline reading becomes available after
+the production reader's first successful online visit and service-worker install.
+Development mode does not install the offline cache. App updates wait for open
+panels to close and require an explicit reload.
 
-```bash
-npm run verify     # type-check + tests + production build
-npm run build      # production build into dist/
+## Reflection and backups
+
+Use Today, Reading calendar, Reflect, or Meditate below the reading controls.
+Reflections are still stored using the original `srf-notes` date keys. Drafts save
+on each change and recover after closing or refreshing. Storage failures are shown
+in the reflection panel; copy your text if the browser cannot save it.
+
+Under More, choose Preserve your journal. Complete backups include notes, drafts,
+conflicting versions, favorites, recent readings, and reading history. Versions
+2.0 and 3.0 can be imported. Preview a file, then merge it. Existing notes stay in
+place; differing imported versions appear under View preserved conflicts. A
+recovery backup is retained before any import changes are written. Download it
+before another import, which replaces that recovery slot. Backups contain private
+text and must be kept somewhere you trust.
+
+Browser storage is specific to the browser and site address. Moving from a hosted
+reader to the companion does not move your journal automatically. Export and
+import a backup. Clearing browser storage removes saved journals and drafts.
+
+## Optional Codex artwork
+
+Each user runs their own local companion and signs in to their own Codex CLI with
+ChatGPT. The public static reader does not require the companion.
+
+```sh
+codex login
+npm run companion
 ```
 
-A private daily-delivery pipeline (`api/`, `scripts/`, `supabase/`) exists for the
-original maintainer's own use; it is **not part of, or required by, the reader** and
-should be extracted into its own repo for the clean gift. See
-[`docs/DONATION_HANDOFF.md`](./docs/DONATION_HANDOFF.md).
+Open `http://127.0.0.1:4317`, choose Save this reading, then Connect local artwork.
+The companion requests `gpt-6-astra` exclusively. Built-in image generation uses
+`gpt-image-2` and consumes Codex usage allowance, according to the
+[official image documentation](https://learn.chatgpt.com/docs/image-generation).
+There is no API-key fallback or automatic model substitution.
 
-## The readings (data & provenance)
+Astra requires a compatible CLI. Version 0.150.1 was rejected by the server during
+verification. Use a current Codex CLI; testing here uses isolated version 0.153.4.
+Optional `SRF_CODEX_BIN` selects a local executable. `SRF_PORT` changes the loopback
+port. Do not expose the companion through a public proxy.
 
-The year of readings lives in [`public/data/diary-entries.json`](./public/data/diary-entries.json).
+Only the reading date and chosen style reach the companion; it selects the topic
+from its bundled dataset. Notes and drafts are never included. The topic and
+artwork instructions are sent to OpenAI through Codex. Outputs remain in
+`~/.local/share/spiritual-diary/artwork/`; Codex also keeps original generated
+images in its own thread folders. Exact quotations are rendered separately into
+local downloadable cards.
 
-- Every present reading has a topic, quote, source, and weekly theme.
-- Attribution is faithful to the printed book, including the entries spoken by
-  the Gurus and disciples rather than by Yogananda himself.
-- **20 days remain to be transcribed** from the physical book (they show a
-  gentle "being prepared" message in the app until then). They must be filled by
-  **hand-transcription only** — never scraped, OCR'd from unauthorized scans, or
-  AI-generated. See [`docs/HAND_TRANSCRIPTION.md`](./docs/HAND_TRANSCRIPTION.md)
-  and run `npm run patch-missing-dates`.
+## Privacy and licensing
 
-## Attribution & license
+Notes, favorites, and history stay in your browser. Serving the app requires
+ordinary requests to its host. Google Fonts may receive font requests. Optional
+artwork sends the selected topic to OpenAI through your authenticated CLI.
+There is no analytics, journal upload, database, or private delivery pipeline.
 
-- **Source code:** MIT ([`LICENSE`](./LICENSE)).
-- **The diary text:** © Self-Realization Fellowship, all rights reserved — not
-  MIT-licensed. Reproduced with reverence for personal, non-commercial
-  devotional reading. See [`NOTICE`](./NOTICE).
-- To obtain official Self-Realization Fellowship publications, please visit
-  [yogananda.org](https://yogananda.org).
-
-## Built with
-
-React + TypeScript, Vite, Tailwind CSS, Headless UI, framer-motion, date-fns,
-and vite-plugin-pwa.
+Source code is MIT licensed. The diary text is not MIT licensed. The repository
+does not establish permission to redistribute SRF's writings. Obtain official
+publications from [Self-Realization Fellowship](https://yogananda.org).

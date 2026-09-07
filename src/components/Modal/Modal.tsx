@@ -22,10 +22,8 @@ export function Modal({ onClose, children, ariaLabel, panelClassName = '' }: Mod
     <Dialog open onClose={onClose} aria-label={ariaLabel} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel>
-          <div className={`anim-modal-in ${panelClassName}`}>
+        <DialogPanel className={`anim-modal-in ${panelClassName}`}>
             {children}
-          </div>
         </DialogPanel>
       </div>
     </Dialog>

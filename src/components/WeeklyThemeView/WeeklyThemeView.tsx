@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Modal } from '../Modal/Modal';
+import { useDiaryData } from '../../hooks/useDiaryData';
+import { useEffect, useMemo } from 'react';
 import { X, Calendar as CalendarIcon, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import type { DiaryData, DiaryEntry } from '../../types/DiaryEntry';
@@ -42,23 +44,9 @@ function formatKey(dateKey: string): string {
 }
 
 export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: WeeklyThemeViewProps) {
-  const [data, setData] = useState<DiaryData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const {data,error}=useDiaryData();
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/data/diary-entries.json')
-      .then((r) => r.json())
-      .then((json: DiaryData) => {
-        if (!cancelled) setData(json);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load themes');
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -77,17 +65,7 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
   }, [groups, currentDateKey]);
 
   return (
-    <div
-      className="anim-fade-in fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-stretch justify-end"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="weekly-theme-title"
-    >
-      <aside
-        className="anim-slide-in-right w-full max-w-md h-full bg-white shadow-2xl flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Modal onClose={onClose} ariaLabel="Weekly themes" panelClassName="w-full max-w-md max-h-[90vh] overflow-auto bg-white rounded-2xl shadow-2xl flex flex-col">
         <header className="flex items-center justify-between px-6 py-4 border-b border-srf-blue/10">
           <h2 id="weekly-theme-title" className="font-heading text-xl text-srf-blue flex items-center gap-2">
             <CalendarIcon className="w-5 h-5" />
@@ -153,7 +131,6 @@ export function WeeklyThemeView({ currentDateKey, onSelectDate, onClose }: Weekl
           Press <kbd className="px-1 py-0.5 bg-gray-100 rounded">Esc</kbd> to close ·
           <kbd className="px-1 py-0.5 bg-gray-100 rounded ml-1">W</kbd> toggles this panel
         </footer>
-      </aside>
-    </div>
+    </Modal>
   );
 }

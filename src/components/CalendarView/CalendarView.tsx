@@ -1,3 +1,4 @@
+import { unresolvedDates } from '../../lib/diaryData';
 import { X, ChevronLeft, ChevronRight, Heart, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
@@ -77,7 +78,7 @@ export function CalendarView({
     <Modal
       onClose={onClose}
       ariaLabel="Calendar"
-      panelClassName="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-6 max-w-2xl w-full shadow-2xl"
+      panelClassName="bg-gradient-to-br from-srf-white to-srf-lotus/20 rounded-2xl p-4 sm:p-6 max-w-2xl w-full shadow-2xl"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -120,7 +121,7 @@ export function CalendarView({
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {/* Day Headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <div key={day} className="text-center text-sm font-semibold text-gray-600 pb-2">
@@ -140,10 +141,12 @@ export function CalendarView({
           const selected = isSelected(day);
           const favorite = isFavorite(day);
           const note = hasNote(day);
+          const missing = unresolvedDates.includes(getDateKey(day));
 
           return (
             <button
               key={day}
+              aria-label={`${monthName} ${day}${missing ? ", reading unavailable" : ""}`}
               onClick={() => handleDayClick(day)}
               className={`aspect-square rounded-lg flex flex-col items-center justify-center relative transition-all ${
                 selected
@@ -153,7 +156,7 @@ export function CalendarView({
                   : 'hover:bg-srf-lotus/30 text-gray-700'
               }`}
             >
-              <span className={`text-sm ${selected ? 'font-bold' : ''}`}>{day}</span>
+              <span className={`text-sm ${selected ? 'font-bold' : ''}`}>{day}{missing ? "·" : ""}</span>
               {(favorite || note) && (
                 <div className="flex gap-1 mt-1">
                   {favorite && (
@@ -172,7 +175,7 @@ export function CalendarView({
       {/* Legend */}
       <div className="mt-6 pt-4 border-t border-gray-200">
         <p className="text-xs text-gray-600 text-center">
-          Click any day to view that day's wisdom
+          A dot marks an unavailable reading. Select it to find the nearest available day.
         </p>
       </div>
     </Modal>

@@ -1,6 +1,5 @@
+import { useDiaryData } from '../../hooks/useDiaryData';
 import { Heart, Calendar, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import type { DiaryEntry } from '../../types/DiaryEntry';
 import { Modal } from '../Modal/Modal';
 
 interface FavoritesPanelProps {
@@ -10,13 +9,10 @@ interface FavoritesPanelProps {
 }
 
 export function FavoritesPanel({ favorites, onSelectDate, onClose }: FavoritesPanelProps) {
-  const [entries, setEntries] = useState<Record<string, DiaryEntry>>({});
+  const {data,error}=useDiaryData();
+  const entries=data?.entries??{};
 
-  useEffect(() => {
-    fetch('/data/diary-entries.json')
-      .then(res => res.json())
-      .then(data => setEntries(data.entries || data));
-  }, []);
+
 
   const favoriteEntries = favorites
     .map(dateKey => ({ dateKey, entry: entries[dateKey] }))
@@ -42,7 +38,7 @@ export function FavoritesPanel({ favorites, onSelectDate, onClose }: FavoritesPa
         </button>
       </div>
 
-      {favoriteEntries.length === 0 ? (
+      {error ? <p role="alert">{error}</p> : favoriteEntries.length === 0 ? (
         <div className="text-center py-12">
           <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600">No favorites yet</p>

@@ -1,3 +1,5 @@
+import { cardLayout } from '../../lib/quoteCard';
+import { ArtworkPanel } from '../ArtworkPanel';
 import { useRef, useState, useEffect } from 'react';
 import { Download, X } from 'lucide-react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
@@ -51,98 +53,24 @@ export function QuoteImage({ entry, dateKey, onClose }: QuoteImageProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const W = 1200;
-    const H = 1200;
-    canvas.width = W;
-    canvas.height = H;
-    const t = THEMES[template];
-
-    // Background
-    ctx.fillStyle = t.bg;
-    ctx.fillRect(0, 0, W, H);
-
-    // Quiet inner frame
-    ctx.strokeStyle = t.gold;
-    ctx.globalAlpha = 0.5;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(60, 60, W - 120, H - 120);
-    ctx.globalAlpha = 1;
-
-    ctx.textAlign = 'center';
-
-    // Topic (small caps feel via letter spacing where supported)
-    ctx.fillStyle = t.gold;
-    ctx.font = '600 34px "Cormorant Garamond", Georgia, serif';
-    ctx.letterSpacing = '6px';
-    ctx.fillText(entry.topic.toUpperCase(), W / 2, 200);
-    ctx.letterSpacing = '0px';
-
-    // Gold hairline under topic
-    ctx.strokeStyle = t.gold;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(W / 2 - 60, 240);
-    ctx.lineTo(W / 2 + 60, 240);
-    ctx.stroke();
-
-    // Quote (wrapped)
-    ctx.fillStyle = t.ink;
-    ctx.font = 'italic 46px "Crimson Text", Georgia, serif';
-    const maxWidth = 900;
-    const lineHeight = 66;
-    const words = `“${entry.quote}”`.split(' ');
-    const lines: string[] = [];
-    let line = '';
-    for (const word of words) {
-      const test = line + word + ' ';
-      if (ctx.measureText(test).width > maxWidth && line !== '') {
-        lines.push(line.trim());
-        line = word + ' ';
-      } else {
-        line = test;
-      }
-    }
-    lines.push(line.trim());
-
-    const blockHeight = lines.length * lineHeight;
-    let y = H / 2 - blockHeight / 2 + 20;
-    for (const l of lines) {
-      ctx.fillText(l, W / 2, y);
-      y += lineHeight;
-    }
-
-    // Gold hairline above attribution
-    ctx.strokeStyle = t.gold;
-    ctx.beginPath();
-    ctx.moveTo(W / 2 - 60, H - 320);
-    ctx.lineTo(W / 2 + 60, H - 320);
-    ctx.stroke();
-
-    // Attribution — the entry's TRUE source (never assumed)
-    ctx.fillStyle = t.ink;
-    ctx.font = '34px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText(`— ${entry.source}`, W / 2, H - 260);
-
-    if (entry.book) {
-      ctx.fillStyle = t.sub;
-      ctx.font = '26px "Cormorant Garamond", Georgia, serif';
-      ctx.fillText(entry.book, W / 2, H - 220);
-    }
-
-    // Date
-    const [month, day] = dateKey.split('-').map(Number);
-    const dateStr = new Date(2024, month - 1, day).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-    });
-    ctx.fillStyle = t.sub;
-    ctx.font = '24px "Inter", sans-serif';
-    ctx.fillText(dateStr, W / 2, H - 150);
-
-    // Quiet wordmark
-    ctx.fillStyle = t.gold;
-    ctx.font = '22px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('The Spiritual Diary', W / 2, H - 110);
+    const W=1200;
+    const layout=cardLayout(entry,(text,size)=>{ctx.font=`${size}px Georgia, serif`;return ctx.measureText(text).width;});
+    canvas.width=W;canvas.height=layout.height;
+    const H=layout.height,t=THEMES[template];
+    ctx.fillStyle=t.bg;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle=t.gold;ctx.lineWidth=2;ctx.strokeRect(60,60,W-120,H-120);
+    ctx.textAlign='center';ctx.textBaseline='top';
+    const block=(lines:string[],y:number,size:number,spacing:number,color:string)=>{
+      ctx.font=`${size}px Georgia, serif`;ctx.fillStyle=color;
+      lines.forEach((line,i)=>ctx.fillText(line,W/2,y+i*spacing));
+    };
+    block(layout.topic,150,38,52,t.gold);
+    block(layout.quote,layout.quoteY,46,66,t.ink);
+    block(layout.source,layout.sourceY,34,48,t.ink);
+    block(layout.book,layout.bookY,28,42,t.sub);
+    const [month,day]=dateKey.split('-').map(Number);
+    block([new Date(2024,month-1,day).toLocaleDateString('en-US',{month:'long',day:'numeric'})],H-170,26,36,t.sub);
+    block(['The Spiritual Diary'],H-120,24,36,t.gold);
 
     setImageUrl(canvas.toDataURL('image/png'));
   };
@@ -206,6 +134,7 @@ export function QuoteImage({ entry, dateKey, onClose }: QuoteImageProps) {
         </>
       )}
 
+      <ArtworkPanel dateKey={dateKey} />
       <p className="text-muted mt-4 text-center text-sm">A quiet image to keep, print, or share.</p>
     </Modal>
   );

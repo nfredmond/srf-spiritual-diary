@@ -1,3 +1,4 @@
+import { useDiaryData } from '../../hooks/useDiaryData';
 import { useState, useEffect } from 'react';
 import { Search, X, Sparkles } from 'lucide-react';
 import type { DiaryEntry } from '../../types/DiaryEntry';
@@ -8,27 +9,19 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
+  const {data,error}=useDiaryData();
   const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState<'text' | 'theme'>('text');
   const [allEntries, setAllEntries] = useState<Record<string, DiaryEntry>>({});
   const [themes, setThemes] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Load all diary entries
-    fetch('/data/diary-entries.json')
-      .then(res => res.json())
-      .then(data => {
-        setAllEntries(data.entries || data);
-
-        // Extract unique themes
-        const uniqueThemes = new Set<string>();
-        Object.values(data.entries || data).forEach((entry: any) => {
-          if (entry.weeklyTheme) uniqueThemes.add(entry.weeklyTheme);
-          if (entry.topic) uniqueThemes.add(entry.topic);
-        });
-        setThemes(Array.from(uniqueThemes).sort());
-      });
-  }, []);
+  useEffect(()=>{
+    if(!data)return;
+    setAllEntries(data.entries);
+    const themes=new Set<string>();
+    for(const entry of Object.values(data.entries)){if(entry.weeklyTheme)themes.add(entry.weeklyTheme);themes.add(entry.topic);}
+    setThemes([...themes].sort());
+  },[data]);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -91,6 +84,7 @@ export function SearchBar({ onSearchResults, onClose }: SearchBarProps) {
         </button>
       </div>
 
+      {error && <p role="alert">{error}</p>}
       {/* Popular Themes */}
       {query.length === 0 && searchType === 'theme' && (
         <div className="mt-4 pt-4 border-t border-gray-200">

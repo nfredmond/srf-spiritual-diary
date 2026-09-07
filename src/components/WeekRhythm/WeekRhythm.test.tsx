@@ -5,20 +5,20 @@ import { WeekRhythm } from './WeekRhythm';
 
 const fixture = {
   entries: {
-    '04-14': { month: 4, day: 14, topic: 'Patience', quote: 'q', source: 's' },
-    '04-15': { month: 4, day: 15, topic: 'Humility', quote: 'q', source: 's' },
-    '04-16': { month: 4, day: 16, topic: 'Prayer', quote: 'q', source: 's' },
-    '04-17': { month: 4, day: 17, topic: 'Devotion', quote: 'q', source: 's' },
-    '04-18': { month: 4, day: 18, topic: 'Surrender', quote: 'q', source: 's' },
-    '04-19': { month: 4, day: 19, topic: 'Faith', quote: 'q', source: 's' },
-    '04-20': { month: 4, day: 20, topic: 'Joy', quote: 'q', source: 's' },
+    '04-14': { month: 4, day: 14, topic: 'Patience', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-15': { month: 4, day: 15, topic: 'Humility', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-16': { month: 4, day: 16, topic: 'Prayer', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-17': { month: 4, day: 17, topic: 'Devotion', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-18': { month: 4, day: 18, topic: 'Surrender', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-19': { month: 4, day: 19, topic: 'Faith', quote: 'q', source: 's', weeklyTheme: 'Theme' },
+    '04-20': { month: 4, day: 20, topic: 'Joy', quote: 'q', source: 's', weeklyTheme: 'Theme' },
   },
 };
 
 describe('WeekRhythm', () => {
   beforeEach(() => {
     globalThis.fetch = vi.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve(fixture) }),
+      Promise.resolve({ ok:true, json: () => Promise.resolve(fixture) }),
     ) as unknown as typeof fetch;
   });
 

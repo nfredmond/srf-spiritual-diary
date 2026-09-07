@@ -1,0 +1,173 @@
+{
+  "date": "2026-09-06",
+  "results": [
+    {
+      "name": "no-op",
+      "result": "SURVIVED",
+      "expected": "SURVIVED",
+      "evidence": ""
+    },
+    {
+      "name": "calendar gap",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 calendar census rejects unexplained gaps, invalid fields and missing attribution (5.367296ms)\n\u2716 failing tests:\n\u2716 calendar census rejects unexplained gaps, invalid fields and missing attribution (5.367296ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n    expected: /Unexplained/,"
+    },
+    {
+      "name": "field validation",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 calendar census rejects unexplained gaps, invalid fields and missing attribution (6.178507ms)\n\u2716 failing tests:\n\u2716 calendar census rejects unexplained gaps, invalid fields and missing attribution (6.178507ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n    expected: undefined,"
+    },
+    {
+      "name": "HTTP status",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 loader deduplicates requests and retries failed HTTP or malformed data (1.771602ms)\n\u2716 failing tests:\n\u2716 loader deduplicates requests and retries failed HTTP or malformed data (1.771602ms)\n  AssertionError [ERR_ASSERTION]: Missing expected rejection.\n    expected: /connection/,"
+    },
+    {
+      "name": "request cache",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 loader deduplicates requests and retries failed HTTP or malformed data (1.835624ms)\n\u2716 failing tests:\n\u2716 loader deduplicates requests and retries failed HTTP or malformed data (1.835624ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 1,"
+    },
+    {
+      "name": "shared loader update",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": " FAIL  src/App.test.tsx > App (integration) > renders today's reading with faithful attribution and the unofficial disclaimer\n FAIL  src/App.test.tsx > App (integration) > advances a day on ArrowRight and announces the new reading to screen readers\n FAIL  src/App.test.tsx > App (integration) > returns to today when T is pressed after navigating away\n FAIL  src/App.test.tsx > availability and return visits > shows February 29 honestly and navigates only after choosing February 28\n FAIL  src/App.test.tsx > availability and return visits > distinguishes HTTP failure from missing content and retries"
+    },
+    {
+      "name": "backup version",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 strict backup validation accepts legacy exports and rejects nested damage (1.173815ms)\n\u2716 failing tests:\n\u2716 strict backup validation accepts legacy exports and rejects nested damage (1.173815ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n    expected: undefined,"
+    },
+    {
+      "name": "note schema",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 strict backup validation accepts legacy exports and rejects nested damage (1.223428ms)\n\u2716 failing tests:\n\u2716 strict backup validation accepts legacy exports and rejects nested damage (1.223428ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n    expected: undefined,"
+    },
+    {
+      "name": "import conflict",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 merge preserves original notes, drafts and both conflicting versions (1.142396ms)\n\u2716 failing tests:\n\u2716 merge preserves original notes, drafts and both conflicting versions (1.142396ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected"
+    },
+    {
+      "name": "recovery barrier",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 merge preserves original notes, drafts and both conflicting versions (0.625571ms)\n\u2716 failed recovery write prevents import, later write failure rolls back (0.467722ms)\n\u2716 failing tests:\n\u2716 merge preserves original notes, drafts and both conflicting versions (0.625571ms)\n\u2716 failed recovery write prevents import, later write failure rolls back (0.467722ms)"
+    },
+    {
+      "name": "rollback",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 failed recovery write prevents import, later write failure rolls back (0.855705ms)\n\u2716 failing tests:\n\u2716 failed recovery write prevents import, later write failure rolls back (0.855705ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected"
+    },
+    {
+      "name": "draft persistence",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 merge preserves original notes, drafts and both conflicting versions (1.188923ms)\n\u2716 draft survives reopening and save preserves an externally changed note (0.168478ms)\n\u2716 simultaneous draft editors retain the replaced draft as a conflict (0.249431ms)\n\u2716 failing tests:\n\u2716 merge preserves original notes, drafts and both conflicting versions (1.188923ms)"
+    },
+    {
+      "name": "quote height",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 quotation layout grows for the longest readings without overlapping attribution (3.298203ms)\n\u2716 failing tests:\n\u2716 quotation layout grows for the longest readings without overlapping attribution (3.298203ms)\n  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n    expected: true,"
+    },
+    {
+      "name": "date identity",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 fromMMDD builds a local Date and gracefully handles Feb 29 (0.668842ms)\n\u2716 failing tests:\n\u2716 fromMMDD builds a local Date and gracefully handles Feb 29 (0.668842ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 29,"
+    },
+    {
+      "name": "patch author",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 patch import refuses invented attribution and requires a verified theme (42.794263ms)\n\u2716 failing tests:\n\u2716 patch import refuses invented attribution and requires a verified theme (42.794263ms)\n  AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0\n    expected: 0,"
+    },
+    {
+      "name": "API keys",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 only Astra and ChatGPT are requested; key credentials and shell tools are excluded (1.798593ms)\n\u2716 failing tests:\n\u2716 only Astra and ChatGPT are requested; key credentials and shell tools are excluded (1.798593ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected"
+    },
+    {
+      "name": "Astra model",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 only Astra and ChatGPT are requested; key credentials and shell tools are excluded (2.228385ms)\n\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (23.420689ms)\n\u2716 failing tests:\n\u2716 only Astra and ChatGPT are requested; key credentials and shell tools are excluded (2.228385ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+    },
+    {
+      "name": "ChatGPT auth",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 Codex absence, API auth and signed-out state fail closed (31.06386ms)\n\u2716 failing tests:\n\u2716 Codex absence, API auth and signed-out state fail closed (31.06386ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: false,"
+    },
+    {
+      "name": "PNG validation",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 PNG decoder rejects truncated and corrupt image output (0.771696ms)\n\u2716 jobs save valid artwork and reject invalid output, model failures and quota errors (69.901047ms)\n\u2716 failing tests:\n\u2716 PNG decoder rejects truncated and corrupt image output (0.771696ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception."
+    },
+    {
+      "name": "persisted job identity",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 jobs save valid artwork and reject invalid output, model failures and quota errors (38.129561ms)\n\u2716 failing tests:\n\u2716 jobs save valid artwork and reject invalid output, model failures and quota errors (38.129561ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 0,"
+    },
+    {
+      "name": "cancel state",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 cancellation, timeout and restart keep interrupted jobs out of completed state (4.410922ms)\n\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (48.20434ms)\n\u2716 failing tests:\n\u2716 cancellation, timeout and restart keep interrupted jobs out of completed state (4.410922ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+    },
+    {
+      "name": "origin access",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (24.555701ms)\n\u2716 failing tests:\n\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (24.555701ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 403,"
+    },
+    {
+      "name": "session access",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (33.288938ms)\n\u2716 failing tests:\n\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (33.288938ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 403,"
+    },
+    {
+      "name": "private fields",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (37.727062ms)\n\u2716 failing tests:\n\u2716 HTTP companion rejects hostile origin, missing session, private fields and traversal (37.727062ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    expected: 400,"
+    },
+    {
+      "name": "reflection close guard",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": " FAIL  src/components/NotesPanel/NotesPanel.test.tsx > reflection recovery > blocks closure and reports an error when draft persistence fails\nAssertionError: expected \"vi.fn()\" to not be called at all, but actually been called 1 times"
+    },
+    {
+      "name": "leap substitution",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": " FAIL  src/App.test.tsx > availability and return visits > shows February 29 honestly and navigates only after choosing February 28"
+    },
+    {
+      "name": "concurrent drafts",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": "\u2716 simultaneous draft editors retain the replaced draft as a conflict (0.376971ms)\n\u2716 failing tests:\n\u2716 simultaneous draft editors retain the replaced draft as a conflict (0.376971ms)"
+    },
+    {
+      "name": "rollover",
+      "result": "KILLED",
+      "expected": "KILLED",
+      "evidence": " FAIL  src/App.test.tsx > availability and return visits > rolls today into the new year on focus while preserving an open reflection"
+    }
+  ]
+}

@@ -6,7 +6,8 @@ export function useTheme() {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    const stored = localStorage.getItem('srf-theme') as Theme;
+    let stored: Theme | null = null;
+    try { stored = localStorage.getItem('srf-theme') as Theme; } catch { return; }
     if (stored && ['light', 'dark', 'sepia'].includes(stored)) {
       setTheme(stored);
       applyTheme(stored);
@@ -21,7 +22,7 @@ export function useTheme() {
 
   const changeTheme = (newTheme: Theme) => {
     setTheme(newTheme);
-    localStorage.setItem('srf-theme', newTheme);
+    try { localStorage.setItem('srf-theme', newTheme); } catch { /* Appearance applies for this visit only. */ }
     applyTheme(newTheme);
   };
 

@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run audit:calendar && tsc && vite build",
     "preview": "vite preview",
-    "test": "npm run test:lib && npm run test:components",
+    "test": "npm run test:lib && npm run test:components && npm run test:companion",
     "test:lib": "node --experimental-strip-types --test src/lib/*.test.ts",
     "test:components": "vitest run",
     "lint": "tsc --noEmit",
-    "verify": "tsc --noEmit && npm test && vite build",
-    "patch-missing-dates": "node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json"
+    "verify": "npm run lint && npm test && npm run build",
+    "patch-missing-dates": "node scripts/merge-diary-json.mjs --patch data/missing-dates-patch.json",
+    "audit:calendar": "node scripts/audit-calendar.mjs",
+    "companion": "npm run build && node companion/server.mjs",
+    "test:companion": "node --test companion/*.test.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

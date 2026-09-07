@@ -83,3 +83,23 @@ describe('App (integration)', () => {
     expect(await screen.findByText(/Quote number 0 about the divine/)).toBeInTheDocument();
   });
 });
+
+describe('availability and return visits',()=>{
+  beforeEach(()=>{localStorage.clear();localStorage.setItem('srf-onboarding-completed','true');});
+  afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();});
+  it('shows February 29 honestly and navigates only after choosing February 28',async()=>{
+    vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date(2024,1,29,12));
+    vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>({entries:{'02-28':{month:2,day:28,topic:'Test topic',weeklyTheme:'Test theme',quote:'February 28 test reading',source:'Test author'}}})})));
+    render(<App/>);expect(await screen.findByText('Reading unavailable for February 29')).toBeInTheDocument();expect(screen.queryByText(/February 28 test reading/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Read February 28 instead'}));expect(await screen.findByText(/February 28 test reading/)).toBeInTheDocument();
+  });
+  it('distinguishes HTTP failure from missing content and retries',async()=>{
+    const fetcher=vi.fn().mockResolvedValueOnce({ok:false}).mockResolvedValue({ok:true,json:async()=>buildDataset()});vi.stubGlobal('fetch',fetcher);
+    render(<App/>);expect(await screen.findByText('Readings could not be loaded')).toBeInTheDocument();expect(screen.queryByText(/Reading unavailable for/)).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Retry loading'}));expect(await screen.findByText(/Quote number 0 about the divine/)).toBeInTheDocument();expect(screen.getByRole('navigation',{name:/Reading rhythm/})).toHaveTextContent('Topic 0');
+  });
+  it('rolls today into the new year on focus while preserving an open reflection',async()=>{
+    vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date(2024,11,31,23,59));const data=buildDataset();vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>data})));
+    render(<App/>);await screen.findByText(/Quote number 0 about the divine/);fireEvent.click(screen.getByRole('button',{name:'Reflect'}));await screen.findByRole('textbox');fireEvent.change(screen.getByRole('textbox'),{target:{value:'year end draft'}});
+    vi.setSystemTime(new Date(2025,0,1,0,1));fireEvent.focus(window);expect(screen.getByRole('textbox')).toHaveValue('year end draft');fireEvent.click(screen.getByRole('button',{name:'Close'}));fireEvent.focus(window);expect(await screen.findByText(/Quote number 1 about the divine/)).toBeInTheDocument();
+  });
+});

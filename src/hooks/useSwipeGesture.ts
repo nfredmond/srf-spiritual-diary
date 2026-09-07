@@ -17,6 +17,8 @@ export function useSwipeGesture({
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
       touchEnd.current = null;
+      if(document.querySelector('[role="dialog"]') || (e.target instanceof Element && e.target.closest('nav, button, input, textarea, select'))) { touchStart.current=null;return; }
+
       touchStart.current = {
         x: e.targetTouches[0].clientX,
         y: e.targetTouches[0].clientY,

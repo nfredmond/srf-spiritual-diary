@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       // Keep the existing hand-written public/manifest.json; don't emit another.
       manifest: false,
-      injectRegister: 'auto',
+      injectRegister: false,
       workbox: {
         // Precache the full app shell + the 346-entry diary JSON so an offline
         // user still gets any day's reading. JSON added via globPatterns so
@@ -20,9 +20,10 @@ export default defineConfig({
         globIgnores: ['**/og-image.png'],
         // Tell Workbox the entry point for navigation requests.
         navigateFallback: '/index.html',
-        // Kick the old SW immediately so updates don't wait on a full tab close.
+        navigateFallbackDenylist: [/^\/api\//],
+        // Activation requires an explicit reader action after panels close.
         clientsClaim: true,
-        skipWaiting: true,
+        skipWaiting: false,
         runtimeCaching: [
           {
             // Google Fonts CSS — stale-while-revalidate.
@@ -48,7 +49,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Split the heavy vendors so the app shell stays small and the big
-        // libraries (framer-motion, Supabase, date-fns) cache independently
+        // libraries cache independently
         // across deploys.
         manualChunks: {
           'vendor-headless': ['@headlessui/react'],

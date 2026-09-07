@@ -261,7 +261,8 @@ async function applyPatch(opts) {
     const quote = typeof entry.quote === 'string' ? entry.quote.trim() : '';
     if (!topic) errors.push(`${key}: topic is blank — fill in from the physical diary`);
     if (!quote) errors.push(`${key}: quote is blank — fill in from the physical diary`);
-    if (entry.source && typeof entry.source !== 'string') errors.push(`${key}: source must be a string`);
+    if (typeof entry.source !== 'string' || !entry.source.trim()) errors.push(`${key}: verified source attribution is required`);
+    if (typeof entry.weeklyTheme !== 'string' || !entry.weeklyTheme.trim()) errors.push(`${key}: verified weeklyTheme is required`);
     if (key in currentEntries) overwrites.push(key);
     accepted.push(key);
   }
@@ -288,7 +289,7 @@ async function applyPatch(opts) {
       weeklyTheme: entry.weeklyTheme ?? null,
       specialDay: entry.specialDay ?? null,
       quote: entry.quote.trim(),
-      source: entry.source || 'Paramahansa Yogananda',
+      source: entry.source.trim(),
       book: entry.book ?? null,
     };
   }

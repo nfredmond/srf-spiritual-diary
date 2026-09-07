@@ -18,14 +18,12 @@ posture so any future maintainer inherits the same reverence.
 
 1. **No fabricated or machine-made scripture.** Yogananda's words are never
    scraped, OCR'd from unauthorized scans, paraphrased, or AI-generated. The
-   missing days are filled **only** by faithful hand-transcription from the
-   printed book (`docs/HAND_TRANSCRIPTION.md`). Fabricated attribution is a
+   missing days require faithful transcription from supplied pages or a source permitting reuse (`docs/HAND_TRANSCRIPTION.md`). Fabricated attribution is a
    harder line than quotation and must never be crossed.
 2. **No AI-generated sacred imagery.** SRF reveres only authentic images of the
    Gurus. This reader generates no sacred art and depicts no guru, deity, or
    religious figure. Any atmosphere is restrained, non-representational, and
-   clearly not an official SRF image. (An earlier experimental AI-art feature was
-   deliberately removed from this reader.)
+   clearly not an official SRF image. Optional nature or abstract art uses a local Codex companion. Quotations are rendered separately and are never generated.
 3. **No monetization.** The reader is never sold, ad-supported, or tied to
    donations for content. Personal reflections stay on the reader's own device.
 4. **No implication of official status.** SRF's name, marks, and emblem are used

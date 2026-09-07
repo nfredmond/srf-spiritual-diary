@@ -16,19 +16,10 @@ export function isValidDiaryDate(dateKey: string): boolean {
   return probe.getMonth() === m - 1 && probe.getDate() === d;
 }
 
-function isLeapYear(year: number): boolean {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-}
-
-export function leapDayFallback(month: number, day: number, year: number): { month: number; day: number } {
-  if (month === 2 && day === 29 && !isLeapYear(year)) {
-    return { month: 2, day: 28 };
-  }
-  return { month, day };
-}
-
+// Keep the requested month/day visible, using a leap year for annual Feb 29 browsing.
 export function fromMMDD(dateKey: string, year: number = new Date().getFullYear()): Date {
-  const [monthRaw, dayRaw] = dateKey.split('-').map(Number);
-  const { month, day } = leapDayFallback(monthRaw, dayRaw, year);
-  return new Date(year, month - 1, day);
+  if (!isValidDiaryDate(dateKey)) throw new Error('Invalid diary date');
+  const [month, day] = dateKey.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return toMMDD(date) === dateKey ? date : new Date(CANONICAL_YEAR, month - 1, day);
 }

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useDiaryData } from '../../hooks/useDiaryData';
+import { useMemo } from 'react';
 import { addDays, subDays, format, isSameDay } from 'date-fns';
-import type { DiaryData } from '../../types/DiaryEntry';
 import { toMMDD } from '../../lib/diaryDate';
 
 interface WeekRhythmProps {
@@ -21,22 +21,9 @@ interface TileData {
 }
 
 export function WeekRhythm({ selectedDate, visitedKeys, onSelectDate }: WeekRhythmProps) {
-  const [data, setData] = useState<DiaryData | null>(null);
+  const {data}=useDiaryData();
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/data/diary-entries.json')
-      .then((r) => r.json())
-      .then((json: DiaryData) => {
-        if (!cancelled) setData(json);
-      })
-      .catch(() => {
-        // Silent — the strip will just render em-dashes for topics.
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+
 
   const tiles: TileData[] = useMemo(() => {
     const today = new Date();
@@ -51,7 +38,7 @@ export function WeekRhythm({ selectedDate, visitedKeys, onSelectDate }: WeekRhyt
         key,
         weekdayLabel: format(date, 'EEE'),
         dayNumber: format(date, 'd'),
-        topic: entry?.topic ?? '—',
+        topic: entry?.topic ?? (data ? 'Unavailable' : 'Not loaded'),
         isSelected: isSameDay(date, selectedDate),
         isToday: key === todayKey,
         isVisited: visited.has(key),

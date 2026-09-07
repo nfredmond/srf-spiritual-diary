@@ -1,346 +1,192 @@
-import { X, Download, Upload, FileText, Heart, BookOpen } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
-
-interface ExportImportProps {
-  onClose: () => void;
+import {
+  applyImport,
+  backup,
+  mergeJournal,
+  notifyJournal,
+  readJournal,
+  validateBackup
+} from '../../lib/journal';
+import type { Journal } from '../../lib/journal';
+function download(value: unknown, name: string) {
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' })
+  );
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-
-export function ExportImport({ onClose }: ExportImportProps) {
-  const [statusMessage, setStatusMessage] = useState('');
-  const [statusType, setStatusType] = useState<'success' | 'error'>('success');
-  const clearMessageTimeoutRef = useRef<number | null>(null);
-
-  const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null && !Array.isArray(value);
-
-  const setStatus = (message: string, type: 'success' | 'error') => {
-    setStatusType(type);
-    setStatusMessage(message);
-
-    if (clearMessageTimeoutRef.current) {
-      window.clearTimeout(clearMessageTimeoutRef.current);
-    }
-
-    clearMessageTimeoutRef.current = window.setTimeout(() => {
-      setStatusMessage('');
-    }, 3000);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (clearMessageTimeoutRef.current) {
-        window.clearTimeout(clearMessageTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const validateImportPayload = (payload: unknown) => {
-    if (!isObjectRecord(payload)) {
-      throw new Error('Invalid file format');
-    }
-
-    const { type, version, data } = payload;
-    if (typeof type !== 'string' || typeof version !== 'string' || data === undefined) {
-      throw new Error('Invalid file format');
-    }
-
-    switch (type) {
-      case 'srf-favorites':
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid favorites data');
-        }
-        return {
-          type,
-          data,
-        };
-      case 'srf-notes':
-        if (!isObjectRecord(data)) {
-          throw new Error('Invalid notes data');
-        }
-        return {
-          type,
-          data,
-        };
-      case 'srf-complete-backup':
-        if (!isObjectRecord(data)) {
-          throw new Error('Invalid backup data');
-        }
-        if ('favorites' in data && !Array.isArray(data.favorites)) {
-          throw new Error('Invalid favorites data');
-        }
-        if ('notes' in data && !isObjectRecord(data.notes)) {
-          throw new Error('Invalid notes data');
-        }
-        if ('history' in data && !isObjectRecord(data.history)) {
-          throw new Error('Invalid history data');
-        }
-        if ('theme' in data && typeof data.theme !== 'string') {
-          throw new Error('Invalid theme data');
-        }
-        return {
-          type,
-          data,
-        };
-      default:
-        throw new Error('Unknown backup type');
-    }
-  };
-
-  const handleExportFavorites = () => {
-    const favorites = localStorage.getItem('srf-favorites');
-    if (!favorites) {
-      setStatus('No favorites to export', 'error');
-      return;
-    }
-
+export function ExportImport({ onClose }: { onClose: () => void }) {
+  const [preview, setPreview] = useState<Partial<Journal> | null>(null);
+  const [message, setMessage] = useState('');
+  const [conflicts, setConflicts] = useState<Journal['conflicts']>([]);
+  const action = (fn: () => void) => {
     try {
-      const data = {
-        type: 'srf-favorites',
-        version: '2.0',
-        exportDate: new Date().toISOString(),
-        data: JSON.parse(favorites),
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `srf-favorites-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      setStatus('Favorites exported successfully.', 'success');
-    } catch {
-      setStatus('Unable to export favorites. Stored data appears invalid.', 'error');
+      fn();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : 'Storage unavailable.');
     }
   };
-
-  const handleExportNotes = () => {
-    const notes = localStorage.getItem('srf-notes');
-    if (!notes) {
-      setStatus('No notes to export', 'error');
-      return;
-    }
-
-    try {
-      const data = {
-        type: 'srf-notes',
-        version: '2.0',
-        exportDate: new Date().toISOString(),
-        data: JSON.parse(notes),
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `srf-notes-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      setStatus('Notes exported successfully.', 'success');
-    } catch {
-      setStatus('Unable to export notes. Stored data appears invalid.', 'error');
-    }
-  };
-
-  const handleExportAll = () => {
-    try {
-      const favorites = localStorage.getItem('srf-favorites');
-      const notes = localStorage.getItem('srf-notes');
-      const history = localStorage.getItem('srf-reading-history');
-      const theme = localStorage.getItem('srf-theme');
-
-      const data = {
-        type: 'srf-complete-backup',
-        version: '2.0',
-        exportDate: new Date().toISOString(),
-        data: {
-          favorites: favorites ? JSON.parse(favorites) : [],
-          notes: notes ? JSON.parse(notes) : {},
-          history: history ? JSON.parse(history) : {},
-          theme: theme || 'light',
-        },
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `srf-complete-backup-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      setStatus('Complete backup exported successfully.', 'success');
-    } catch {
-      setStatus('Unable to export complete backup. Stored data appears invalid.', 'error');
-    }
-  };
-
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      try {
-        const content = e.target?.result as string;
-        const parsedContent = JSON.parse(content);
-        const data = validateImportPayload(parsedContent);
-
-        let imported = 0;
-
-        switch (data.type) {
-          case 'srf-favorites':
-            localStorage.setItem('srf-favorites', JSON.stringify(data.data));
-            imported = data.data.length;
-            setStatus(`Successfully imported ${imported} favorites!`, 'success');
-            break;
-
-          case 'srf-notes':
-            localStorage.setItem('srf-notes', JSON.stringify(data.data));
-            imported = Object.keys(data.data).length;
-            setStatus(`Successfully imported ${imported} notes!`, 'success');
-            break;
-
-          case 'srf-complete-backup':
-            if (data.data.favorites) {
-              localStorage.setItem('srf-favorites', JSON.stringify(data.data.favorites));
-            }
-            if (data.data.notes) {
-              localStorage.setItem('srf-notes', JSON.stringify(data.data.notes));
-            }
-            if (data.data.history) {
-              localStorage.setItem('srf-reading-history', JSON.stringify(data.data.history));
-            }
-            if (typeof data.data.theme === 'string') {
-              localStorage.setItem('srf-theme', data.data.theme);
-            }
-            setStatus('Successfully imported complete backup! Please refresh the page.', 'success');
-            break;
-
-          default:
-            throw new Error('Unknown backup type');
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Invalid file format';
-        setStatus(`Error: ${message}`, 'error');
-      }
-    };
-
-    reader.readAsText(file);
-    event.target.value = '';
-  };
-
+  const button =
+    'rounded-lg border border-srf-blue/30 px-4 py-3 text-srf-blue hover:bg-srf-lotus/30';
   return (
     <Modal
       onClose={onClose}
       ariaLabel="Preserve your journal"
-      panelClassName="bg-white rounded-2xl p-6 max-w-2xl w-full"
+      panelClassName="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-auto"
     >
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-heading text-2xl text-srf-blue flex items-center gap-2">
-            <FileText className="w-6 h-6" />
-            Preserve Your Journal
-          </h3>
+      <div className="flex justify-between gap-4">
+        <h3 className="font-heading text-2xl text-srf-blue">
+          Preserve your journal
+        </h3>
+        <button className={button} onClick={onClose}>
+          Close
+        </button>
+      </div>
+      <p className="my-4">
+        Backups contain your private reflections. Keep downloaded files
+        somewhere you trust.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <button
+          className={button}
+          onClick={() =>
+            action(() => {
+              download(
+                backup(readJournal(localStorage)),
+                'srf-complete-backup.json'
+              );
+              setMessage('Backup download requested.');
+            })
+          }
+        >
+          Complete Backup
+        </button>
+        <button
+          className={button}
+          onClick={() =>
+            action(() =>
+              download(
+                {
+                  type: 'srf-notes',
+                  version: '2.0',
+                  data: readJournal(localStorage).notes
+                },
+                'srf-notes.json'
+              )
+            )
+          }
+        >
+          Export Notes
+        </button>
+        <button
+          className={button}
+          onClick={() =>
+            action(() =>
+              download(
+                {
+                  type: 'srf-favorites',
+                  version: '2.0',
+                  data: readJournal(localStorage).favorites
+                },
+                'srf-favorites.json'
+              )
+            )
+          }
+        >
+          Export Favorites
+        </button>
+        <button
+          className={button}
+          onClick={() =>
+            action(() => {
+              const raw = localStorage.getItem('srf-import-recovery');
+              if (!raw) throw new Error('No import recovery backup yet.');
+              download(JSON.parse(raw).backup, 'srf-before-import.json');
+            })
+          }
+        >
+          Download recovery backup
+        </button>
+        <button
+          className={button}
+          onClick={() =>
+            action(() => {
+              setConflicts(readJournal(localStorage).conflicts);
+              setMessage(
+                'Conflicting versions are retained below and included in complete backups.'
+              );
+            })
+          }
+        >
+          View preserved conflicts
+        </button>
+      </div>
+      <label className="block my-6">
+        Choose a backup to preview
+        <input
+          className="block mt-2 w-full"
+          type="file"
+          accept=".json,application/json"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = '';
+            setPreview(null);
+            if (!file) return;
+            try {
+              if (file.size > 10_000_000)
+                throw new Error('Backup exceeds 10 MB.');
+              const incoming = validateBackup(JSON.parse(await file.text()));
+              const current = readJournal(localStorage);
+              const merged = mergeJournal(current, incoming);
+              setPreview(incoming);
+              setMessage(
+                `${Object.keys(incoming.notes ?? {}).length} notes, ${(incoming.favorites ?? []).length} favorites, ${Object.keys(incoming.drafts ?? {}).length} drafts. ${merged.conflicts.length - current.conflicts.length} conflicting versions will be preserved. Existing notes and appearance stay in place.`
+              );
+            } catch (err) {
+              setMessage(
+                err instanceof Error ? err.message : 'Could not read file.'
+              );
+            }
+          }}
+        />
+      </label>
+      <p role="status" className="my-4">
+        {message}
+      </p>
+      {preview && (
+        <div className="flex gap-3">
           <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Close"
+            className={button}
+            onClick={() =>
+              action(() => {
+                applyImport(localStorage, preview);
+                notifyJournal();
+                setPreview(null);
+                setMessage(
+                  'Merged. Original journal retained in the recovery backup.'
+                );
+              })
+            }
           >
-            <X className="w-5 h-5 text-gray-600" />
+            Merge into journal
+          </button>
+          <button className={button} onClick={() => setPreview(null)}>
+            Cancel import
           </button>
         </div>
-
-        {/* Export Section */}
-        <div className="mb-6">
-          <h4 className="font-heading text-lg text-srf-blue mb-3 flex items-center gap-2">
-            <Download className="w-5 h-5" />
-            Export Your Data
+      )}
+      {conflicts.map((n, i) => (
+        <article className="my-4 border-t pt-3" key={i}>
+          <h4>
+            {n.dateKey}, {new Date(n.timestamp).toLocaleString()}
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <button
-              onClick={handleExportFavorites}
-              className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl hover:shadow-md transition-all"
-            >
-              <Heart className="w-8 h-8 text-gold-accent" />
-              <span className="text-sm font-medium">Export Favorites</span>
-            </button>
-
-            <button
-              onClick={handleExportNotes}
-              className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl hover:shadow-md transition-all"
-            >
-              <BookOpen className="w-8 h-8 text-gold-accent" />
-              <span className="text-sm font-medium">Export Notes</span>
-            </button>
-
-            <button
-              onClick={handleExportAll}
-              className="flex flex-col items-center gap-2 p-4 bg-srf-blue text-white rounded-xl hover:bg-srf-blue-700 transition-all"
-            >
-              <Download className="w-8 h-8" />
-              <span className="text-sm font-medium">Complete Backup</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Import Section */}
-        <div>
-          <h4 className="font-heading text-lg text-srf-blue mb-3 flex items-center gap-2">
-            <Upload className="w-5 h-5" />
-            Import / Restore
-          </h4>
-          <label className="block">
-            <div className="flex flex-col items-center gap-3 p-6 bg-white rounded-xl border-2 border-dashed border-srf-blue/30 hover:border-srf-blue hover:bg-srf-blue/5 transition-all cursor-pointer">
-              <Upload className="w-12 h-12 text-srf-blue" />
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-700">Click to select backup file</p>
-                <p className="text-xs text-gray-500 mt-1">Supports .json files exported from this app</p>
-              </div>
-            </div>
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-          </label>
-
-          {statusMessage && (
-            <div
-              className={`anim-fade-in mt-4 p-3 rounded-lg text-center ${
-                statusType === 'error'
-                  ? 'bg-srf-lotus/40 text-srf-blue'
-                  : 'bg-srf-lotus/40 text-gold-accent'
-              }`}
-              role={statusType === 'error' ? 'alert' : 'status'}
-              aria-live={statusType === 'error' ? 'assertive' : 'polite'}
-            >
-              {statusMessage}
-            </div>
-          )}
-          <div
-            className="sr-only"
-            role="status"
-            aria-live={statusType === 'error' ? 'assertive' : 'polite'}
-            aria-atomic="true"
-          >
-            {statusMessage}
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="mt-6 p-4 bg-srf-lotus/30 rounded-lg">
-          <p className="text-sm text-srf-blue">
-            <strong>Tip:</strong> Regular backups ensure you never lose your favorites, notes, and reading progress. Export your data periodically for safekeeping!
-          </p>
-        </div>
+          <p className="whitespace-pre-wrap break-words">{n.content}</p>
+        </article>
+      ))}
     </Modal>
   );
 }

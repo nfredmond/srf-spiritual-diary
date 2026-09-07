@@ -1,64 +1,61 @@
 import { useState, useEffect, useCallback } from 'react';
 import { format, subDays } from 'date-fns';
-
-interface ReadingHistory {
-  dates: string[];
-  currentStreak: number;
-  longestStreak: number;
-  lastVisit: string;
-}
-
+import { validateJournal } from '../lib/journal';
+import type { ReadingHistory } from '../lib/journal';
 const STORAGE_KEY = 'srf-reading-history';
-
+const empty: ReadingHistory = {
+  dates: [],
+  currentStreak: 0,
+  longestStreak: 0,
+  lastVisit: ''
+};
+const read = () => {
+  const value = validateJournal({
+    history: JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
+  }).history!;
+  return Object.keys(value).length ? (value as ReadingHistory) : empty;
+};
 export function useReadingStreak() {
-  const [history, setHistory] = useState<ReadingHistory>({
-    dates: [],
-    currentStreak: 0,
-    longestStreak: 0,
-    lastVisit: '',
-  });
-
+  const [history, setHistory] = useState<ReadingHistory>(empty);
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    const load = () => {
       try {
-        setHistory(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to load reading history:', e);
+        setHistory(read());
+      } catch {
+        /* Preserve unreadable stored data. */
       }
-    }
+    };
+    load();
+    window.addEventListener('journal-changed', load);
+    window.addEventListener('storage', load);
+    return () => {
+      window.removeEventListener('journal-changed', load);
+      window.removeEventListener('storage', load);
+    };
   }, []);
-
-  // Stable identity (useCallback with empty deps) so this can safely sit in an
-  // effect dependency array without re-firing every render. Uses a functional
-  // updater so it reads the already-loaded history from state rather than a
-  // stale render-time closure — this is what previously reset the streak and
-  // overwrote saved progress on every load.
   const recordVisit = useCallback(() => {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
-
-    setHistory((prev) => {
-      if (prev.lastVisit === today) return prev; // already recorded today — no change
-
-      const isConsecutive = prev.lastVisit === yesterday;
-      const newDates = prev.dates.includes(today) ? prev.dates : [...prev.dates, today];
-      const newCurrentStreak = isConsecutive ? prev.currentStreak + 1 : 1;
-      const updated: ReadingHistory = {
-        dates: newDates,
-        currentStreak: newCurrentStreak,
-        longestStreak: Math.max(prev.longestStreak, newCurrentStreak),
-        lastVisit: today,
+    try {
+      const prev = read(),
+        today = format(new Date(), 'yyyy-MM-dd'),
+        yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
+      if (prev.lastVisit === today) return;
+      const streak = prev.lastVisit === yesterday ? prev.currentStreak + 1 : 1;
+      const updated = {
+        dates: [...new Set([...prev.dates, today])],
+        currentStreak: streak,
+        longestStreak: Math.max(prev.longestStreak, streak),
+        lastVisit: today
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
+      setHistory(updated);
+    } catch {
+      /* Reading stays available; existing progress is preserved. */
+    }
   }, []);
-
   return {
     currentStreak: history.currentStreak,
     longestStreak: history.longestStreak,
     totalDays: history.dates.length,
-    recordVisit,
+    recordVisit
   };
 }

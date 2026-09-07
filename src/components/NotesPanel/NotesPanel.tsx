@@ -1,3 +1,4 @@
+import { saveDraft, validateNotes } from '../../lib/journal';
 import { useEffect, useRef, useState } from 'react';
 import { BookOpen, Save, Feather, X } from 'lucide-react';
 import { Modal } from '../Modal/Modal';
@@ -5,7 +6,7 @@ import { Modal } from '../Modal/Modal';
 interface NotesPanelProps {
   dateKey: string;
   initialNote: string;
-  onSave: (content: string) => void;
+  onSave: (content: string, original?: string) => void;
   onClose: () => void;
   prompt?: {
     quote: string;
@@ -26,7 +27,19 @@ const REFLECTION_PROMPTS = [
 ];
 
 export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: NotesPanelProps) {
-  const [note, setNote] = useState(initialNote);
+  const [note, setNote] = useState(() => { try { return validateNotes(JSON.parse(localStorage.getItem('srf-note-drafts') ?? '{}'))[dateKey]?.content ?? initialNote; } catch { return initialNote; } });
+  const [storageError, setStorageError] = useState('');
+  const [draftSafe, setDraftSafe] = useState(true);
+  const changeNote = (content: string) => {
+    setNote(content);
+    try { saveDraft(localStorage,dateKey,content,note); setDraftSafe(true); setStorageError(''); }
+    catch { setDraftSafe(false); setStorageError('Draft could not be saved on this computer. Keep this window open and copy your reflection before leaving.'); }
+  };
+  useEffect(() => {
+    const warn = (e: BeforeUnloadEvent) => { if (!draftSafe) e.preventDefault(); };
+    window.addEventListener('beforeunload',warn);
+    return () => window.removeEventListener('beforeunload',warn);
+  },[draftSafe]);
   const [lastSavedNote, setLastSavedNote] = useState(initialNote);
   const [isSaved, setIsSaved] = useState(false);
   const [suggestedPrompt, setSuggestedPrompt] = useState<string | null>(null);
@@ -37,7 +50,8 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
 
   const handleSave = () => {
     if (!hasUnsavedChanges) return;
-    onSave(note);
+    try { onSave(note,lastSavedNote); } catch { setStorageError('Could not save reflection. Your draft remains available.'); return; }
+    setStorageError(''); setDraftSafe(true);
     setLastSavedNote(note);
     setIsSaved(true);
     if (saveMessageTimeoutRef.current) window.clearTimeout(saveMessageTimeoutRef.current);
@@ -56,15 +70,12 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
   const handleUsePrompt = () => {
     if (!suggestedPrompt) return;
     const separator = note.trim() ? '\n\n' : '';
-    setNote((prev) => `${prev}${separator}${suggestedPrompt}\n\n`);
+    changeNote(`${note}${separator}${suggestedPrompt}\n\n`);
     setSuggestedPrompt(null);
   };
 
   const handleCloseRequest = () => {
-    if (hasUnsavedChanges) {
-      const shouldDiscard = window.confirm('You have unsaved reflections. Close without saving?');
-      if (!shouldDiscard) return;
-    }
+    if (!draftSafe) { setStorageError('Copy your reflection or retry saving before closing.'); return; }
     onClose();
   };
 
@@ -89,7 +100,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
     <Modal
       onClose={handleCloseRequest}
       ariaLabel="Personal reflections"
-      panelClassName="notes-modal w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"
+      panelClassName="notes-modal max-h-[90vh] overflow-auto w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"
     >
       <div className="mb-4 flex items-center justify-between">
         <h3 className="flex items-center gap-2 font-heading text-2xl text-srf-blue">
@@ -149,7 +160,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
       <textarea
         id="reflection-note"
         value={note}
-        onChange={(e) => setNote(e.target.value)}
+        onChange={(e) => changeNote(e.target.value)}
         placeholder="What does this reading mean to you? How might you live it today?"
         className="notes-textarea h-64 w-full resize-none rounded-xl border-2 border-srf-blue/20 p-4 transition-colors focus:border-srf-blue focus:outline-none"
         autoFocus
@@ -159,7 +170,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
         <div>
           <p className="notes-meta-text text-sm text-gray-500">{note.length} characters</p>
           <p className={`mt-1 text-xs ${hasUnsavedChanges ? 'text-muted' : 'text-gold-accent'}`}>
-            {hasUnsavedChanges ? 'Unsaved changes' : 'All changes saved'}
+            {hasUnsavedChanges ? (draftSafe ? 'Draft saved on this computer' : 'Draft not saved') : 'Reflection saved on this computer'}
           </p>
         </div>
 
@@ -177,6 +188,7 @@ export function NotesPanel({ dateKey, initialNote, onSave, onClose, prompt }: No
         Tip: Press Ctrl/Cmd + S to save quickly.
       </p>
 
+      {storageError && <p role="alert" className="mt-3">{storageError}</p>}
       {isSaved && (
         <div
           className="notes-success mt-4 rounded-lg border border-srf-gold/30 bg-srf-lotus/40 p-3 text-center"

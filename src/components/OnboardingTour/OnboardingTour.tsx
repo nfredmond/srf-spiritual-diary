@@ -61,7 +61,7 @@ const PANELS: Panel[] = [
     body: (
       <div className="space-y-3 text-sm leading-relaxed text-gray-700">
         <ul className="space-y-2">
-          <li>Search the full year by keyword or topic</li>
+          <li>Search available readings by keyword or topic</li>
           <li>Save favorite readings and write private reflections</li>
           <li>A meditation timer with a gentle bell</li>
           <li>

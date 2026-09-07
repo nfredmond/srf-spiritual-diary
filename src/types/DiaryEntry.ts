@@ -2,11 +2,11 @@ export interface DiaryEntry {
   month: number;
   day: number;
   topic: string;
-  weeklyTheme?: string;    // Theme for the week
-  specialDay?: string;     // Special observances (e.g., "Birthday of Sri Gyanamata")
+  weeklyTheme?: string | null;    // Theme for the week
+  specialDay?: string | null;     // Special observances (e.g., "Birthday of Sri Gyanamata")
   quote: string;
   source: string;
-  book?: string;
+  book?: string | null;
 }
 
 export interface DiaryData {

@@ -1,3 +1,4 @@
+import { unresolvedDates } from '../../lib/diaryData';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import { useState } from 'react';
@@ -11,7 +12,7 @@ interface DatePickerModalProps {
 
 export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerModalProps) {
   const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
-  const currentYear = new Date().getFullYear();
+  const [currentYear,setCurrentYear] = useState(selectedDate.getFullYear());
   
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -52,6 +53,8 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
             </button>
           </div>
 
+          <label className="block mb-3">Year <input aria-label="Year" className="border rounded px-2 w-24" type="number" min="1900" max="2200" value={currentYear} onChange={e=>{const y=Number(e.target.value);if(y>=1900&&y<=2200)setCurrentYear(y);}} /></label>
+          <p className="text-sm mb-3">A dot marks an unavailable reading.</p>
           {/* Month Selector */}
           <div className="grid grid-cols-3 gap-2 mb-5">
             {months.map((month, index) => (
@@ -94,12 +97,14 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
             {/* Days of the month */}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
+              const missing = unresolvedDates.includes(`${String(currentMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`);
               const isSelected = selectedDate.getMonth() === currentMonth && selectedDate.getDate() === day;
               const isToday = new Date().getMonth() === currentMonth && new Date().getDate() === day;
 
               return (
                 <button
                   key={day}
+                  aria-label={`${months[currentMonth]} ${day}${missing ? ", reading unavailable" : ""}`}
                   onClick={() => handleDateSelect(day)}
                   style={isSelected ? undefined : { color: 'var(--text-primary)' }}
                   className={`py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -110,7 +115,7 @@ export function DatePickerModal({ selectedDate, onSelect, onClose }: DatePickerM
                       : 'hover:bg-srf-lotus/30'
                   }`}
                 >
-                  {day}
+                  {day}{missing ? "·" : ""}
                 </button>
               );
             })}

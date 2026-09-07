@@ -1,54 +1,34 @@
 import { useState, useEffect } from 'react';
-
-interface Note {
-  dateKey: string;
-  content: string;
-  timestamp: number;
-}
-
+import { validateNotes, saveReflection, notifyJournal } from '../lib/journal';
 export function useNotes(dateKey: string) {
   const [note, setNote] = useState('');
-  const [allNotes, setAllNotes] = useState<Record<string, Note>>({});
-
+  const [hasNote, setHasNote] = useState(false);
   useEffect(() => {
-    const stored = localStorage.getItem('srf-notes');
-    if (stored) {
+    const load = () => {
       try {
-        const notes = JSON.parse(stored);
-        setAllNotes(notes);
-        setNote(notes[dateKey]?.content || '');
-      } catch (e) {
-        console.error('Failed to load notes:', e);
+        const notes = validateNotes(
+          JSON.parse(localStorage.getItem('srf-notes') ?? '{}')
+        );
+        setNote(notes[dateKey]?.content ?? '');
+        setHasNote(!!notes[dateKey]);
+      } catch {
+        setNote('');
+        setHasNote(false);
       }
-    }
-  }, [dateKey]);
-
-  const saveNote = (content: string) => {
-    const updated = {
-      ...allNotes,
-      [dateKey]: {
-        dateKey,
-        content,
-        timestamp: Date.now(),
-      },
     };
-
-    if (content.trim() === '') {
-      delete updated[dateKey];
-    }
-
-    setAllNotes(updated);
+    load();
+    window.addEventListener('journal-changed', load);
+    window.addEventListener('storage', load);
+    return () => {
+      window.removeEventListener('journal-changed', load);
+      window.removeEventListener('storage', load);
+    };
+  }, [dateKey]);
+  const saveNote = (content: string, original: string = note) => {
+    saveReflection(localStorage, dateKey, content, original);
     setNote(content);
-    localStorage.setItem('srf-notes', JSON.stringify(updated));
+    setHasNote(true);
+    notifyJournal();
   };
-
-  const hasNote = Object.keys(allNotes).includes(dateKey);
-  const totalNotes = Object.keys(allNotes).length;
-
-  return {
-    note,
-    saveNote,
-    hasNote,
-    totalNotes,
-  };
+  return { note, saveNote, hasNote };
 }

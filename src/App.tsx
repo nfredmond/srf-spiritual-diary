@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react';
 import {
   Search as SearchIcon,
   Heart,
@@ -57,6 +57,7 @@ const OnboardingTour = lazy(() =>
   import('./components/OnboardingTour/OnboardingTour').then((m) => ({ default: m.OnboardingTour })),
 );
 
+import { UpdateNotice } from './components/UpdateNotice';
 import { useDiaryEntry } from './hooks/useDiaryEntry';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
@@ -87,8 +88,8 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
 
-  const { entry, loading, error } = useDiaryEntry(selectedDate);
-  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { entry, loading, error, missing, nearest, retry } = useDiaryEntry(selectedDate);
+  const { favorites, toggleFavorite, isFavorite, error: favoriteError } = useFavorites();
   const dateKey = toMMDD(selectedDate);
   const { note, saveNote, hasNote } = useNotes(dateKey);
   const { recordVisit } = useReadingStreak();
@@ -110,9 +111,9 @@ function App() {
     showOnboarding;
 
   const getNotesMap = (): Record<string, boolean> => {
-    const stored = localStorage.getItem('srf-notes');
-    if (!stored) return {};
     try {
+      const stored = localStorage.getItem('srf-notes');
+      if (!stored) return {};
       const notes = JSON.parse(stored);
       const map: Record<string, boolean> = {};
       Object.keys(notes).forEach((key) => {
@@ -124,30 +125,42 @@ function App() {
     }
   };
 
+  const lastToday = useRef(new Date().toDateString());
+  useEffect(() => {
+    const check = () => {
+      const today = new Date();
+      if (today.toDateString() !== lastToday.current && !isOverlayOpen && !document.querySelector('[role="dialog"]')) {
+        const previous = lastToday.current;
+        lastToday.current = today.toDateString();
+        setSelectedDate(selected => selected.toDateString() === previous ? today : selected);
+      }
+    };
+    window.addEventListener('focus',check); document.addEventListener('visibilitychange',check);
+    const timer=window.setInterval(check,30000);
+    return () => { clearInterval(timer); window.removeEventListener('focus',check); document.removeEventListener('visibilitychange',check); };
+  },[isOverlayOpen]);
+
   // Record the visit and remember the viewed reading.
   useEffect(() => {
-    recordVisit();
-    addToHistory(dateKey);
-  }, [recordVisit, addToHistory, dateKey]);
+    if (entry) { recordVisit(); addToHistory(dateKey); }
+  }, [recordVisit, addToHistory, dateKey, entry]);
 
   // First-visit onboarding.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (!window.localStorage.getItem('srf-onboarding-completed')) {
-      setShowOnboarding(true);
-    }
+    try { if (!window.localStorage.getItem('srf-onboarding-completed')) setShowOnboarding(true); } catch { /* Reader remains usable without storage. */ }
   }, []);
 
   const handleOnboardingComplete = () => {
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem('srf-onboarding-completed', 'true');
+      try { window.localStorage.setItem('srf-onboarding-completed', 'true'); } catch { /* Tour may return next time. */ }
     }
     setShowOnboarding(false);
   };
 
   useSwipeGesture({
-    onSwipeLeft: () => setSelectedDate((prev) => addDays(prev, 1)),
-    onSwipeRight: () => setSelectedDate((prev) => subDays(prev, 1)),
+    onSwipeLeft: () => !isOverlayOpen && setSelectedDate((prev) => addDays(prev, 1)),
+    onSwipeRight: () => !isOverlayOpen && setSelectedDate((prev) => subDays(prev, 1)),
   });
 
   const handleRandomQuote = useCallback(() => {
@@ -166,7 +179,7 @@ function App() {
       ) {
         return;
       }
-      if (isOverlayOpen) return;
+      if (isOverlayOpen || document.querySelector('[role="dialog"]') || e.ctrlKey || e.metaKey || e.altKey || target instanceof HTMLSelectElement || target instanceof HTMLButtonElement) return;
 
       switch (e.key) {
         case 'ArrowLeft':
@@ -241,7 +254,7 @@ function App() {
 
       {/* Screen-reader announcement of the current reading */}
       <p role="status" aria-live="polite" className="sr-only">
-        {loading ? 'Loading reading…' : entry ? `${format(selectedDate, 'MMMM d')}. ${entry.topic}.` : ''}
+        {loading ? 'Loading reading…' : entry ? `${format(selectedDate, 'MMMM d')}. ${entry.topic}.` : missing ? `${format(selectedDate, 'MMMM d')}. Reading unavailable.` : error ?? ''}
       </p>
 
       {/* Header */}
@@ -373,7 +386,7 @@ function App() {
             <ReadingControls fontSize={fontSize} onFontSizeChange={setFontSize} />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleRandomQuote}
               className="secondary-action-btn flex items-center gap-2 rounded-full border border-srf-gold/40 bg-white/85 px-4 py-2 text-sm text-srf-blue shadow-sm transition-colors hover:bg-srf-lotus/40"
@@ -411,27 +424,25 @@ function App() {
           <SearchResults results={searchResults} onSelectDate={handleSearchResultSelect} />
         )}
 
+        <nav aria-label="Daily practice" className="mb-5 flex flex-wrap justify-center gap-3">
+          <button className="secondary-action-btn rounded-full border px-4 py-2" onClick={()=>setSelectedDate(new Date())}>Today</button>
+          <button className="secondary-action-btn rounded-full border px-4 py-2" onClick={()=>setShowCalendar(true)}>Reading calendar</button>
+          <button className="secondary-action-btn rounded-full border px-4 py-2" onClick={()=>setShowNotes(true)}>Reflect</button>
+          <button className="secondary-action-btn rounded-full border px-4 py-2" onClick={()=>setShowMeditationTimer(true)}>Meditate</button>
+        </nav>
         <DateNavigator selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
         <WeekRhythm selectedDate={selectedDate} visitedKeys={visitedKeys} onSelectDate={setSelectedDate} />
 
+        {favoriteError && <p role="alert">{favoriteError}</p>}
         {loading && <SkeletonLoader />}
 
-        {error && !loading && (
-          <div className="card mx-auto max-w-2xl text-center">
-            <p className="font-heading text-xl text-srf-blue">This day's reading is being prepared</p>
-            <p className="text-muted mt-3">
-              The passage for {format(selectedDate, 'MMMM d')} hasn't been added yet. Please return to
-              today or choose another day.
-            </p>
-            <button
-              onClick={() => setSelectedDate(new Date())}
-              className="mt-5 rounded-full bg-srf-blue px-6 py-2 text-white transition-colors hover:bg-srf-blue-700"
-            >
-              Go to today
-            </button>
-          </div>
-        )}
+        {error && !loading && <div className="card mx-auto max-w-2xl text-center" role="alert"><h2>Readings could not be loaded</h2><p>{error}</p><button className="mt-4 rounded-full border px-5 py-2" onClick={retry}>Retry loading</button></div>}
+        {missing && !loading && <div className="card mx-auto max-w-2xl text-center">
+          <h2 className="font-heading text-xl text-srf-blue">Reading unavailable for {format(selectedDate,'MMMM d')}</h2>
+          <p className="text-muted mt-3">{dateKey === '02-29' ? 'The printed treatment of February 29 has not been verified.' : 'This passage has not been transcribed from a verified source.'}</p>
+          {nearest && <button className="mt-5 rounded-full bg-srf-blue px-6 py-2 text-white" onClick={()=>setSelectedDate(nearest)}>Read {format(nearest,'MMMM d')} instead</button>}
+        </div>}
 
         {entry && !loading && (
           <QuoteDisplay
@@ -446,6 +457,7 @@ function App() {
         )}
       </main>
 
+      <UpdateNotice paused={isOverlayOpen} />
       {/* Modals — lazy-loaded; the boundary catches chunk-load failures. */}
       <ErrorBoundary>
         <Suspense fallback={null}>

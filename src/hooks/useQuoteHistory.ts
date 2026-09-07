@@ -1,44 +1,52 @@
 import { useState, useEffect, useCallback } from 'react';
-
+import { validateJournal } from '../lib/journal';
 interface HistoryEntry {
   dateKey: string;
   timestamp: number;
 }
-
 const STORAGE_KEY = 'srf-quote-history';
-
+const read = () =>
+  validateJournal({
+    quoteHistory: JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
+  }).quoteHistory!;
 export function useQuoteHistory() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
-
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    const load = () => {
       try {
-        setHistory(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to load quote history:', e);
+        setHistory(read());
+      } catch {
+        /* Preserve unreadable stored data. */
       }
+    };
+    load();
+    window.addEventListener('journal-changed', load);
+    window.addEventListener('storage', load);
+    return () => {
+      window.removeEventListener('journal-changed', load);
+      window.removeEventListener('storage', load);
+    };
+  }, []);
+  const addToHistory = useCallback((dateKey: string) => {
+    try {
+      const prev = read();
+      if (prev[0]?.dateKey === dateKey) return;
+      const updated = [
+        { dateKey, timestamp: Date.now() },
+        ...prev.filter((e) => e.dateKey !== dateKey)
+      ];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setHistory(updated);
+    } catch {
+      /* Reading stays available; existing progress is preserved. */
     }
   }, []);
-
-  // Stable identity so App's visit-tracking effect doesn't see a new function
-  // every render (which, combined with the state update below, produced an
-  // infinite render loop / "Maximum update depth exceeded").
-  const addToHistory = useCallback((dateKey: string) => {
-    setHistory((prev) => {
-      if (prev[0]?.dateKey === dateKey) return prev; // already the most recent — no change
-      const filtered = prev.filter((e) => e.dateKey !== dateKey);
-      const updated = [{ dateKey, timestamp: Date.now() }, ...filtered].slice(0, 50);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
-
-  const getRecentHistory = useCallback((limit: number = 10) => history.slice(0, limit), [history]);
-
   return {
     history,
     addToHistory,
-    getRecentHistory,
+    getRecentHistory: useCallback(
+      (limit = 10) => history.slice(0, limit),
+      [history]
+    )
   };
 }

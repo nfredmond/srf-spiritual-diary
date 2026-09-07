@@ -63,7 +63,7 @@ export function AboutModal({ onClose }: AboutModalProps) {
                   <h3 className="mb-2 font-heading text-lg text-srf-blue">Your reflections stay with you</h3>
                   <p className="text-sm leading-relaxed">
                     Favorites, notes, reading history, and settings are stored only in your browser&apos;s
-                    local storage. Nothing is sent to any server. Use the &ldquo;Preserve your
+                    local storage. Reflections are never sent for artwork. Optional artwork sends the reading topic to OpenAI through your Codex CLI. The app host and Google Fonts receive ordinary page or font requests. Use the &ldquo;Preserve your
                     journal&rdquo; option in the menu to export a backup.
                   </p>
                 </div>
@@ -93,7 +93,7 @@ export function AboutModal({ onClose }: AboutModalProps) {
             <section className="border-t border-srf-blue/10 pt-4">
               <p className="text-xs leading-relaxed text-gray-600">
                 Offered freely as a devotional project, in loving gratitude to Paramahansa Yogananda and
-                Self-Realization Fellowship. Not for sale, not monetized, not redistributed. To support
+                Self-Realization Fellowship. Not for sale or monetized. To support
                 Yogananda&apos;s teachings, please obtain official Self-Realization Fellowship publications
                 directly from{' '}
                 <a

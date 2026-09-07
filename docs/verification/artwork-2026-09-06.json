@@ -1,0 +1,11 @@
+{
+  "checked": "2026-09-07T01:47:25.049Z",
+  "cli": "0.153.4",
+  "model": "gpt-6-astra",
+  "jobId": "f8ef5e03-da9f-420c-9049-d7406cf09f5a",
+  "status": 200,
+  "width": 1402,
+  "height": 1122,
+  "bytes": 2742724,
+  "sha256": "0f6b9cbff83edfb53fe02bd493c084288c5fd2234c9b1e47d154ac01d3767844"
+}
