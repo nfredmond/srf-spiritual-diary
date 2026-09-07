@@ -1,0 +1,268 @@
+{
+  "checked": "2026-09-07T04:11:58.197397+00:00",
+  "implementationCommit": "042bc3e618294cbd17650ee280eed75f4871d6b3",
+  "browser": "Chrome 152.0.7977.82",
+  "browserMode": "headless, task-owned Chrome, isolated disposable contexts",
+  "viewportSizes": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "origin": "http://127.0.0.1:4317/",
+  "serverPidAtCheck": 3878475,
+  "serverCwd": "/home/nathaniel/Computer Use Projects/srf-spiritual-diary",
+  "httpStatus": 200,
+  "httpAndBuildSha256": "70610fc23f16b680600d46c9dbbf8bcc1362b40b8e7fa66d7b24943bd75ff2b3",
+  "sourceFilesSha256": {
+    "companion/companion.test.mjs": "ff35f6bb18d677dc6408e0f0d0f5a9d7e5c246abd541fb5a0be8e151a380194c",
+    "companion/jobs.mjs": "53c597ad192eb380975fbb4fb32b0cdc9e9437cf8cec3702efd6389dc76a2e27",
+    "companion/server.mjs": "2e3dbc5c634e54394cca078275ff1528773033986b271dbac76d562bf66c22eb",
+    "package-lock.json": "e3fbd2654ffba52c80a0c7253675027ac463f3aac4b29a4dd2e93cd304da7931",
+    "package.json": "5fae19975964064ad15b5d36b08a340eb38f665ff89463484fc3cb193621c6c6",
+    "public/branding/apple-touch-icon.png": "10a26cab7dec6a692515ce906e408017cb70138cc6272b66d0923987f28723d3",
+    "public/branding/favicon-32.png": "b483be4afadffa56535f65893777eaac660854e3cedcbc7e7e911818962b7ae8",
+    "public/branding/icon-192.png": "9ff0c870720917705b6647d0c74caf037821aabf87db0609190a95982ee92caf",
+    "public/branding/icon-512.png": "d34640eb74d24c3b93ec52d4d2276fb707150c89bb469eb828e655b855ac4894",
+    "public/branding/icon-maskable-512.png": "08c9b53932219ece4e74809bca0952fa25fec0d0474d9086e91a6b00aeea35fa",
+    "public/data/diary-entries.json": "9a888b1f9c1dc3e2e2716e54edf2e62d56fd3144fc62702e84a29b268598c6c3",
+    "public/lotus-icon.svg": "15c3b8ae0e9e974444087f908c823a757d18f07948cb9393c6902d637e7d40eb",
+    "public/manifest.json": "57cd348ab2456f378ae7efb8e4bb90b11c32a5721ac322b437161eb9764cd6e3",
+    "public/og-image.png": "5b756df1efdc9ef2b149396bec337749ff0c6d3300505e2d1a04fb95a76c1c36",
+    "src/App.test.tsx": "e56c0e8d8ede574261f044033b308340cdba13235f967a5dd8a79a48dfec632b",
+    "src/App.tsx": "d0805a10e2d9ae9e92c834b3d49b6a1d5f8d9f8ab19149fa6248ab53f247c239",
+    "src/components/AboutModal/AboutModal.test.tsx": "a5f0c2d59060870f51d467301ba0a4fb026aae3e5c981d094550d0db678f20cf",
+    "src/components/AboutModal/AboutModal.tsx": "d13681100747d05ca702cb39460c96d0fc24835d652ee826c8e568e0b57e3e09",
+    "src/components/ArtworkPanel.test.tsx": "a177ea9651a82c55f1cbab937f86cd6a43e699a10dd02e8df49531034f1cabec",
+    "src/components/ArtworkPanel.tsx": "fcf199e9c96eab8ae58048c186c6b3a244a6619cfff005a10070677eef78fbae",
+    "src/components/CalendarView/CalendarView.tsx": "5d12a936afe33ece77faf155a15732e9329c3d1ab936c224d4f4f14f6c7fc0fa",
+    "src/components/DateNavigator/DateNavigator.test.tsx": "b83d828a9bf76811ca54ebf9cea7f13f2d73a224d9367dba1403f39093ce5662",
+    "src/components/DateNavigator/DateNavigator.tsx": "2894a3e1befd865342996639a6f147147bc369af30f04cbbd020d65bd86bd777",
+    "src/components/DateNavigator/DatePickerModal.tsx": "5d9c5b903ea9a5fae495284c330a0d146c3b81ca3059fc085b7cc0b595e2e5ae",
+    "src/components/ErrorBoundary/ErrorBoundary.test.tsx": "78a935cc91a0cd21c68ef81bc8f573a4ef38229ce58741edd0e6d5bf63d8ce2d",
+    "src/components/ErrorBoundary/ErrorBoundary.tsx": "4b9138d1636f6f2c4f65f6ce88c7b6ad33f62d9ddc3e8eac0f00c55a30fe7cbc",
+    "src/components/ExportImport/ExportImport.tsx": "4f5fc5bdb4fec40481593e3eb508a02f91c5e2ea92637869cee9741269a3c543",
+    "src/components/FavoritesPanel/FavoritesPanel.tsx": "f0b4c74935e4b7dbb7c2156747a2340f194e1f56b588de525c4785c52a516c05",
+    "src/components/MeditationTimer/MeditationTimer.tsx": "fb3042401374423f6ec3b2f4f802045d0a6960b7733f48fb2032f7b9191027f0",
+    "src/components/Modal/Modal.tsx": "298f8b2d82637db1299c8ce4900224dd07f0fc90987fc455110368301158c8c3",
+    "src/components/NotesPanel/NotesPanel.test.tsx": "86c80912e1db9cdafb43d8116744174785416744ab30b0ae6247e3f074c33838",
+    "src/components/NotesPanel/NotesPanel.tsx": "f39dac46bdf549030be2badb1dea9ef2112b140997cf0c438d456f36db9c224a",
+    "src/components/OnboardingTour/OnboardingTour.test.tsx": "2301edad63aeb74dd0a0047cc0bc1b88afa8e6df3496741428edc21186b7935e",
+    "src/components/OnboardingTour/OnboardingTour.tsx": "7a90a93877692febd4dd3b03a90a637f51819453d17f5b89565d612ab3762a88",
+    "src/components/QuoteDisplay/QuoteDisplay.test.tsx": "4af78d4f0233583e80bdef66437a4db14ae52ea85bc81c017cbea3b01053fed8",
+    "src/components/QuoteDisplay/QuoteDisplay.tsx": "4227c640842b3db15f11de4233d7c7eafce86a976ec05f0d1bf046a941503270",
+    "src/components/QuoteImage/QuoteImage.tsx": "7596f85a685cd0f2373958cbad6f568ce5aba637ee39052517f04cc496053e5b",
+    "src/components/ReadingControls/ReadingControls.tsx": "a3e8672d8d31a64d71aed1f3498f6530d5393314654e92c18455ffafb724bbf0",
+    "src/components/SearchBar/SearchBar.tsx": "19f5db21d8d0e251598b0309416ffac96339a5badaa5b29aa1bba43da52755e6",
+    "src/components/SearchResults/SearchResults.tsx": "e560584517904b7b61887bef6afb7a9557714ff90c3812d6a838f7d15d6785af",
+    "src/components/SkeletonLoader/SkeletonLoader.tsx": "4a0df26c2118bb9ed0aa03df7938b0376ad6255a12c86676abea4826c1bf3c2a",
+    "src/components/ThemeSwitcher/ThemeSwitcher.tsx": "03594dc9c0a22d472a3c4d67c623297b79af508b83f5dfbd61a14022a0d5a261",
+    "src/components/UpdateNotice.tsx": "b609ff780884546e37c44054d76cf6e9f3f110bc8172f45a41a3412fc0ad5876",
+    "src/components/WeekRhythm/WeekRhythm.test.tsx": "e02946e7eba34ef6ec9806e6e50196be3d258bfd4651a88193192d4ee990f3d0",
+    "src/components/WeekRhythm/WeekRhythm.tsx": "9b19b05dfc719dcb7f247f40276c7951d56ac21c14f05e7042e8c70e06932a27",
+    "src/components/WeeklyThemeView/WeeklyThemeView.tsx": "6dcd03ddff0590fbf5a372d4ae42db6f4ae6a1f3a4d93e400b2757c7c4600d2f",
+    "src/hooks/useDiaryData.ts": "550656517bcb47fadc2f8f3243937d33b12a465cd5bfa5488fcbb7c4b9f11bdd",
+    "src/hooks/useDiaryEntry.ts": "fe8407e74759e3bc12099a67c86b5f8de54f4c2b6e2e68282cab0a39592f49a9",
+    "src/hooks/useFavorites.ts": "98a4370ff472c9bbd9b5451f35cb15c803965c3c1cb5fa63e2270d42f484ea9f",
+    "src/hooks/useNotes.ts": "23b74526ef37d3d823361ee7ec5f36b4b53fd4ac5fa52c3a3cd106569d7ab90a",
+    "src/hooks/useQuoteHistory.ts": "5e073d1dcd2cc802e4beda6309a7951867ff044fca7c48ca777381433f0e2e6a",
+    "src/hooks/useRandomQuote.ts": "8425d67a741ba0aa0bd85afbc90bf87c1a4638ebd389fb76581ee28eb3111832",
+    "src/hooks/useReadingStreak.ts": "d679d244a0bbae54f453ff48e2783cf4335a27f5105e31987b210a728838d218",
+    "src/hooks/useSpeech.ts": "9e099263eb34d29b22fbef435a36ed2652b9607b2718cfa2137b84f11dee63d5",
+    "src/hooks/useSwipeGesture.ts": "7f486725e449d30e46e076c8885ca596ccc7b522f378548786f49db242482909",
+    "src/hooks/useTheme.ts": "d9c3873c35ee7e467d1a33b2a99dc33d446d8eb8b06119929802b5d63e0669d5",
+    "src/index.css": "2f6adf72dcae406e414a891f34e333e24fd46ae3239682bbdd2ff1adc57f5917",
+    "src/lib/diaryData.ts": "cc50decd7720b9e3deef01b460774144252f65927a199c4dd96701db2bcf13d2",
+    "src/lib/diaryDate.test.ts": "bf3cfc03d80c21b6dea150ab83676c598d5629be2b7b1f22d2f79326b09cebd3",
+    "src/lib/diaryDate.ts": "aa72a14a3765882b95abfe843eeaad6a1f9cb14616ea83f9d28a087d98b8ee7d",
+    "src/lib/journal.ts": "622683d2f6ff8e6f0290177011933b3f2304a21d136fe48360740de1d8be0e3f",
+    "src/lib/quoteCard.ts": "671b25f53d3a2df1fe1733382890ddee3f3f7494aa7adf59c70af5e348f1516d",
+    "src/lib/reliability.test.ts": "4140f280f619d02979f98ac00fcf5a4112d3c557172ce69982af0a5e581fc1e4",
+    "src/main.tsx": "e850c529988a100d4fb71b8f236826fc87efe2709ce359cefc8daca71302bdb9",
+    "src/test/pwa.ts": "146420bab630e4c3dc9759d9d1d684e100c6de11d5b38f2ef1743c9e74e398c7",
+    "src/test/setup.ts": "4e09ee87820132975fc142d58cc94c7d0d4df280fe3be04aa816ce18c18a64f1",
+    "src/types/DiaryEntry.ts": "cf3acb771bceb025ad27296cbb135511d965b73b6e6f651ae44c59ea959f4560",
+    "src/vite-env.d.ts": "8f18daefc83e6fe85f05292aa11b41e3f0e2d646c615e2ba3ee7b45da5fd760e",
+    "vite.config.ts": "150b84ccc159f8925e021321281aee355f07fd77b1dc617b55c60f92db912dc6"
+  },
+  "liveArtwork": {
+    "id": "2ebaa436-8db5-4f48-8902-0c9056745ad0",
+    "created": "2026-09-07T04:01:30.872Z",
+    "state": "completed",
+    "model": "gpt-6-astra",
+    "style": "nature",
+    "dateKey": "09-06",
+    "initiatedFrom": "actual Create artwork browser control",
+    "downloadControl": "Download artwork",
+    "restoredAfterBrowserReload": true,
+    "pngDimensions": [
+      1122,
+      1402
+    ],
+    "downloadSha256": "b3414596e1fe07ae2add4d1b687afbbb48950ba868818417d55d38074b3ccf23",
+    "bytes": 3170045,
+    "pageExceptions": [],
+    "visualReview": "Pine on rocky cliff and misty mountains; no lettering or figures."
+  },
+  "readerJourneys": {
+    "endpoint": "http://127.0.0.1:9433",
+    "origin": "http://127.0.0.1:4317",
+    "timestamp": "2026-09-07T04:10:40.941Z",
+    "results": [
+      {
+        "name": "1440px reader, navigation, themes, focus, journal backup/conflict/recovery",
+        "result": "PASS",
+        "consoleErrors": []
+      },
+      {
+        "name": "Longest reading card downloaded: Warm paper",
+        "result": "PASS",
+        "bytes": 316978,
+        "sha256": "35362d8361d2eca26ae09d5cea73d7ee79c6391c2a792463f4572851123ff37c"
+      },
+      {
+        "name": "Longest reading card downloaded: Deep night",
+        "result": "PASS",
+        "bytes": 313158,
+        "sha256": "8daa21af3bd044a0230a7c7ec63c9ea4abe11719c1f1f1bb02b765e8d1a5b073"
+      },
+      {
+        "name": "Real existing artwork connect, preview, download, reconnect",
+        "result": "PASS",
+        "sha256": "b3414596e1fe07ae2add4d1b687afbbb48950ba868818417d55d38074b3ccf23",
+        "bytes": 3170045
+      },
+      {
+        "name": "1440px production worker offline reload, navigation, lazy panels and backup",
+        "result": "PASS"
+      },
+      {
+        "name": "390px reader, navigation, themes, focus, journal backup/conflict/recovery",
+        "result": "PASS",
+        "consoleErrors": []
+      },
+      {
+        "name": "390px production worker offline reload, navigation, lazy panels and backup",
+        "result": "PASS"
+      }
+    ]
+  },
+  "resilienceJourneys": {
+    "timestamp": "2026-09-07T04:11:02.873Z",
+    "results": [
+      {
+        "name": "HTTP failure is distinct from missing content; retry restores readings",
+        "result": "PASS"
+      },
+      {
+        "name": "Injected draft/note storage failure prevents close and recovers after storage is restored",
+        "result": "PASS"
+      },
+      {
+        "name": "Two actual tabs preserve the newer draft when the older editor saves",
+        "result": "PASS"
+      },
+      {
+        "name": "Midnight rollover defers while reflection is open and advances afterward",
+        "result": "PASS"
+      },
+      {
+        "name": "Timer countdown, pause, completion, reset and breathing phase with browser clock",
+        "result": "PASS"
+      },
+      {
+        "name": "Artwork browser fixtures: auth, model, quota, timeout, invalid output, progress, cancel, reconnect and failed download",
+        "result": "PASS",
+        "liveGeneration": false,
+        "privateFieldsSent": false
+      },
+      {
+        "name": "Fresh production worker opens previously unvisited lazy panels offline with HTTP cache disabled",
+        "result": "PASS"
+      },
+      {
+        "name": "Offline negative control fails when service workers and HTTP cache are disabled",
+        "result": "PASS"
+      },
+      {
+        "name": "Real production worker update: new shell waits, open draft pauses reload, accepted update recovers draft",
+        "result": "PASS",
+        "fixture": "Copied production build, changed HTML marker and precache revision only"
+      }
+    ]
+  },
+  "automatedChecks": {
+    "libraryTests": 16,
+    "componentAppTests": 38,
+    "companionTests": 6,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "npmAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    }
+  },
+  "selectedArtifacts": {
+    "1440-Light-reading.png": {
+      "path": "browser/1440-Light-reading.png",
+      "sha256": "538cc7e3a49aa61d804355723f83ebbfd57792230d5c40dfb783479b0026b414",
+      "bytes": 239214
+    },
+    "390-Dark-themes.png": {
+      "path": "browser/390-Dark-themes.png",
+      "sha256": "7fe4cc36528724ca8230ac38db064f0188273aa6db4c97ba481e96113df4c519",
+      "bytes": 209811
+    },
+    "390-Sepia-reading.png": {
+      "path": "browser/390-Sepia-reading.png",
+      "sha256": "05d602a1569942da4c8942b1bc2d5465f23ca2af6b0f89725559ec97b36abe8d",
+      "bytes": 198332
+    },
+    "390-welcome.png": {
+      "path": "browser/390-welcome.png",
+      "sha256": "9e4b7e6d28f4386692b22fc9c67a4844ec5b55b6d68fc2c800be5606c45fb4b4",
+      "bytes": 174859
+    },
+    "update-recovered.png": {
+      "path": "browser/update-recovered.png",
+      "sha256": "8942c220f8ea22b262577555efaf262f382207af5d6ab9bb22a8d5fc2506616c",
+      "bytes": 149622
+    },
+    "longest-Warm-paper.png": {
+      "path": "browser/longest-Warm-paper.png",
+      "sha256": "35362d8361d2eca26ae09d5cea73d7ee79c6391c2a792463f4572851123ff37c",
+      "bytes": 316978
+    },
+    "longest-Deep-night.png": {
+      "path": "browser/longest-Deep-night.png",
+      "sha256": "8daa21af3bd044a0230a7c7ec63c9ea4abe11719c1f1f1bb02b765e8d1a5b073",
+      "bytes": 313158
+    },
+    "live-artwork.png": {
+      "path": "browser/live-artwork.png",
+      "sha256": "b3414596e1fe07ae2add4d1b687afbbb48950ba868818417d55d38074b3ccf23",
+      "bytes": 3170045
+    },
+    "live-artwork-completed.png": {
+      "path": "browser/live-artwork-completed.png",
+      "sha256": "118c6a13c5d2b97894d4aa108e7ce9bcf276f481d68ca26a53bdb34896559a50",
+      "bytes": 174635
+    }
+  },
+  "limitations": [
+    "16 untranscribed readings",
+    "Printed Spiritual Diary edition not verified",
+    "July 10 heading not checked against dated card",
+    "Original shared browser blocking component unknown",
+    "Physical audio output and native installation not assessed"
+  ],
+  "browserAssertions": "Final pass includes selected theme and type controls staying white on dark backgrounds, including hover, and aria-pressed selection."
+}

@@ -6,7 +6,40 @@ work through. Read this handoff, inspect current state, and proceed without aski
 him to repeat authorization for routine local work, browser testing, commits, or
 pushes. Bring him actual product decisions, paid services, or destructive actions.
 
-## Takeover checkpoint, 2026-09-06 evening
+## Current checkpoint: browser acceptance completed, September 6 late evening
+
+`042bc3e` is pushed, following `2bab3fe`. The reader has 350 readings and 16 unresolved dates.
+Read the updated [ACCEPTANCE.md](ACCEPTANCE.md) for the current result; the earlier
+browser-blocked checkpoints below are historical.
+
+- Real Chrome 152.0.7977.82 in a task-owned profile on CDP 9433 works at the same
+  local origin that failed through the shared extension connection. Do not ask
+  Nathaniel to allow an unidentified setting. The original blocking owner remains
+  unknown, and the denied extension inspection was not bypassed.
+- Desktop 1440 and mobile 390 journeys now pass, including keyboard, draft recovery,
+  actual backups/import conflicts, two tabs, storage failures, date edges, midnight,
+  timer, full quotation downloads, production offline reload and waiting-worker
+  update with draft recovery. `npm run test:browser` repeats the journeys.
+- Browser defects fixed: mobile overflow, unreadable welcome/dark-panel/sepia-footer
+  text, inaccessible keyboard-help close/focus, and year-field typing/markers.
+- Final automated result: 60 tests, type check/build, 36 killed behavior mutations
+  and one surviving no-op. Compatible dependency fixes leave npm audit at zero.
+- A fresh real request was started with the UI Create artwork button and completed:
+  job `2ebaa436-8db5-4f48-8902-0c9056745ad0`, gpt-6-astra, September 6, nature. Its actual
+  1122×1402 PNG was downloaded, viewed, and recovered after reload/reconnect.
+  SHA256 `b3414596e1fe07ae2add4d1b687afbbb48950ba868818417d55d38074b3ccf23`.
+- The owned production companion remains at port 4317, PID 3878475 at this check,
+  with zero running jobs after generation. Recheck before any restart. The task's
+  Chrome PID 3925595 listens on 9433. Other sessions and private journals are untouched.
+- Current launch instructions are in `.agents/skills/diary-browser/SKILL.md`.
+  Reports and selected visual evidence are in docs/verification; complete local
+  artifacts, logs and disposable backups remain under artifacts/acceptance.
+- Content is the remaining implementation gap. The 16 exact passages still need
+  supplied text or reusable exact sources. The 1929 Whispers source does not match
+  the later February 29 wording closely enough to substitute. Keep edition and
+  attribution uncertainties in SOURCE_GAPS.md.
+
+## Historical takeover checkpoint, 2026-09-06 evening
 
 The app is still unfinished. Current acceptance and exact tool limits are in
 [ACCEPTANCE.md](ACCEPTANCE.md). Read that current record before using the original

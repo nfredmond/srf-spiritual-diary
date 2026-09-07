@@ -81,3 +81,13 @@ There is no analytics, journal upload, database, or private delivery pipeline.
 Source code is MIT licensed. The diary text is not MIT licensed. The repository
 does not establish permission to redistribute SRF's writings. Obtain official
 publications from [Self-Realization Fellowship](https://yogananda.org).
+
+## Browser acceptance
+
+Production desktop and 390px journeys, journal backup/recovery, offline/update,
+quotation PNG downloads, and fresh local Astra artwork generation have been
+checked in isolated Chrome. See [the acceptance record](docs/ACCEPTANCE.md) for
+reproducible commands, screenshots, evidence limits, and the remaining 16 source
+gaps. `npm run test:browser` uses the task-owned CDP browser described in
+[the diary browser skill](.agents/skills/diary-browser/SKILL.md); it creates only
+disposable journals and does not start new real artwork generation.

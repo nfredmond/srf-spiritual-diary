@@ -127,3 +127,14 @@ does not authenticate the entire archive.
 To resolve a bundled entry, record the edition or permitted source, transcribe
 faithfully, retain the date/topic/author/book evidence, and reconcile the
 unresolved-date list in the same change.
+
+## Additional February 29 comparison, final browser pass
+
+The [University of Pennsylvania catalog](https://onlinebooks.library.upenn.edu/webbin/book/lookupid?key=olbp105309)
+identifies a 1929 Whispers from Eternity edition. Its linked
+[Internet Archive transcription](https://archive.org/stream/whispersfrometernityyogananda/Whispersfrom%20Eternityyogananda_djvu.txt),
+prayer 45, printed page 72, contains a related dream-garden passage. Its imagery,
+opening, sentence structure and ending differ substantially from the later
+February 29 text indexed on the web. This is a source lead, not an exact match.
+No 1929 passage was silently substituted for the missing diary reading. The
+underlying scan has not received a new page-by-page visual comparison in this pass.

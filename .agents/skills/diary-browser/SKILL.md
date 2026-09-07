@@ -1,35 +1,56 @@
 ---
 name: diary-browser
-description: Establish the Spiritual Diary production build and current browser acceptance limits before testing its reader or local artwork companion.
+description: Test the Spiritual Diary production reader and local artwork companion in a task-owned Chrome profile without touching private journals or other sessions.
 ---
 
 # Diary production testing
 
-Read docs/HANDOFF.md and docs/ACCEPTANCE.md. Confirm this checkout and a clean
-ownership boundary with other sessions before editing or starting servers.
+Read docs/HANDOFF.md, docs/ACCEPTANCE.md, and docs/SOURCE_GAPS.md. Confirm this
+checkout and file ownership before editing. These instructions record the user's
+standing requirement to use CDP with a separate automation profile.
 
-1. Run `npm run verify` in the repository root and wait for the build to finish.
-   Building replaces dist; probing it during a build can produce a transient 404.
-2. Inspect `ss -tlnp 'sport = :4317'` and the listener's `/proc/PID/cwd`.
-   Do not stop an unidentified listener or another agent's process.
-3. Start `node companion/server.mjs` after building. This serves dist and artwork
-   on loopback at port 4317. Where the isolated CLI still exists, use
-   `SRF_CODEX_BIN="$PWD/artifacts/codex/node_modules/.bin/codex"`.
-4. Compare the HTTP root response with local dist/index.html. A 200 alone does
-   not identify the build. The companion reads diary data at startup, so restart
-   only your own instance after changing data, checking for active jobs first.
-5. Follow the installed Browser/Chrome skill. Use new agent-owned tabs and a
-   disposable journal origin. Do not inspect or clear private journal storage,
-   claim another session's tabs, or connect directly to the live Chrome profile.
-6. Complete the acceptance journeys at desktop and 390px, including production
-   worker offline/update tests and actual downloaded PNG inspection. Unit tests
-   and generated precache files cannot replace those journeys.
+1. Run `npm run verify` in the repository root; wait for the production build.
+   Building replaces dist and can cause transient HTTP 404s. Do not build during
+   browser testing.
+2. Inspect `ss -tlnp 'sport = :4317'` and the listener's `/proc/PID/cwd`. Never stop
+   an unidentified listener. The companion reads diary data once at startup;
+   restart only your own instance after changing data and checking for active jobs.
+3. Start the companion after the build. The tested local CLI invocation is:
 
-At the 2026-09-06 evening checkpoint, no successful browser launch recipe exists
-for this session's supported Chrome controls: the local reader returns
-ERR_BLOCKED_BY_CLIENT with blockedReason inspector. X works in the same session.
-The tool separately denies opening chrome://extensions under its URL policy.
-The responsible local-navigation blocker has not been identified. Do not change
-request-blocking rules or security settings, bypass the denied inspection, or
-ask for an unspecified allow setting. Preserve the exact uncertainty and use
-the current diagnostic record, not repeated speculative reloads.
+   ```bash
+   SRF_CODEX_BIN="$PWD/artifacts/codex/node_modules/.bin/codex" node companion/server.mjs
+   ```
+
+   The isolated CLI is 0.153.4; the older global CLI rejected Astra. Recheck local
+   CLI availability rather than silently choosing another model or authentication.
+4. Compare the HTTP root with `dist/index.html` by hash, and verify dataset census.
+5. Launch a task-owned Chrome instance on an unused port and unique directory
+   beneath the automation profile. The successful launch was:
+
+   ```bash
+   google-chrome --headless=new --remote-debugging-address=127.0.0.1 \
+     --remote-debugging-port=9433 \
+     --user-data-dir=/home/nathaniel/.config/google-chrome-automation/diary-acceptance-20260906 \
+     --no-first-run --no-default-browser-check about:blank
+   ```
+
+   Inspect ownership if the port/profile already exists. Never connect to the live
+   `~/.config/google-chrome` profile or adopt another agent's tabs.
+6. Run `npm run test:browser`. Both scripts connect using playwright-core over CDP
+   and create disposable contexts; they close only those contexts and their own
+   temporary update server. `DIARY_CDP` and `DIARY_URL` override the local defaults.
+   A completed September 6 artwork is required for real preview/download checks.
+   `DIARY_ARTWORK_SHA256` pins it when needed. The scripts never request a new real
+   generation. A fresh generation was separately completed from the UI during the
+   final acceptance pass; see its recorded job ID and image hash.
+7. Inspect actual screenshots and downloaded PNGs, not only passing assertions.
+   Reports and screenshots go to `artifacts/acceptance/browser*`. Failure fixtures
+   use no private journals, API keys, live account errors or invented readings.
+   Copy only reviewed evidence into docs/verification and update acceptance limits.
+
+The shared Chrome extension connection previously reported ERR_BLOCKED_BY_CLIENT
+with blockedReason inspector. A separate tool-policy denial concerned extension
+settings inspection. Do not bypass that inspection denial, alter security rules,
+or claim its owner is identified. Isolated app testing works; the responsible
+component in the shared browser remains unknown. No unspecified "allow" request
+is justified by this evidence.
